@@ -1286,6 +1286,12 @@ a {
   margin-bottom: 2.5rem;
 }
 
+/* ─── Marquee Animation ─── */
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
 /* ─── Selection Color ─── */
 ::selection {
   background: rgba(56, 189, 248, 0.3);

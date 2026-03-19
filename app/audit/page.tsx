@@ -3,12 +3,11 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import {
-  ArrowLeft,
   ArrowRight,
   CheckCircle,
   Loader2,
-  TrendingUp,
 } from "lucide-react";
+import PageLayout from "@/components/layout/PageLayout";
 
 const BACKEND_URL = "https://websol-backend.onrender.com";
 
@@ -72,22 +71,8 @@ export default function AuditPage() {
   }
 
   return (
-    <>
-      <nav className="navbar navbar-scrolled">
-        <div className="navbar-inner">
-          <a href="/" className="logo">
-            <div className="logo-icon">
-              <TrendingUp size={20} />
-            </div>
-            <span className="logo-text">NovaScaling</span>
-          </a>
-          <a href="/" className="btn btn-ghost btn-sm">
-            <ArrowLeft size={16} /> Back to Home
-          </a>
-        </div>
-      </nav>
-
-      <section className="audit-page">
+    <PageLayout>
+      <section className="audit-page" style={{ paddingTop: "8rem" }}>
         <div className="audit-bg">
           <div className="hero-orb hero-orb-1" />
           <div className="hero-orb hero-orb-2" />
@@ -269,6 +254,6 @@ export default function AuditPage() {
           )}
         </div>
       </section>
-    </>
+    </PageLayout>
   );
 }
