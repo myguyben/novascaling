@@ -116,7 +116,7 @@ export default function Home() {
             ))}
           </div>
 
-          <a href="#cta" className="btn btn-primary btn-sm">
+          <a href="/audit" className="btn btn-primary btn-sm">
             Book a Call <ArrowRight size={16} />
           </a>
 
@@ -145,7 +145,7 @@ export default function Home() {
                 {link.label}
               </a>
             ))}
-            <a href="#cta" className="btn btn-primary" style={{ width: "100%", justifyContent: "center" }}>
+            <a href="/audit" className="btn btn-primary" style={{ width: "100%", justifyContent: "center" }}>
               Book a Call
             </a>
           </motion.div>
@@ -199,7 +199,7 @@ export default function Home() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.7 }}
           >
-            <a href="#cta" className="btn btn-primary btn-lg">
+            <a href="/audit" className="btn btn-primary btn-lg">
               Get Your Free AI Audit <ArrowRight size={18} />
             </a>
             <a href="#process" className="btn btn-ghost btn-lg">
@@ -467,7 +467,7 @@ export default function Home() {
                   <li>Monthly Growth Report</li>
                   <li>Email & chat support</li>
                 </ul>
-                <a href="#cta" className="btn btn-outline" style={{ width: "100%" }}>
+                <a href="/audit" className="btn btn-outline" style={{ width: "100%" }}>
                   Get Started
                 </a>
               </div>
@@ -494,7 +494,7 @@ export default function Home() {
                     <strong>40-hour guarantee</strong>
                   </li>
                 </ul>
-                <a href="#cta" className="btn btn-primary" style={{ width: "100%" }}>
+                <a href="/audit" className="btn btn-primary" style={{ width: "100%" }}>
                   Get Started <ArrowRight size={16} />
                 </a>
               </div>
@@ -516,7 +516,7 @@ export default function Home() {
                   <li>Dedicated Slack channel</li>
                   <li>Weekly CAIO sessions</li>
                 </ul>
-                <a href="#cta" className="btn btn-outline" style={{ width: "100%" }}>
+                <a href="/audit" className="btn btn-outline" style={{ width: "100%" }}>
                   Contact Us
                 </a>
               </div>
@@ -588,9 +588,7 @@ export default function Home() {
               </p>
               <div className="cta-buttons">
                 <a
-                  href="https://calendly.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  href="/audit"
                   className="btn btn-primary btn-xl"
                 >
                   Book Your Free Audit <ArrowRight size={20} />
@@ -626,7 +624,7 @@ export default function Home() {
             </div>
             <div className="footer-col">
               <h4>Company</h4>
-              <a href="#cta">Contact</a>
+              <a href="/audit">Contact</a>
               <a href="/dashboard">Client Portal</a>
             </div>
           </div>
