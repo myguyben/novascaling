@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { motion, useInView, useScroll, useTransform } from "framer-motion";
+import { motion, useInView } from "framer-motion";
 import {
   ArrowRight,
   Bot,
@@ -89,12 +89,6 @@ export default function Home() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const heroRef = useRef(null);
-  const { scrollYProgress } = useScroll({
-    target: heroRef,
-    offset: ["start start", "end start"],
-  });
-  const heroOpacity = useTransform(scrollYProgress, [0, 1], [1, 0]);
-  const heroScale = useTransform(scrollYProgress, [0, 1], [1, 0.95]);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
@@ -167,7 +161,7 @@ export default function Home() {
           <div className="hero-grid-overlay" />
         </div>
 
-        <motion.div className="hero-container" style={{ opacity: heroOpacity, scale: heroScale }}>
+        <motion.div className="hero-container">
           <motion.div
             className="hero-badge"
             initial={{ opacity: 0, y: 20 }}
