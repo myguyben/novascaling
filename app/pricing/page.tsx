@@ -3,28 +3,28 @@
 import { CheckCircle, Sparkles, ArrowRight } from "lucide-react";
 
 import PageLayout from "@/components/layout/PageLayout";
-import { AnimatedSection } from "@/components/animations/AnimatedSection";
-import { SectionHeader } from "@/components/ui/SectionHeader";
-import { GlassCard } from "@/components/ui/GlassCard";
-import { PricingCard } from "@/components/ui/PricingCard";
-import { FAQAccordion } from "@/components/ui/FAQAccordion";
-import { ROICalculator } from "@/components/ui/ROICalculator";
-import { CTABanner } from "@/components/ui/CTABanner";
+import AnimatedSection from "@/components/animations/AnimatedSection";
+import SectionHeader from "@/components/ui/SectionHeader";
+import GlassCard from "@/components/ui/GlassCard";
+import PricingCard from "@/components/ui/PricingCard";
+import FAQAccordion from "@/components/ui/FAQAccordion";
+import ROICalculator from "@/components/ui/ROICalculator";
+import CTABanner from "@/components/ui/CTABanner";
 import { PRICING_TIERS, FAQ_ITEMS } from "@/lib/constants";
 
 const COMPARISON_FEATURES = [
   { name: "Workflow Automations", tiers: ["2", "5", "Unlimited"] },
-  { name: "Internal Knowledge Agent", tiers: ["✓", "✓", "✓"] },
-  { name: "Monthly Growth Report", tiers: ["✓", "✓", "✓"] },
-  { name: "Custom AI Support Agent", tiers: ["—", "✓", "✓"] },
-  { name: "CRM & Ecosystem Integration", tiers: ["—", "✓", "✓"] },
-  { name: "Strategy Sessions", tiers: ["—", "Bi-weekly", "Weekly"] },
-  { name: "Dynamic ROI Dashboard", tiers: ["—", "✓", "✓"] },
-  { name: "40-Hour Guarantee", tiers: ["—", "✓", "✓"] },
-  { name: "Custom LLM Fine-Tuning", tiers: ["—", "—", "✓"] },
-  { name: "Multi-Agent Orchestration", tiers: ["—", "—", "✓"] },
-  { name: "SLA Guarantees", tiers: ["—", "—", "✓"] },
-  { name: "Dedicated Slack Channel", tiers: ["—", "—", "✓"] },
+  { name: "Internal Knowledge Agent", tiers: ["\u2713", "\u2713", "\u2713"] },
+  { name: "Monthly Growth Report", tiers: ["\u2713", "\u2713", "\u2713"] },
+  { name: "Custom AI Support Agent", tiers: ["\u2014", "\u2713", "\u2713"] },
+  { name: "CRM & Ecosystem Integration", tiers: ["\u2014", "\u2713", "\u2713"] },
+  { name: "Strategy Sessions", tiers: ["\u2014", "Bi-weekly", "Weekly"] },
+  { name: "Dynamic ROI Dashboard", tiers: ["\u2014", "\u2713", "\u2713"] },
+  { name: "40-Hour Guarantee", tiers: ["\u2014", "\u2713", "\u2713"] },
+  { name: "Custom LLM Fine-Tuning", tiers: ["\u2014", "\u2014", "\u2713"] },
+  { name: "Multi-Agent Orchestration", tiers: ["\u2014", "\u2014", "\u2713"] },
+  { name: "SLA Guarantees", tiers: ["\u2014", "\u2014", "\u2713"] },
+  { name: "Dedicated Slack Channel", tiers: ["\u2014", "\u2014", "\u2713"] },
 ];
 
 export default function PricingPage() {
@@ -149,13 +149,13 @@ export default function PricingPage() {
                               padding: "1rem",
                               borderBottom: "1px solid rgba(255,255,255,0.03)",
                               color:
-                                val === "✓"
+                                val === "\u2713"
                                   ? "#34d399"
-                                  : val === "—"
+                                  : val === "\u2014"
                                   ? "var(--text-tertiary)"
                                   : "var(--text-primary)",
-                              fontWeight: val === "✓" ? 700 : 400,
-                              fontSize: val === "✓" ? "1.1rem" : "0.9rem",
+                              fontWeight: val === "\u2713" ? 700 : 400,
+                              fontSize: val === "\u2713" ? "1.1rem" : "0.9rem",
                             }}
                           >
                             {val}
@@ -178,7 +178,6 @@ export default function PricingPage() {
             <GlassCard
               className="p-10 md:p-14 text-center"
               hoverEffect="glow"
-              style={{ borderColor: "rgba(52,211,153,0.3)" }}
             >
               <Sparkles size={32} style={{ color: "#34d399", marginBottom: "1.5rem", display: "inline-block" }} />
               <h2

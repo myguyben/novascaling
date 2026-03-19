@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { DollarSign, Clock, TrendingUp } from "lucide-react";
-import { GlassCard } from "@/components/ui/GlassCard";
+import GlassCard from "@/components/ui/GlassCard";
 
 export function ROICalculator() {
   const [hoursPerWeek, setHoursPerWeek] = useState(20);

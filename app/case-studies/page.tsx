@@ -3,12 +3,12 @@
 import { ArrowRight, Clock, DollarSign, Quote, SmilePlus, Timer } from "lucide-react";
 
 import PageLayout from "@/components/layout/PageLayout";
-import { AnimatedSection } from "@/components/animations/AnimatedSection";
-import { CountUp } from "@/components/animations/CountUp";
-import { SectionHeader } from "@/components/ui/SectionHeader";
-import { GlassCard } from "@/components/ui/GlassCard";
-import { Badge } from "@/components/ui/Badge";
-import { CTABanner } from "@/components/ui/CTABanner";
+import AnimatedSection from "@/components/animations/AnimatedSection";
+import CountUp from "@/components/animations/CountUp";
+import SectionHeader from "@/components/ui/SectionHeader";
+import GlassCard from "@/components/ui/GlassCard";
+import Badge from "@/components/ui/Badge";
+import CTABanner from "@/components/ui/CTABanner";
 import { CASE_STUDIES } from "@/lib/constants";
 
 export default function CaseStudiesPage() {
@@ -93,7 +93,7 @@ export default function CaseStudiesPage() {
                   </span>
                 </div>
 
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "2rem", marginBottom: "2rem" }}>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8" style={{ marginBottom: "2rem" }}>
                   <div>
                     <h4
                       style={{
@@ -131,14 +131,7 @@ export default function CaseStudiesPage() {
                 </div>
 
                 {/* Metrics */}
-                <div
-                  style={{
-                    display: "grid",
-                    gridTemplateColumns: "repeat(4, 1fr)",
-                    gap: "1rem",
-                    marginBottom: "2rem",
-                  }}
-                >
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4" style={{ marginBottom: "2rem" }}>
                   <div
                     style={{
                       background: "rgba(255,255,255,0.02)",
