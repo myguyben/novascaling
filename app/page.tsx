@@ -437,6 +437,71 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ── Testimonials ── */}
+      <section className="section">
+        <div className="section-container">
+          <AnimatedSection>
+            <SectionHeader
+              label="What Clients Say"
+              title="Don't take our word"
+              titleHighlight="for it."
+            />
+          </AnimatedSection>
+
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "1.5rem" }}>
+            {[
+              {
+                quote: "I got my evenings back. The AI handles 80% of tickets without me ever seeing them.",
+                name: "D2C Brand Founder",
+                industry: "E-Commerce",
+                metric: "62 hours saved/month",
+              },
+              {
+                quote: "We went from losing leads overnight to booking jobs before our competitors even check their email.",
+                name: "Regional HVAC Dispatcher",
+                industry: "HVAC Services",
+                metric: "90-second lead response",
+              },
+              {
+                quote: "My agents close more deals because they spend their time with clients instead of typing emails.",
+                name: "Boutique Brokerage Owner",
+                industry: "Real Estate",
+                metric: "$5,800 saved/month",
+              },
+            ].map((t, i) => (
+              <AnimatedSection key={i} delay={i * 0.1}>
+                <GlassCard className="p-8" hoverEffect="border" style={{ height: "100%" }}>
+                  <div style={{ display: "flex", flexDirection: "column", height: "100%", gap: "1.25rem" }}>
+                    <p style={{ color: "var(--text-secondary)", fontStyle: "italic", lineHeight: 1.7, fontSize: "0.95rem", flex: 1 }}>
+                      &ldquo;{t.quote}&rdquo;
+                    </p>
+                    <div>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "0.5rem" }}>
+                        <div>
+                          <p style={{ fontWeight: 600, fontSize: "0.9rem" }}>{t.name}</p>
+                          <p style={{ color: "var(--text-tertiary)", fontSize: "0.8rem" }}>{t.industry}</p>
+                        </div>
+                        <span style={{
+                          fontSize: "0.75rem",
+                          fontWeight: 600,
+                          color: "var(--success)",
+                          background: "rgba(52,211,153,0.1)",
+                          border: "1px solid rgba(52,211,153,0.2)",
+                          padding: "0.3rem 0.75rem",
+                          borderRadius: "100px",
+                        }}>
+                          {t.metric}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </GlassCard>
+              </AnimatedSection>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* ── CTA ── */}
       <CTABanner
         title="Ready to escape"

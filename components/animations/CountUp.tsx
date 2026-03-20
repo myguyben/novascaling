@@ -1,7 +1,6 @@
 "use client";
 
-import { useRef, useEffect, useState, useCallback } from "react";
-import { useInView } from "framer-motion";
+import { useRef, useEffect, useState } from "react";
 
 interface CountUpProps {
   end: number;
@@ -21,37 +20,52 @@ export function CountUp({
   duration = 2000,
 }: CountUpProps) {
   const ref = useRef<HTMLSpanElement>(null);
-  const isInView = useInView(ref, { once: true });
   const [display, setDisplay] = useState(0);
   const hasAnimated = useRef(false);
 
-  const animate = useCallback(() => {
-    if (hasAnimated.current) return;
-    hasAnimated.current = true;
-
-    const start = performance.now();
-
-    function tick(now: number) {
-      const elapsed = now - start;
-      const progress = Math.min(elapsed / duration, 1);
-      const eased = easeOutExpo(progress);
-      const current = Math.round(eased * end);
-
-      setDisplay(current);
-
-      if (progress < 1) {
-        requestAnimationFrame(tick);
-      }
-    }
-
-    requestAnimationFrame(tick);
-  }, [end, duration]);
-
   useEffect(() => {
-    if (isInView) {
-      animate();
+    const el = ref.current;
+    if (!el) return;
+
+    function runAnimation() {
+      if (hasAnimated.current) return;
+      hasAnimated.current = true;
+
+      const startTime = performance.now();
+
+      function tick(now: number) {
+        const elapsed = now - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const eased = easeOutExpo(progress);
+        setDisplay(Math.round(eased * end));
+
+        if (progress < 1) {
+          requestAnimationFrame(tick);
+        }
+      }
+
+      requestAnimationFrame(tick);
     }
-  }, [isInView, animate]);
+
+    // Use native IntersectionObserver to avoid framer-motion SSR issues
+    if (typeof IntersectionObserver === "undefined") {
+      runAnimation();
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          runAnimation();
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [end, duration]);
 
   return (
     <span ref={ref}>
@@ -61,4 +75,5 @@ export function CountUp({
     </span>
   );
 }
+
 export default CountUp;

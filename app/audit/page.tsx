@@ -245,7 +245,7 @@ export default function AuditPage() {
                     </>
                   ) : (
                     <>
-                      Get My Free Audit <ArrowRight size={18} />
+                      Get My Free Audit — Results in 24h <ArrowRight size={18} />
                     </>
                   )}
                 </button>
