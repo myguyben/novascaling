@@ -23,6 +23,7 @@ import {
 } from "lucide-react";
 
 import PageLayout from "@/components/layout/PageLayout";
+import { IntroAnimation } from "@/components/animations/IntroAnimation";
 import { AnimatedSection } from "@/components/animations/AnimatedSection";
 import { CountUp } from "@/components/animations/CountUp";
 import { ParticleField } from "@/components/animations/ParticleField";
@@ -51,6 +52,7 @@ export default function Home() {
   const heroRef = useRef(null);
 
   return (
+    <IntroAnimation>
     <PageLayout>
       {/* ── Hero ── */}
       <section ref={heroRef} className="hero-section">
@@ -511,5 +513,6 @@ export default function Home() {
         buttonHref="/audit"
       />
     </PageLayout>
+    </IntroAnimation>
   );
 }
