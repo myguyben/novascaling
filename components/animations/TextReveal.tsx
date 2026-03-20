@@ -52,11 +52,11 @@ export function TextReveal({
       initial="hidden"
       animate={isInView ? "visible" : "hidden"}
       custom={delay}
-      style={{ display: "flex", flexWrap: "wrap", gap: "0.25em" }}
+      style={{ display: "inline" }}
     >
       {words.map((word, i) => (
         <motion.span key={`${word}-${i}`} variants={wordVariants} style={{ display: "inline-block" }}>
-          {word}
+          {word}{i < words.length - 1 ? "\u00A0" : ""}
         </motion.span>
       ))}
     </motion.span>

@@ -26,7 +26,7 @@ export function AnimatedSection({
   direction = "up",
 }: AnimatedSectionProps) {
   const ref = useRef<HTMLDivElement>(null);
-  const isInView = useInView(ref, { once: true, margin: "-80px" });
+  const isInView = useInView(ref, { once: true, margin: "-40px" });
 
   const { x, y } = offsets[direction];
 

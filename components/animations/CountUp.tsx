@@ -21,7 +21,7 @@ export function CountUp({
   duration = 2000,
 }: CountUpProps) {
   const ref = useRef<HTMLSpanElement>(null);
-  const isInView = useInView(ref, { once: true, margin: "-40px" });
+  const isInView = useInView(ref, { once: true });
   const [display, setDisplay] = useState(0);
   const hasAnimated = useRef(false);
 

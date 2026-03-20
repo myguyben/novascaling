@@ -79,12 +79,13 @@ export default function Home() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3, duration: 0.8 }}
           >
-            <TextReveal
-              text="Stop drowning in busywork."
-              className="hero-title"
-              delay={0.4}
-            />
-            <h1 className="hero-title" style={{ marginTop: "-0.5rem" }}>
+            <h1 className="hero-title">
+              <TextReveal
+                text="Stop drowning in busywork."
+                delay={0.4}
+              />
+            </h1>
+            <h2 className="hero-title" style={{ marginTop: "0.25rem" }}>
               <TypewriterText
                 phrases={[
                   "Rise above the grind.",
@@ -93,7 +94,7 @@ export default function Home() {
                 ]}
                 className="text-gradient-hero"
               />
-            </h1>
+            </h2>
           </motion.div>
 
           <motion.p
