@@ -1,6 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600&display=swap');
 @import "tailwindcss";
 
+@source "../components";
+@source "../lib";
+
 :root {
   --bg-deep: #030712;
   --bg-surface: #0a0f1e;

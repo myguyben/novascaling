@@ -23,8 +23,8 @@ const variantStyles: Record<string, string> = {
 
 const sizeStyles: Record<string, string> = {
   sm: "px-5 py-2.5 text-sm rounded-xl",
-  lg: "px-7 py-3.5 text-base rounded-xl",
-  xl: "px-10 py-4.5 text-lg rounded-[14px]",
+  lg: "px-7 py-3 text-base rounded-xl",
+  xl: "px-10 py-4 text-lg rounded-2xl",
 };
 
 export function Button({
