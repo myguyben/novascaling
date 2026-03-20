@@ -1,14 +1,67 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { TrendingUp } from "lucide-react";
 
-export function IntroAnimation({ children }: { children: React.ReactNode }) {
-  const [phase, setPhase] = useState<"loading" | "reveal" | "done">("loading");
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+interface Particle {
+  x: number;
+  y: number;
+  vx: number;
+  vy: number;
+  size: number;
+  hue: number;
+  life: number;
+  maxLife: number;
+  trail: { x: number; y: number }[];
+}
 
-  // Animated beam canvas
+export function IntroAnimation({ children }: { children: React.ReactNode }) {
+  const [phase, setPhase] = useState<
+    "black" | "streak" | "impact" | "shockwave" | "dissolve" | "done"
+  >("black");
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const particlesRef = useRef<Particle[]>([]);
+  const shockwaveRef = useRef({ radius: 0, opacity: 1 });
+  const streakRef = useRef({ x: -200, opacity: 0, hit: false });
+  const frameRef = useRef(0);
+
+  const spawnExplosion = useCallback((cx: number, cy: number) => {
+    const particles: Particle[] = [];
+    for (let i = 0; i < 120; i++) {
+      const angle = Math.random() * Math.PI * 2;
+      const speed = 2 + Math.random() * 12;
+      particles.push({
+        x: cx,
+        y: cy,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed,
+        size: 1 + Math.random() * 3,
+        hue: 190 + Math.random() * 70,
+        life: 1,
+        maxLife: 60 + Math.random() * 80,
+        trail: [],
+      });
+    }
+    // Add some bigger slow ones
+    for (let i = 0; i < 20; i++) {
+      const angle = Math.random() * Math.PI * 2;
+      const speed = 0.5 + Math.random() * 3;
+      particles.push({
+        x: cx,
+        y: cy,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed,
+        size: 3 + Math.random() * 4,
+        hue: 190 + Math.random() * 30,
+        life: 1,
+        maxLife: 100 + Math.random() * 60,
+        trail: [],
+      });
+    }
+    particlesRef.current = particles;
+  }, []);
+
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas || phase === "done") return;
@@ -17,99 +70,175 @@ export function IntroAnimation({ children }: { children: React.ReactNode }) {
     if (!ctx) return;
 
     const dpr = window.devicePixelRatio || 1;
-    canvas.width = window.innerWidth * dpr;
-    canvas.height = window.innerHeight * dpr;
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+    canvas.width = w * dpr;
+    canvas.height = h * dpr;
     ctx.scale(dpr, dpr);
 
-    const beams: {
-      x: number;
-      y: number;
-      angle: number;
-      speed: number;
-      length: number;
-      width: number;
-      hue: number;
-      opacity: number;
-    }[] = [];
+    const cx = w / 2;
+    const cy = h / 2;
+    let startTime = performance.now();
 
-    // Create initial beams
-    for (let i = 0; i < 30; i++) {
-      beams.push({
-        x: window.innerWidth / 2,
-        y: window.innerHeight / 2,
-        angle: (Math.PI * 2 * i) / 30 + Math.random() * 0.3,
-        speed: 2 + Math.random() * 4,
-        length: 50 + Math.random() * 150,
-        width: 1 + Math.random() * 2,
-        hue: 190 + Math.random() * 60, // cyan to purple range
-        opacity: 0.3 + Math.random() * 0.5,
-      });
-    }
-
-    let frame: number;
-    let t = 0;
-
-    function animate() {
-      if (!ctx || !canvas) return;
-      const w = window.innerWidth;
-      const h = window.innerHeight;
+    function render(now: number) {
+      if (!ctx) return;
+      const elapsed = (now - startTime) / 1000;
 
       ctx.clearRect(0, 0, w, h);
-      t += 0.02;
 
-      beams.forEach((beam) => {
-        const cx = w / 2;
-        const cy = h / 2;
+      // === STREAK PHASE ===
+      if (phase === "streak" || phase === "impact") {
+        const streak = streakRef.current;
 
-        beam.angle += 0.003;
-        const dist = beam.speed * t * 15;
+        if (!streak.hit) {
+          streak.x += (w * 0.04);
+          streak.opacity = Math.min(1, streak.opacity + 0.08);
 
-        const x1 = cx + Math.cos(beam.angle) * dist;
-        const y1 = cy + Math.sin(beam.angle) * dist;
-        const x2 = cx + Math.cos(beam.angle) * (dist + beam.length);
-        const y2 = cy + Math.sin(beam.angle) * (dist + beam.length);
+          if (streak.x >= cx - 30) {
+            streak.hit = true;
+            setPhase("impact");
+            spawnExplosion(cx, cy);
+            shockwaveRef.current = { radius: 0, opacity: 1 };
+          }
+        }
 
-        const gradient = ctx.createLinearGradient(x1, y1, x2, y2);
-        gradient.addColorStop(0, `hsla(${beam.hue}, 80%, 65%, 0)`);
-        gradient.addColorStop(0.5, `hsla(${beam.hue}, 80%, 65%, ${beam.opacity * Math.max(0, 1 - t * 0.3)})`);
-        gradient.addColorStop(1, `hsla(${beam.hue}, 80%, 65%, 0)`);
+        // Draw streak line with glow
+        if (!streak.hit) {
+          const grad = ctx.createLinearGradient(
+            streak.x - 300, cy, streak.x, cy
+          );
+          grad.addColorStop(0, "rgba(56, 189, 248, 0)");
+          grad.addColorStop(0.7, `rgba(56, 189, 248, ${streak.opacity * 0.6})`);
+          grad.addColorStop(1, `rgba(255, 255, 255, ${streak.opacity})`);
 
-        ctx.beginPath();
-        ctx.moveTo(x1, y1);
-        ctx.lineTo(x2, y2);
-        ctx.strokeStyle = gradient;
-        ctx.lineWidth = beam.width;
-        ctx.lineCap = "round";
-        ctx.stroke();
-      });
+          ctx.beginPath();
+          ctx.moveTo(streak.x - 300, cy);
+          ctx.lineTo(streak.x, cy);
+          ctx.strokeStyle = grad;
+          ctx.lineWidth = 2;
+          ctx.lineCap = "round";
+          ctx.stroke();
 
-      // Center glow
-      const glowRadius = 80 + Math.sin(t * 2) * 20;
-      const glow = ctx.createRadialGradient(
-        w / 2, h / 2, 0,
-        w / 2, h / 2, glowRadius
-      );
-      glow.addColorStop(0, `rgba(56, 189, 248, ${0.15 * Math.max(0, 1 - t * 0.3)})`);
-      glow.addColorStop(0.5, `rgba(129, 140, 248, ${0.08 * Math.max(0, 1 - t * 0.3)})`);
-      glow.addColorStop(1, "transparent");
-      ctx.fillStyle = glow;
-      ctx.fillRect(0, 0, w, h);
+          // Bright tip glow
+          const tipGlow = ctx.createRadialGradient(
+            streak.x, cy, 0, streak.x, cy, 30
+          );
+          tipGlow.addColorStop(0, `rgba(255, 255, 255, ${streak.opacity * 0.8})`);
+          tipGlow.addColorStop(0.3, `rgba(56, 189, 248, ${streak.opacity * 0.4})`);
+          tipGlow.addColorStop(1, "transparent");
+          ctx.fillStyle = tipGlow;
+          ctx.fillRect(streak.x - 30, cy - 30, 60, 60);
+        }
+      }
 
-      frame = requestAnimationFrame(animate);
+      // === IMPACT / SHOCKWAVE ===
+      if (phase === "impact" || phase === "shockwave") {
+        const sw = shockwaveRef.current;
+        sw.radius += 8;
+        sw.opacity = Math.max(0, 1 - sw.radius / (Math.max(w, h) * 0.7));
+
+        // Shockwave ring
+        if (sw.opacity > 0) {
+          ctx.beginPath();
+          ctx.arc(cx, cy, sw.radius, 0, Math.PI * 2);
+          ctx.strokeStyle = `rgba(56, 189, 248, ${sw.opacity * 0.5})`;
+          ctx.lineWidth = 2 + sw.opacity * 4;
+          ctx.stroke();
+
+          // Second ring
+          ctx.beginPath();
+          ctx.arc(cx, cy, sw.radius * 0.85, 0, Math.PI * 2);
+          ctx.strokeStyle = `rgba(129, 140, 248, ${sw.opacity * 0.3})`;
+          ctx.lineWidth = 1;
+          ctx.stroke();
+        }
+
+        // Center flash
+        if (sw.radius < 100) {
+          const flash = ctx.createRadialGradient(cx, cy, 0, cx, cy, 100 - sw.radius);
+          flash.addColorStop(0, `rgba(255, 255, 255, ${Math.max(0, 0.6 - sw.radius / 100)})`);
+          flash.addColorStop(1, "transparent");
+          ctx.fillStyle = flash;
+          ctx.fillRect(0, 0, w, h);
+        }
+
+        // Particles with trails
+        const particles = particlesRef.current;
+        for (let i = particles.length - 1; i >= 0; i--) {
+          const p = particles[i];
+          p.trail.push({ x: p.x, y: p.y });
+          if (p.trail.length > 8) p.trail.shift();
+
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vx *= 0.98;
+          p.vy *= 0.98;
+          p.vy += 0.02; // slight gravity
+          p.life -= 1 / p.maxLife;
+
+          if (p.life <= 0) {
+            particles.splice(i, 1);
+            continue;
+          }
+
+          // Draw trail
+          if (p.trail.length > 1) {
+            ctx.beginPath();
+            ctx.moveTo(p.trail[0].x, p.trail[0].y);
+            for (let j = 1; j < p.trail.length; j++) {
+              ctx.lineTo(p.trail[j].x, p.trail[j].y);
+            }
+            ctx.strokeStyle = `hsla(${p.hue}, 80%, 65%, ${p.life * 0.3})`;
+            ctx.lineWidth = p.size * 0.5;
+            ctx.stroke();
+          }
+
+          // Draw particle
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.size * p.life, 0, Math.PI * 2);
+          ctx.fillStyle = `hsla(${p.hue}, 80%, 70%, ${p.life})`;
+          ctx.fill();
+
+          // Particle glow
+          if (p.size > 2) {
+            const pg = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.size * 3);
+            pg.addColorStop(0, `hsla(${p.hue}, 80%, 70%, ${p.life * 0.3})`);
+            pg.addColorStop(1, "transparent");
+            ctx.fillStyle = pg;
+            ctx.fillRect(p.x - p.size * 3, p.y - p.size * 3, p.size * 6, p.size * 6);
+          }
+        }
+
+        // Ambient floating sparkles
+        for (let i = 0; i < 5; i++) {
+          const sx = Math.random() * w;
+          const sy = Math.random() * h;
+          const so = Math.random() * 0.3 * Math.max(0, 1 - elapsed * 0.3);
+          ctx.beginPath();
+          ctx.arc(sx, sy, 1, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(56, 189, 248, ${so})`;
+          ctx.fill();
+        }
+      }
+
+      frameRef.current = requestAnimationFrame(render);
     }
 
-    frame = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(frame);
-  }, [phase]);
+    frameRef.current = requestAnimationFrame(render);
+    return () => cancelAnimationFrame(frameRef.current);
+  }, [phase, spawnExplosion]);
 
   // Phase timing
   useEffect(() => {
-    const t1 = setTimeout(() => setPhase("reveal"), 1800);
-    const t2 = setTimeout(() => setPhase("done"), 2800);
-    return () => {
-      clearTimeout(t1);
-      clearTimeout(t2);
-    };
+    const timers = [
+      setTimeout(() => setPhase("streak"), 400),
+      setTimeout(() => {
+        if (streakRef.current.hit) setPhase("shockwave");
+      }, 1600),
+      setTimeout(() => setPhase("dissolve"), 2600),
+      setTimeout(() => setPhase("done"), 3400),
+    ];
+    return () => timers.forEach(clearTimeout);
   }, []);
 
   return (
@@ -117,21 +246,23 @@ export function IntroAnimation({ children }: { children: React.ReactNode }) {
       <AnimatePresence>
         {phase !== "done" && (
           <motion.div
-            key="intro"
+            key="intro-overlay"
             style={{
               position: "fixed",
               inset: 0,
               zIndex: 9999,
+              background: "#030712",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              background: "#030712",
-              pointerEvents: "none",
             }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+            exit={{
+              opacity: 0,
+              scale: 1.1,
+              filter: "blur(10px)",
+            }}
+            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
           >
-            {/* Beam canvas */}
             <canvas
               ref={canvasRef}
               style={{
@@ -142,167 +273,107 @@ export function IntroAnimation({ children }: { children: React.ReactNode }) {
               }}
             />
 
-            {/* Logo + text */}
-            <div style={{ position: "relative", zIndex: 1, textAlign: "center" }}>
-              {/* Rotating ring */}
-              <motion.div
-                style={{
-                  position: "absolute",
-                  top: "50%",
-                  left: "50%",
-                  width: 120,
-                  height: 120,
-                  marginTop: -60,
-                  marginLeft: -60,
-                  borderRadius: "50%",
-                  border: "1px solid rgba(56, 189, 248, 0.2)",
-                  borderTopColor: "rgba(56, 189, 248, 0.6)",
-                }}
-                animate={{ rotate: 360 }}
-                transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-              />
-
-              {/* Second ring */}
-              <motion.div
-                style={{
-                  position: "absolute",
-                  top: "50%",
-                  left: "50%",
-                  width: 90,
-                  height: 90,
-                  marginTop: -45,
-                  marginLeft: -45,
-                  borderRadius: "50%",
-                  border: "1px solid rgba(129, 140, 248, 0.15)",
-                  borderBottomColor: "rgba(129, 140, 248, 0.5)",
-                }}
-                animate={{ rotate: -360 }}
-                transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-              />
-
-              {/* Logo icon */}
-              <motion.div
-                initial={{ scale: 0, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-                style={{
-                  width: 56,
-                  height: 56,
-                  background: "linear-gradient(135deg, #38bdf8, #818cf8)",
-                  borderRadius: 16,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  margin: "0 auto",
-                  color: "#000",
-                  boxShadow: "0 0 40px rgba(56, 189, 248, 0.4), 0 0 80px rgba(129, 140, 248, 0.2)",
-                }}
-              >
-                <TrendingUp size={28} />
-              </motion.div>
-
-              {/* Brand name */}
-              <motion.h1
-                initial={{ opacity: 0, y: 15, filter: "blur(8px)" }}
-                animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-                transition={{ delay: 0.4, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-                style={{
-                  fontFamily: "Outfit, sans-serif",
-                  fontSize: "2rem",
-                  fontWeight: 700,
-                  letterSpacing: "-0.03em",
-                  marginTop: "1.5rem",
-                  background: "linear-gradient(135deg, #f1f5f9, #94a3b8)",
-                  WebkitBackgroundClip: "text",
-                  WebkitTextFillColor: "transparent",
-                  backgroundClip: "text",
-                }}
-              >
-                NovaScaling
-              </motion.h1>
-
-              {/* Tagline */}
-              <motion.p
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.8, duration: 0.6 }}
-                style={{
-                  color: "#475569",
-                  fontSize: "0.85rem",
-                  letterSpacing: "0.15em",
-                  textTransform: "uppercase",
-                  marginTop: "0.5rem",
-                }}
-              >
-                Rise above the grind
-              </motion.p>
-
-              {/* Loading bar */}
-              <motion.div
-                style={{
-                  width: 200,
-                  height: 2,
-                  background: "rgba(255,255,255,0.06)",
-                  borderRadius: 1,
-                  margin: "2rem auto 0",
-                  overflow: "hidden",
-                }}
-              >
+            {/* Logo — appears on impact */}
+            <AnimatePresence>
+              {(phase === "impact" || phase === "shockwave" || phase === "dissolve") && (
                 <motion.div
-                  initial={{ width: "0%" }}
-                  animate={{ width: "100%" }}
-                  transition={{ duration: 1.6, ease: [0.22, 1, 0.36, 1] }}
+                  key="logo-reveal"
+                  initial={{ scale: 0.3, opacity: 0, filter: "blur(20px)" }}
+                  animate={{ scale: 1, opacity: 1, filter: "blur(0px)" }}
+                  exit={{ scale: 1.5, opacity: 0, filter: "blur(12px)" }}
+                  transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
                   style={{
-                    height: "100%",
-                    background: "linear-gradient(90deg, #38bdf8, #818cf8)",
-                    borderRadius: 1,
+                    position: "relative",
+                    zIndex: 10,
+                    textAlign: "center",
                   }}
-                />
-              </motion.div>
-            </div>
+                >
+                  {/* Pulsing halo */}
+                  <motion.div
+                    animate={{
+                      boxShadow: [
+                        "0 0 60px rgba(56,189,248,0.4), 0 0 120px rgba(129,140,248,0.2)",
+                        "0 0 80px rgba(56,189,248,0.6), 0 0 160px rgba(129,140,248,0.3)",
+                        "0 0 60px rgba(56,189,248,0.4), 0 0 120px rgba(129,140,248,0.2)",
+                      ],
+                    }}
+                    transition={{ duration: 1.5, repeat: Infinity }}
+                    style={{
+                      width: 72,
+                      height: 72,
+                      background: "linear-gradient(135deg, #38bdf8, #818cf8)",
+                      borderRadius: 20,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      margin: "0 auto",
+                      color: "#000",
+                    }}
+                  >
+                    <TrendingUp size={36} />
+                  </motion.div>
 
-            {/* Reveal wipe — two panels slide apart */}
-            {phase === "reveal" && (
-              <>
-                <motion.div
-                  initial={{ x: 0 }}
-                  animate={{ x: "-100%" }}
-                  transition={{ duration: 0.8, ease: [0.76, 0, 0.24, 1] }}
-                  style={{
-                    position: "absolute",
-                    top: 0,
-                    left: 0,
-                    width: "50%",
-                    height: "100%",
-                    background: "#030712",
-                    zIndex: 2,
-                  }}
-                />
-                <motion.div
-                  initial={{ x: 0 }}
-                  animate={{ x: "100%" }}
-                  transition={{ duration: 0.8, ease: [0.76, 0, 0.24, 1] }}
-                  style={{
-                    position: "absolute",
-                    top: 0,
-                    right: 0,
-                    width: "50%",
-                    height: "100%",
-                    background: "#030712",
-                    zIndex: 2,
-                  }}
-                />
-              </>
-            )}
+                  <motion.h1
+                    initial={{ opacity: 0, y: 20, letterSpacing: "0.3em" }}
+                    animate={{ opacity: 1, y: 0, letterSpacing: "-0.03em" }}
+                    transition={{ delay: 0.2, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+                    style={{
+                      fontFamily: "Outfit, sans-serif",
+                      fontSize: "clamp(2rem, 5vw, 3.5rem)",
+                      fontWeight: 800,
+                      marginTop: "1.5rem",
+                      color: "#f1f5f9",
+                    }}
+                  >
+                    Nova
+                    <span
+                      style={{
+                        background: "linear-gradient(135deg, #38bdf8, #818cf8)",
+                        WebkitBackgroundClip: "text",
+                        WebkitTextFillColor: "transparent",
+                        backgroundClip: "text",
+                      }}
+                    >
+                      Scaling
+                    </span>
+                  </motion.h1>
+
+                  <motion.div
+                    initial={{ width: 0, opacity: 0 }}
+                    animate={{ width: 120, opacity: 1 }}
+                    transition={{ delay: 0.5, duration: 0.6 }}
+                    style={{
+                      height: 1,
+                      background: "linear-gradient(90deg, transparent, #38bdf8, #818cf8, transparent)",
+                      margin: "1rem auto",
+                    }}
+                  />
+
+                  <motion.p
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 0.5 }}
+                    transition={{ delay: 0.7, duration: 0.5 }}
+                    style={{
+                      color: "#64748b",
+                      fontSize: "0.75rem",
+                      letterSpacing: "0.25em",
+                      textTransform: "uppercase",
+                      fontWeight: 500,
+                    }}
+                  >
+                    Margin Expansion as a Service
+                  </motion.p>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* Page content — starts hidden, fades in */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: phase === "done" ? 1 : 0 }}
-        transition={{ duration: 0.4 }}
+        transition={{ duration: 0.5, delay: 0.1 }}
       >
         {children}
       </motion.div>
