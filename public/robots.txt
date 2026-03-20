@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /dashboard
+Disallow: /deck
+Disallow: /plan
+
+Sitemap: https://novascaling.ai/sitemap.xml
