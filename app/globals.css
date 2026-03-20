@@ -24,35 +24,46 @@
   --radius-xl: 32px;
 }
 
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background: var(--bg-deep);
+    color: var(--text-primary);
+    font-family: 'Inter', system-ui, sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Outfit', sans-serif;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+  }
+
+  a {
+    text-decoration: none;
+    color: inherit;
+  }
+
+  ::selection {
+    background: rgba(56, 189, 248, 0.3);
+    color: #fff;
+  }
 }
 
-html {
-  scroll-behavior: smooth;
-}
-
-body {
-  background: var(--bg-deep);
-  color: var(--text-primary);
-  font-family: 'Inter', system-ui, sans-serif;
-  min-height: 100vh;
-  overflow-x: hidden;
-  -webkit-font-smoothing: antialiased;
-}
-
-h1, h2, h3, h4, h5, h6 {
-  font-family: 'Outfit', sans-serif;
-  letter-spacing: -0.03em;
-  line-height: 1.1;
-}
-
-a {
-  text-decoration: none;
-  color: inherit;
-}
+@layer components {
 
 /* ─── Navbar ─── */
 .navbar {
@@ -1330,14 +1341,10 @@ a {
   margin-bottom: 2.5rem;
 }
 
-/* ─── Marquee Animation ─── */
+} /* end @layer components */
+
+/* ─── Keyframe Animations (must be outside @layer) ─── */
 @keyframes marquee {
   0% { transform: translateX(0); }
   100% { transform: translateX(-50%); }
-}
-
-/* ─── Selection Color ─── */
-::selection {
-  background: rgba(56, 189, 248, 0.3);
-  color: #fff;
 }
