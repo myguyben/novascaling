@@ -1,18 +1,17 @@
 export const NAV_LINKS = [
-  { label: "About", href: "/about" },
   { label: "Services", href: "/services" },
   { label: "Pricing", href: "/pricing" },
   { label: "Case Studies", href: "/case-studies" },
-  { label: "Blog", href: "/blog" },
+  { label: "Schedule", href: "/schedule" },
 ];
 
 export const SERVICES = [
   {
     id: "support",
     title: "Customer Support Triage",
-    short: "AI-powered ticket routing and first-response automation.",
+    short: "Smart ticket routing and first-response automation.",
     problem: "Your team spends hours reading, categorizing, and routing support tickets manually.",
-    solution: "Our AI reads every incoming ticket, categorizes by urgency and topic, drafts a contextual first response, and routes to the right person — in under 10 seconds.",
+    solution: "Every incoming ticket is automatically read, categorized by urgency and topic, a contextual first response is drafted, and it's routed to the right person — in under 10 seconds.",
     metric: "85% faster first response time",
     icon: "Bot",
   },
@@ -30,16 +29,16 @@ export const SERVICES = [
     title: "Automated Follow-ups",
     short: "Context-aware email sequences that close deals.",
     problem: "Follow-up emails fall through the cracks. Prospects go cold.",
-    solution: "AI drafts and schedules personalized follow-ups based on conversation history, deal stage, and prospect behavior.",
+    solution: "Automatically drafts and schedules personalized follow-ups based on conversation history, deal stage, and prospect behavior.",
     metric: "3x follow-up completion rate",
     icon: "Zap",
   },
   {
     id: "knowledge",
     title: "Internal Knowledge Base",
-    short: "Your team's questions answered instantly by AI.",
+    short: "Your team's questions answered instantly.",
     problem: "Staff constantly Slack you the same questions. You're the bottleneck.",
-    solution: "A custom AI agent trained on your SOPs, policies, and docs. Your team gets instant answers without interrupting you.",
+    solution: "A smart assistant built around your SOPs, policies, and docs. Your team gets instant answers without interrupting you.",
     metric: "40+ hours saved monthly",
     icon: "Search",
   },
@@ -55,9 +54,9 @@ export const SERVICES = [
   {
     id: "email",
     title: "Vendor & Email Drafting",
-    short: "AI-drafted emails for any business context.",
+    short: "Auto-drafted emails for any business context.",
     problem: "You spend 2+ hours daily writing repetitive vendor negotiations, proposals, and client emails.",
-    solution: "AI drafts context-aware emails using your tone, past conversations, and business rules. You review and send.",
+    solution: "Automatically drafts context-aware emails using your tone, past conversations, and business rules. You review and send.",
     metric: "70% less time on email",
     icon: "Lock",
   },
@@ -70,13 +69,15 @@ export const PRICING_TIERS = [
     period: "/mo",
     target: "For businesses $100k–$250k revenue",
     features: [
+      "Free custom website included",
       "2 core workflow automations",
-      "Internal Knowledge Agent",
+      "Internal Knowledge Assistant",
       "Monthly Growth Report",
       "Email & chat support",
     ],
-    cta: "Get Started",
+    cta: "Book a Free Call",
     featured: false,
+    websiteBadge: true,
   },
   {
     name: "Growth Engine",
@@ -84,16 +85,18 @@ export const PRICING_TIERS = [
     period: "/mo",
     target: "For businesses $250k–$750k revenue",
     features: [
+      "Free custom website included",
       "5 core workflow automations",
-      "Custom AI Support Agent",
+      "Custom Support Automation",
       "CRM & ecosystem integration",
       "Bi-weekly strategy sessions",
       "Dynamic ROI dashboard",
       "40-hour guarantee",
     ],
-    cta: "Get Started",
+    cta: "Book a Free Call",
     featured: true,
     badge: "Most Popular",
+    websiteBadge: true,
   },
   {
     name: "Enterprise Matrix",
@@ -101,41 +104,37 @@ export const PRICING_TIERS = [
     period: "+/mo",
     target: "For businesses scaling to $3M+",
     features: [
+      "Free custom website included",
       "Complete operational takeover",
-      "Custom LLM fine-tuning",
-      "Multi-agent orchestration",
+      "Custom system configuration",
+      "Multi-system orchestration",
       "SLA deployment guarantees",
       "Dedicated Slack channel",
-      "Weekly CAIO sessions",
+      "Weekly strategy sessions",
     ],
-    cta: "Contact Us",
+    cta: "Book a Free Call",
     featured: false,
+    websiteBadge: true,
   },
 ];
 
 export const PROCESS_STEPS = [
   {
-    month: "Month 1",
-    title: "The Diagnostic",
-    desc: "We audit every SOP, tool, and workflow to find where you're bleeding time and money. You get a custom AI Roadmap.",
+    step: "Step 1",
+    title: "Audit",
+    desc: "We dig into your operations for free. Every SOP, every tool, every workflow. You get a report showing exactly where you're bleeding money and what to fix first.",
     icon: "Search",
   },
   {
-    month: "Month 2",
-    title: "Quick Wins",
-    desc: "We deploy high-ROI automations immediately — internal knowledge bots, email triage, lead routing. You see results in days, not months.",
+    step: "Step 2",
+    title: "Build",
+    desc: "We build and deploy custom automations for your business. No templates. No Zapier chains. Real systems, live in weeks.",
     icon: "Zap",
   },
   {
-    month: "Month 3",
-    title: "Core Automations",
-    desc: "Full pipeline integration: your CRM, helpdesk, and comms tools connected through intelligent AI orchestration.",
-    icon: "Layers",
-  },
-  {
-    month: "Month 4+",
-    title: "Continuous Growth",
-    desc: "Ongoing optimization, new automation opportunities, and monthly ROI reports proving every dollar of your investment.",
+    step: "Step 3",
+    title: "Scale",
+    desc: "We maintain everything, optimize monthly, and prove ROI with hard numbers in your Growth Report. You focus on growing.",
     icon: "TrendingUp",
   },
 ];
@@ -143,11 +142,11 @@ export const PROCESS_STEPS = [
 export const FAQ_ITEMS = [
   {
     q: "How is this different from hiring a freelancer or agency?",
-    a: "Freelancers build it and leave. Agencies charge 10x and move slowly. We embed ourselves as your Fractional AI Officer — we build, maintain, optimize, and report on every automation continuously. You get enterprise-grade results at SMB pricing.",
+    a: "Freelancers build it and leave. Agencies charge 10x and move slowly. We embed ourselves as your Fractional Operations Partner — we build, maintain, optimize, and report on every automation continuously. You get enterprise-grade results at SMB pricing.",
   },
   {
-    q: "What if the AI makes a mistake?",
-    a: "Our A.N.T. architecture uses strict deterministic guardrails. AI never executes financial transactions, destructive writes, or sends external communications without schema validation and human-in-the-loop approval. If confidence is low, it escalates to you.",
+    q: "What if the system makes a mistake?",
+    a: "Our A.N.T. architecture uses strict safety guardrails. Systems never execute financial transactions, destructive writes, or send external communications without validation and human-in-the-loop approval. If confidence is low, it escalates to you.",
   },
   {
     q: "How quickly will I see results?",
@@ -162,12 +161,16 @@ export const FAQ_ITEMS = [
     a: "No long-term contracts. Cancel anytime with 30 days notice. Everything we built stays yours. We'll even document it so your next hire can maintain it.",
   },
   {
-    q: "Do you use my data to train AI models?",
-    a: "Absolutely not. Your data is strictly siloed within row-level security policies. We never use client data to train foundational models. Period.",
+    q: "Is my data safe?",
+    a: "Absolutely. Your data is strictly isolated with enterprise-grade security policies. We never share client data with third parties. Your information stays in your silo. Period.",
   },
   {
     q: "What's the 40-hour guarantee?",
     a: "On our Growth Engine tier, if we don't mathematically prove we saved you at least 40 hours of manual labor in our Monthly Growth Report, your next month is free. We put our money where our mouth is.",
+  },
+  {
+    q: "What's included in the free website?",
+    a: "Every new client gets a professionally designed, mobile-optimized website built and hosted at no extra cost. It's not a template — we custom-build it for your brand. It's our way of making sure you look as sharp online as your operations run behind the scenes.",
   },
 ];
 
@@ -177,21 +180,21 @@ export const CASE_STUDIES = [
     company: "Boutique D2C Brand",
     revenue: "$320k/year",
     problem: "Founder spent 3 hours daily manually routing customer support tickets between Shopify, Zendesk, and their returns portal.",
-    solution: "Deployed AI triage agent that reads every ticket, categorizes by type (return, shipping, product question), drafts a contextual first response, and routes to the correct queue.",
+    solution: "Deployed automated triage system that reads every ticket, categorizes by type (return, shipping, product question), drafts a contextual first response, and routes to the correct queue.",
     metrics: {
       hoursSaved: 62,
       responseTime: { before: "4.2 hours", after: "8 minutes" },
       satisfaction: { before: "3.2/5", after: "4.7/5" },
       monthlySavings: 3100,
     },
-    quote: "I got my evenings back. The AI handles 80% of tickets without me ever seeing them.",
+    quote: "I got my evenings back. The system handles 80% of tickets without me ever seeing them.",
   },
   {
     industry: "HVAC Services",
     company: "Regional HVAC Dispatcher",
     revenue: "$580k/year",
     problem: "Lead response time was 6+ hours. Office manager manually copied leads from website forms into their scheduling system.",
-    solution: "Built automated lead capture → qualification → CRM routing pipeline. AI scores leads, sends instant acknowledgment, and books the highest-priority jobs automatically.",
+    solution: "Built automated lead capture → qualification → CRM routing pipeline. System scores leads, sends instant acknowledgment, and books the highest-priority jobs automatically.",
     metrics: {
       hoursSaved: 45,
       responseTime: { before: "6+ hours", after: "90 seconds" },
@@ -205,7 +208,7 @@ export const CASE_STUDIES = [
     company: "Boutique Brokerage",
     revenue: "$890k/year",
     problem: "Agents spent 40% of their week on repetitive email drafting: listing updates, buyer follow-ups, vendor coordination.",
-    solution: "AI email drafting system trained on agent tone and past communications. Automated listing update broadcasts and intelligent follow-up scheduling.",
+    solution: "Automated email drafting system built around agent tone and past communications. Automated listing update broadcasts and intelligent follow-up scheduling.",
     metrics: {
       hoursSaved: 52,
       responseTime: { before: "24 hours", after: "2 hours" },
@@ -219,13 +222,13 @@ export const CASE_STUDIES = [
 export const TRUST_POINTS = [
   {
     icon: "Shield",
-    title: "No Hallucination Risk",
-    desc: "Our AI never executes financial transactions or destructive actions without schema validation and human-in-the-loop approval.",
+    title: "Built-in Safety Checks",
+    desc: "Our systems never execute financial transactions or destructive actions without validation and human-in-the-loop approval.",
   },
   {
     icon: "Lock",
     title: "Data Stays Yours",
-    desc: "Strict row-level security. Your data is siloed. We never use client data to train models.",
+    desc: "Strict enterprise-grade security. Your data is isolated. We never share client data with third parties.",
   },
   {
     icon: "LineChart",

@@ -52,7 +52,7 @@ export default function ServicesPage() {
           <AnimatedSection>
             <SectionHeader
               label="Our Services"
-              title="Enterprise AI automation,"
+              title="Enterprise-grade automation,"
               titleHighlight="built for your budget."
               subtitle="We don't sell chatbots. We build fully managed automation systems that eliminate manual work and prove their ROI every month."
             />
@@ -205,10 +205,10 @@ export default function ServicesPage() {
                 verdict: "Doesn\u2019t work",
               },
               {
-                label: "Cheap AI Agencies",
+                label: "Budget Agencies",
                 color: "#fbbf24",
                 items: [
-                  "ChatGPT wrappers",
+                  "Cookie-cutter templates",
                   "Simple Zapier templates",
                   "No ongoing maintenance",
                   "Breaks when APIs update",
@@ -222,7 +222,7 @@ export default function ServicesPage() {
                   "Custom-built for your workflows",
                   "Fully managed & maintained",
                   "Monthly ROI reports",
-                  "Strategic CAIO partnership",
+                  "Strategic operations partnership",
                 ],
                 verdict: "Built to last",
               },
@@ -289,9 +289,9 @@ export default function ServicesPage() {
       <CTABanner
         title="Ready to automate your"
         titleHighlight="biggest bottleneck?"
-        subtitle="Tell us what's eating your time and we'll show you how to fix it &mdash; for free."
-        buttonText="Get Your Free Audit"
-        buttonHref="/audit"
+        subtitle="Book a free call and we'll show you exactly what's broken and how to fix it."
+        buttonText="Book a Free Call"
+        buttonHref="/schedule"
       />
     </PageLayout>
   );

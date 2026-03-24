@@ -1,6 +1,6 @@
 "use client";
 
-import { CheckCircle, Sparkles, ArrowRight } from "lucide-react";
+import { CheckCircle, Sparkles, ArrowRight, Gift } from "lucide-react";
 
 import PageLayout from "@/components/layout/PageLayout";
 import AnimatedSection from "@/components/animations/AnimatedSection";
@@ -14,15 +14,15 @@ import { PRICING_TIERS, FAQ_ITEMS } from "@/lib/constants";
 
 const COMPARISON_FEATURES = [
   { name: "Workflow Automations", tiers: ["2", "5", "Unlimited"] },
-  { name: "Internal Knowledge Agent", tiers: ["\u2713", "\u2713", "\u2713"] },
+  { name: "Internal Knowledge Assistant", tiers: ["\u2713", "\u2713", "\u2713"] },
   { name: "Monthly Growth Report", tiers: ["\u2713", "\u2713", "\u2713"] },
-  { name: "Custom AI Support Agent", tiers: ["\u2014", "\u2713", "\u2713"] },
+  { name: "Custom Support Automation", tiers: ["\u2014", "\u2713", "\u2713"] },
   { name: "CRM & Ecosystem Integration", tiers: ["\u2014", "\u2713", "\u2713"] },
   { name: "Strategy Sessions", tiers: ["\u2014", "Bi-weekly", "Weekly"] },
   { name: "Dynamic ROI Dashboard", tiers: ["\u2014", "\u2713", "\u2713"] },
   { name: "40-Hour Guarantee", tiers: ["\u2014", "\u2713", "\u2713"] },
-  { name: "Custom LLM Fine-Tuning", tiers: ["\u2014", "\u2014", "\u2713"] },
-  { name: "Multi-Agent Orchestration", tiers: ["\u2014", "\u2014", "\u2713"] },
+  { name: "Custom System Configuration", tiers: ["\u2014", "\u2014", "\u2713"] },
+  { name: "Multi-System Orchestration", tiers: ["\u2014", "\u2014", "\u2713"] },
   { name: "SLA Guarantees", tiers: ["\u2014", "\u2014", "\u2713"] },
   { name: "Dedicated Slack Channel", tiers: ["\u2014", "\u2014", "\u2713"] },
 ];
@@ -67,6 +67,20 @@ export default function PricingPage() {
               titleHighlight="save"
               subtitle="Plug in your numbers and see the math for yourself."
             />
+          </AnimatedSection>
+          <AnimatedSection delay={0.15}>
+            <GlassCard className="p-8" hoverEffect="glow" style={{ maxWidth: 600, margin: "0 auto 2rem" }}>
+              <div style={{ textAlign: "center" }}>
+                <Gift size={28} style={{ color: "#34d399", marginBottom: "1rem", display: "inline-block" }} />
+                <h3 style={{ fontSize: "1.3rem", fontWeight: 700, fontFamily: "Outfit, sans-serif", marginBottom: "0.5rem" }}>
+                  Free Website Design With Every Plan
+                </h3>
+                <p style={{ color: "var(--text-secondary)", lineHeight: 1.7, fontSize: "0.95rem" }}>
+                  Every NovaScaling client gets a professionally built, mobile-optimized website at no extra cost.
+                  Not a template. Custom designed for your brand.
+                </p>
+              </div>
+            </GlassCard>
           </AnimatedSection>
           <AnimatedSection delay={0.2}>
             <ROICalculator />
@@ -247,9 +261,9 @@ export default function PricingPage() {
       <CTABanner
         title="Ready to see the"
         titleHighlight="math for yourself?"
-        subtitle="Get a free AI Bottleneck Audit with exact savings projections for your business."
-        buttonText="Book Your Free Audit"
-        buttonHref="/audit"
+        subtitle="Book a free call and we'll walk you through the exact savings for your business."
+        buttonText="Book a Free Call"
+        buttonHref="/schedule"
       />
     </PageLayout>
   );

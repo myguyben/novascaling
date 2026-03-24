@@ -152,7 +152,7 @@ export default function BlogPostClient({ post }: BlogPostClientProps) {
             >
               <Badge
                 className={
-                  post.category === "AI Strategy"
+                  post.category === "Operations Strategy"
                     ? "!border-[rgba(129,140,248,0.3)] !bg-[rgba(129,140,248,0.08)] !text-[#818cf8]"
                     : post.category === "Automation Playbooks"
                     ? "!border-[rgba(52,211,153,0.3)] !bg-[rgba(52,211,153,0.08)] !text-[#34d399]"
@@ -255,9 +255,9 @@ export default function BlogPostClient({ post }: BlogPostClientProps) {
       <CTABanner
         title="Ready to eliminate"
         titleHighlight="manual work?"
-        subtitle="Book a free AI Bottleneck Audit and see exactly how many hours your business can reclaim with AI automation."
-        buttonText="Get Your Free Audit"
-        buttonHref="/audit"
+        subtitle="Book a free call and see exactly how many hours your business can reclaim."
+        buttonText="Book a Free Call"
+        buttonHref="/schedule"
       />
     </PageLayout>
   );

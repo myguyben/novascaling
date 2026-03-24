@@ -237,9 +237,9 @@ export default function CaseStudiesPage() {
       <CTABanner
         title="Ready to become the next"
         titleHighlight="success story?"
-        subtitle="Get a free AI Bottleneck Audit and see your projected savings in 24 hours."
-        buttonText="Get Your Free Audit"
-        buttonHref="/audit"
+        subtitle="Book a free call and see your projected savings in 20 minutes."
+        buttonText="Book a Free Call"
+        buttonHref="/schedule"
       />
     </PageLayout>
   );

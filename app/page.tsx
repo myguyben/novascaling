@@ -4,21 +4,29 @@ import { useRef } from "react";
 import { motion } from "framer-motion";
 import {
   ArrowRight,
-  Bot,
   Brain,
+  Briefcase,
   ChevronRight,
   Clock,
   DollarSign,
+  Gift,
+  HardHat,
+  Headset,
   Layers,
   LineChart,
   Lock,
+  Paintbrush,
   Rocket,
   Search,
   Shield,
   Sparkles,
+  Store,
   Target,
+  Thermometer,
+  TreePine,
   TrendingUp,
   Users,
+  Wrench,
   Zap,
 } from "lucide-react";
 
@@ -72,7 +80,7 @@ export default function Home() {
           >
             <Badge className="mb-8">
               <Sparkles size={14} />
-              <span>Fractional Chief AI Officer for SMBs</span>
+              <span>Operations Systems for Small Business</span>
             </Badge>
           </motion.div>
 
@@ -83,16 +91,16 @@ export default function Home() {
           >
             <h1 className="hero-title">
               <TextReveal
-                text="Stop drowning in busywork."
+                text="You're bleeding money."
                 delay={0.4}
               />
             </h1>
-            <h2 className="hero-title" style={{ marginTop: "0.25rem" }}>
+            <h2 className="hero-title" style={{ marginTop: "0.25rem", fontSize: "clamp(1.8rem, 4.5vw, 3.2rem)", whiteSpace: "nowrap" }}>
               <TypewriterText
                 phrases={[
-                  "Rise above the grind.",
-                  "Scale faster than ever.",
-                  "Your AI partner is here.",
+                  "Automation that pays for itself.",
+                  "We find it. We fix it.",
+                  "Your operations partner.",
                 ]}
                 className="text-gradient-hero"
               />
@@ -105,8 +113,7 @@ export default function Home() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.7 }}
           >
-            We deploy custom AI automations that eliminate 40+ hours of manual labor
-            per month — so you can focus on growing your business, not running it.
+            Most small businesses lose $3,000–$15,000 a year to missed leads, slow follow-ups, and manual busywork they don&apos;t even realize is a problem. We build the systems that stop the bleeding.
           </motion.p>
 
           <motion.div
@@ -116,8 +123,8 @@ export default function Home() {
             transition={{ delay: 0.9 }}
           >
             <MagneticButton>
-              <Button variant="primary" size="lg" href="/audit">
-                Get Your Free AI Audit <ArrowRight size={18} />
+              <Button variant="primary" size="lg" href="/schedule">
+                Book a Free Call <ArrowRight size={18} />
               </Button>
             </MagneticButton>
             <Button variant="ghost" size="lg" href="/services">
@@ -164,15 +171,27 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ── Free Website Badge ── */}
+      <section style={{ padding: "1.5rem 2rem 0" }}>
+        <div className="section-container" style={{ textAlign: "center" }}>
+          <AnimatedSection>
+            <div style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", padding: "0.75rem 1.5rem", background: "rgba(52,211,153,0.1)", border: "1px solid rgba(52,211,153,0.3)", borderRadius: "100px", color: "#34d399", fontSize: "0.9rem", fontWeight: 600 }}>
+              <Gift size={18} />
+              <span>Free custom website when you onboard — no strings attached</span>
+            </div>
+          </AnimatedSection>
+        </div>
+      </section>
+
       {/* ── Problem Section ── */}
       <section id="problem" className="section">
         <div className="section-container">
           <AnimatedSection>
             <SectionHeader
               label="The Problem"
-              title="You're stuck in"
-              titleHighlight="the mud."
-              subtitle="SMB founders spend 70% of their time on low-leverage tasks that AI can handle in seconds. Meanwhile, the tools that could help are priced for enterprises."
+              title="You're losing money"
+              titleHighlight="every single day."
+              subtitle="Here's where it's going. Every one of these is fixable."
             />
           </AnimatedSection>
 
@@ -180,23 +199,23 @@ export default function Home() {
             {[
               {
                 icon: <Clock size={28} />,
-                title: "Time Trapped",
-                desc: "Copy-pasting between Shopify, Zendesk, Slack, and your CRM. Every. Single. Day.",
+                title: "Missed Leads",
+                desc: "A lead comes in at 8pm. You see it at 7am. They already called your competitor. Typical cost: $2,000–$10,000/year in lost jobs.",
               },
               {
                 icon: <DollarSign size={28} />,
-                title: "Priced Out",
-                desc: "A full-time AI officer costs $150k+. Bespoke consulting starts at $10k. You can't afford either.",
+                title: "Manual Scheduling",
+                desc: "Your office manager spends 2 hours a day playing phone tag. That's $15,000/year in wasted salary on something a system can handle.",
               },
               {
                 icon: <Users size={28} />,
-                title: "Talent Gap",
-                desc: "You need enterprise-grade automation but have a 3-person team and no in-house engineers.",
+                title: "Follow-Up Black Hole",
+                desc: "You send the quote. Never follow up. 60% of your quotes die in silence. Typical cost: $3,000–$15,000/year in lost work.",
               },
               {
                 icon: <Target size={28} />,
-                title: "Broken Solutions",
-                desc: "Generic SaaS tools require you to change your process. Cheap agencies deliver ChatGPT wrappers that break.",
+                title: "Scattered Systems",
+                desc: "Customer info in your phone, quotes in email, schedule on a whiteboard. Nothing talks to anything. You're the bottleneck.",
               },
             ].map((item, i) => (
               <AnimatedSection key={i} delay={i * 0.1}>
@@ -211,60 +230,86 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── Solution Section ── */}
+      {/* ── What We Do ── */}
       <section id="solution" className="section section-dark">
         <div className="section-container">
           <AnimatedSection>
             <SectionHeader
-              label="The Solution"
-              title="The"
-              titleHighlight="A.N.T. System"
-              subtitle="Enterprise-grade AI automation, built for your budget. Not a chatbot. Not a template. A fully managed growth engine embedded in your business."
+              label="What We Do"
+              title="We find what's broken."
+              titleHighlight="Then we fix it."
+              subtitle="Not a chatbot. Not a template. We embed into your business, build custom systems, and prove they work every month."
             />
           </AnimatedSection>
 
-          <div className="ant-grid">
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "1.5rem", marginTop: "1rem" }}>
             {[
               {
-                letter: "A",
-                word: "Acumen",
-                icon: <Brain size={32} />,
-                desc: "We audit your SOPs, map your bottlenecks, and identify exactly where AI creates the highest ROI — before writing a single line of code.",
+                icon: <Search size={28} />,
+                title: "Find the leaks",
+                desc: "We audit your operations top to bottom — quoting, scheduling, follow-ups, invoicing. You get a report showing exactly what's costing you money.",
                 color: "#38bdf8",
               },
               {
-                letter: "N",
-                word: "Nuance",
-                icon: <Layers size={32} />,
-                desc: "Custom AI tuning, robust prompt engineering, and context-aware systems purpose-built for your specific workflows. No generic wrappers.",
+                icon: <Zap size={28} />,
+                title: "Build the fix",
+                desc: "Custom automations built for your business. Not off-the-shelf tools. Real systems that handle the work your team shouldn't be doing manually.",
                 color: "#818cf8",
               },
               {
-                letter: "T",
-                word: "Trust",
-                icon: <Shield size={32} />,
-                desc: "White-glove implementation with strict data privacy controls, continuous monitoring, and proactive maintenance. Your data never leaves your silo.",
+                icon: <LineChart size={28} />,
+                title: "Prove the ROI",
+                desc: "Every month you get a report with exact hours saved and dollars returned. If we don't hit the numbers, you don't pay. Simple.",
                 color: "#34d399",
               },
             ].map((item, i) => (
               <AnimatedSection key={i} delay={i * 0.15}>
                 <TiltCard>
-                  <GlassCard className="ant-card" hoverEffect="glow">
-                    <div className="ant-card-header">
-                      <div className="ant-letter" style={{ color: item.color }}>
-                        {item.letter}
-                      </div>
-                      <div className="ant-icon" style={{ color: item.color }}>
-                        {item.icon}
-                      </div>
+                  <GlassCard className="p-8" hoverEffect="glow">
+                    <div style={{ width: 56, height: 56, borderRadius: 16, background: `${item.color}15`, border: `1px solid ${item.color}30`, display: "flex", alignItems: "center", justifyContent: "center", color: item.color, marginBottom: "1.25rem" }}>
+                      {item.icon}
                     </div>
-                    <h3 className="ant-word">{item.word}</h3>
-                    <p className="ant-desc">{item.desc}</p>
+                    <h3 style={{ fontSize: "1.25rem", fontWeight: 700, fontFamily: "Outfit, sans-serif", marginBottom: "0.5rem" }}>{item.title}</h3>
+                    <p style={{ color: "var(--text-secondary)", lineHeight: 1.7, fontSize: "0.95rem" }}>{item.desc}</p>
                   </GlassCard>
                 </TiltCard>
               </AnimatedSection>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* ── Who We Serve ── */}
+      <section className="section">
+        <div className="section-container">
+          <AnimatedSection>
+            <SectionHeader
+              label="Who We Serve"
+              title="Built for businesses that"
+              titleHighlight="do real work."
+              subtitle="We specialize in small businesses doing $100k–$3M in revenue. Service businesses where every missed call and slow follow-up costs real money."
+            />
+          </AnimatedSection>
+
+          <StaggerGrid className="capabilities-grid">
+            {[
+              { icon: <Wrench size={24} />, label: "Plumbers" },
+              { icon: <Zap size={24} />, label: "Electricians" },
+              { icon: <Thermometer size={24} />, label: "HVAC" },
+              { icon: <TreePine size={24} />, label: "Landscapers" },
+              { icon: <HardHat size={24} />, label: "General Contractors" },
+              { icon: <Paintbrush size={24} />, label: "Painters & Flooring" },
+              { icon: <Briefcase size={24} />, label: "Consultants" },
+              { icon: <Store size={24} />, label: "Local Retail" },
+            ].map((item, i) => (
+              <AnimatedSection key={i} delay={i * 0.08}>
+                <div className="capability-pill">
+                  <div className="capability-icon">{item.icon}</div>
+                  <span>{item.label}</span>
+                </div>
+              </AnimatedSection>
+            ))}
+          </StaggerGrid>
         </div>
       </section>
 
@@ -281,7 +326,7 @@ export default function Home() {
 
           <StaggerGrid className="capabilities-grid">
             {[
-              { icon: <Bot size={24} />, label: "Customer Support Triage" },
+              { icon: <Headset size={24} />, label: "Customer Support Triage" },
               { icon: <LineChart size={24} />, label: "Lead Qualification & Routing" },
               { icon: <Zap size={24} />, label: "Automated Follow-ups" },
               { icon: <Search size={24} />, label: "Internal Knowledge Bases" },
@@ -311,35 +356,29 @@ export default function Home() {
           <AnimatedSection>
             <SectionHeader
               label="How It Works"
-              title="From chaos to clarity in"
-              titleHighlight="90 days"
+              title="Dead simple."
+              titleHighlight="Three steps."
             />
           </AnimatedSection>
 
           <div className="process-timeline">
             {[
               {
-                month: "Month 1",
-                title: "The Diagnostic",
-                desc: "We audit every SOP, tool, and workflow to find where you're bleeding time and money. You get a custom AI Roadmap.",
+                step: "Step 1",
+                title: "Audit",
+                desc: "We dig into your operations for free. You get a report showing exactly where you're bleeding money and what to fix first.",
                 icon: <Search size={28} />,
               },
               {
-                month: "Month 2",
-                title: "Quick Wins",
-                desc: "We deploy high-ROI automations immediately — internal knowledge bots, email triage, lead routing. You see results in days, not months.",
+                step: "Step 2",
+                title: "Build",
+                desc: "We build and deploy custom automations for your business. No templates. Live in weeks, not months.",
                 icon: <Zap size={28} />,
               },
               {
-                month: "Month 3",
-                title: "Core Automations",
-                desc: "Full pipeline integration: your CRM, helpdesk, and comms tools connected through intelligent AI orchestration.",
-                icon: <Layers size={28} />,
-              },
-              {
-                month: "Month 4+",
-                title: "Continuous Growth",
-                desc: "Ongoing optimization, new automation opportunities, and monthly ROI reports proving every dollar of your investment.",
+                step: "Step 3",
+                title: "Scale",
+                desc: "We maintain everything, optimize monthly, and prove ROI with hard numbers in your Growth Report.",
                 icon: <TrendingUp size={28} />,
               },
             ].map((step, i) => (
@@ -347,10 +386,10 @@ export default function Home() {
                 <div className="process-step">
                   <div className="process-step-marker">
                     <div className="process-step-icon">{step.icon}</div>
-                    {i < 3 && <div className="process-step-line" />}
+                    {i < 2 && <div className="process-step-line" />}
                   </div>
                   <div className="process-step-content">
-                    <div className="process-step-month">{step.month}</div>
+                    <div className="process-step-month">{step.step}</div>
                     <h3 className="process-step-title">{step.title}</h3>
                     <p className="process-step-desc">{step.desc}</p>
                   </div>
@@ -391,51 +430,38 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── Social Proof / Trust ── */}
+      {/* ── Why NovaScaling ── */}
       <section className="section section-dark">
         <div className="section-container">
           <AnimatedSection>
             <SectionHeader
-              label="Why NovaScaling"
-              title="Built different from the"
-              titleHighlight={'"AI agencies"'}
+              label="Why Us"
+              title="5 reasons to pick"
+              titleHighlight="NovaScaling"
             />
           </AnimatedSection>
 
-          <StaggerGrid className="trust-grid">
+          <div style={{ maxWidth: 700, margin: "0 auto", display: "flex", flexDirection: "column", gap: "1.5rem" }}>
             {[
-              {
-                icon: <Shield size={28} />,
-                title: "No Hallucination Risk",
-                desc: "Our AI never executes financial transactions or destructive actions without schema validation and human-in-the-loop approval.",
-              },
-              {
-                icon: <Lock size={28} />,
-                title: "Data Stays Yours",
-                desc: "Strict row-level security. Your data is siloed. We never use client data to train models.",
-              },
-              {
-                icon: <LineChart size={28} />,
-                title: "Provable ROI",
-                desc: "Monthly Growth Payload reports show the exact hours saved and dollar value created. No vanity metrics.",
-              },
-              {
-                icon: <Rocket size={28} />,
-                title: "Done For You",
-                desc: "We don't hand you a tool and wish you luck. We build it, maintain it, optimize it, and report on it.",
-              },
+              { num: "01", title: "We don't sell software.", desc: "We build systems. Custom. For you. Not a SaaS login you'll never use." },
+              { num: "02", title: "We prove ROI or you don't pay.", desc: "Every month you get a report showing exact hours saved and dollars returned. If we don't hit 40+ hours, next month is free." },
+              { num: "03", title: "We do the work.", desc: "No training manuals. No onboarding. No 'here's your login, good luck.' We build it, run it, maintain it." },
+              { num: "04", title: "We know trades.", desc: "Plumbers, electricians, HVAC, landscapers, GCs. We understand dispatch, quoting, follow-ups, and seasonal demand." },
+              { num: "05", title: "Free website when you onboard.", desc: "Every client gets a professionally built, mobile-optimized website at no extra cost. No templates." },
             ].map((item, i) => (
               <AnimatedSection key={i} delay={i * 0.1}>
-                <TiltCard>
-                  <GlassCard className="trust-card" hoverEffect="glow">
-                    <div className="trust-icon">{item.icon}</div>
-                    <h3 className="trust-title">{item.title}</h3>
-                    <p className="trust-desc">{item.desc}</p>
-                  </GlassCard>
-                </TiltCard>
+                <GlassCard className="p-6" hoverEffect="border" style={{ display: "flex", gap: "1.5rem", alignItems: "flex-start" }}>
+                  <div style={{ fontSize: "2rem", fontWeight: 800, fontFamily: "Outfit, sans-serif", color: "#38bdf8", flexShrink: 0, lineHeight: 1 }}>
+                    {item.num}
+                  </div>
+                  <div>
+                    <h3 style={{ fontSize: "1.1rem", fontWeight: 600, fontFamily: "Outfit, sans-serif", marginBottom: "0.25rem" }}>{item.title}</h3>
+                    <p style={{ color: "var(--text-secondary)", lineHeight: 1.6, fontSize: "0.95rem" }}>{item.desc}</p>
+                  </div>
+                </GlassCard>
               </AnimatedSection>
             ))}
-          </StaggerGrid>
+          </div>
         </div>
       </section>
 
@@ -453,7 +479,7 @@ export default function Home() {
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "1.5rem" }}>
             {[
               {
-                quote: "I got my evenings back. The AI handles 80% of tickets without me ever seeing them.",
+                quote: "I got my evenings back. The system handles 80% of tickets without me ever seeing them.",
                 name: "D2C Brand Founder",
                 industry: "E-Commerce",
                 metric: "62 hours saved/month",
@@ -506,11 +532,11 @@ export default function Home() {
 
       {/* ── CTA ── */}
       <CTABanner
-        title="Ready to escape"
-        titleHighlight="the grind?"
-        subtitle="Get a free AI Bottleneck Audit. We'll show you exactly how many hours and dollars you're losing to manual work — and how to fix it."
-        buttonText="Book Your Free Audit"
-        buttonHref="/audit"
+        title="Ready to stop"
+        titleHighlight="leaving money on the table?"
+        subtitle="Book a free 20-minute call. We'll tell you exactly what's broken and what it's costing you. No pitch, no pressure."
+        buttonText="Book a Free Call"
+        buttonHref="/schedule"
       />
     </PageLayout>
     </IntroAnimation>

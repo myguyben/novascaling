@@ -17,7 +17,7 @@ export default function Footer() {
             </span>
           </a>
           <p className="text-[var(--text-tertiary)] text-sm mt-3">
-            Margin Expansion as a Service.
+            We fix the operations that cost you money.
           </p>
         </div>
 
@@ -52,16 +52,10 @@ export default function Footer() {
               Company
             </h4>
             <a
-              href="/about"
+              href="/schedule"
               className="text-sm text-[var(--text-secondary)] transition-colors duration-200 hover:text-[var(--text-primary)]"
             >
-              About
-            </a>
-            <a
-              href="/audit"
-              className="text-sm text-[var(--text-secondary)] transition-colors duration-200 hover:text-[var(--text-primary)]"
-            >
-              Contact
+              Book a Call
             </a>
             <a
               href="/dashboard"

@@ -3,6 +3,7 @@
 import { cn } from "@/lib/utils";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { Button } from "@/components/ui/Button";
+import { Gift } from "lucide-react";
 
 interface PricingCardProps {
   name: string;
@@ -13,6 +14,7 @@ interface PricingCardProps {
   cta: string;
   featured: boolean;
   badge?: string;
+  websiteBadge?: boolean;
 }
 
 export function PricingCard({
@@ -24,6 +26,7 @@ export function PricingCard({
   cta,
   featured,
   badge,
+  websiteBadge,
 }: PricingCardProps) {
   return (
     <div className={cn("relative", featured && "scale-[1.03]")}>
@@ -61,7 +64,14 @@ export function PricingCard({
         </div>
 
         {/* Target */}
-        <p className="text-[var(--text-secondary)] text-sm mb-8">{target}</p>
+        <p className="text-[var(--text-secondary)] text-sm mb-4">{target}</p>
+
+        {/* Free Website Badge */}
+        {websiteBadge && (
+          <div className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[rgba(52,211,153,0.1)] border border-[rgba(52,211,153,0.25)] rounded-full text-[#34d399] text-xs font-semibold mb-4">
+            <Gift size={14} /> Free Website Included
+          </div>
+        )}
 
         {/* Features */}
         <ul className="flex flex-col gap-3 mb-8 list-none">
@@ -82,7 +92,7 @@ export function PricingCard({
 
         {/* CTA */}
         <Button
-          href="/audit"
+          href="/schedule"
           variant={featured ? "primary" : "outline"}
           size="lg"
           className="w-full justify-center"

@@ -94,7 +94,7 @@ export default function AuditPage() {
               </h1>
               <p className="audit-success-desc">
                 We&apos;ll review your submission and reach out within 24 hours with
-                your custom AI Bottleneck Audit. Check your inbox.
+                your custom Bottleneck Audit. Check your inbox.
               </p>
               <a href="/" className="btn btn-primary btn-lg">
                 Back to Home <ArrowRight size={18} />
@@ -110,12 +110,19 @@ export default function AuditPage() {
               >
                 <h1 className="audit-title">
                   Get Your Free{" "}
-                  <span className="text-gradient-hero">AI Audit</span>
+                  <span className="text-gradient-hero">Efficiency Audit</span>
                 </h1>
                 <p className="audit-desc">
                   Tell us about your business and we&apos;ll show you exactly how many
-                  hours and dollars you&apos;re losing to manual work — and how AI
-                  can fix it.
+                  hours and dollars you&apos;re losing to manual work — and how
+                  automation can fix it.
+                </p>
+
+                <p style={{ marginBottom: "1.5rem", color: "var(--text-secondary)", fontSize: "0.95rem" }}>
+                  Prefer to talk?{" "}
+                  <a href="/schedule" style={{ color: "var(--accent)", fontWeight: 600, textDecoration: "underline" }}>
+                    Book a free call instead
+                  </a>
                 </p>
 
                 <div className="audit-promises">
