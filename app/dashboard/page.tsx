@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
 import { createClient } from '@supabase/supabase-js';
 import { TrendingUp, Activity, Zap, CheckCircle2 } from 'lucide-react';
 
@@ -57,7 +58,7 @@ export default function Dashboard() {
           <div className="nav-links">
             <a href="#services" className="nav-link">Services</a>
             <a href="#roi" className="nav-link">ROI Calculator</a>
-            <a href="/deck" className="nav-link" style={{ color: 'var(--accent)' }}>Pitch Deck</a>
+            <Link href="/deck" className="nav-link" style={{ color: 'var(--accent)' }}>Pitch Deck</Link>
           </div>
           <div>
             <h1 style={{ fontSize: '3rem', margin: 0 }}>

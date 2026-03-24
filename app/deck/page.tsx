@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronRight, ChevronLeft, ArrowRight, Zap, Target, Shield, BarChart3 } from 'lucide-react';
 
@@ -214,9 +215,9 @@ export default function PresentationDeck() {
                     ))}
                 </div>
 
-                <a href="/" className="text-xl font-medium text-gray-400 hover:text-white transition-colors tracking-widest bg-white/5 px-8 py-4 rounded-full border border-white/10 hover:bg-white/15 hover:border-white/30 backdrop-blur-md">
+                <Link href="/" className="text-xl font-medium text-gray-400 hover:text-white transition-colors tracking-widest bg-white/5 px-8 py-4 rounded-full border border-white/10 hover:bg-white/15 hover:border-white/30 backdrop-blur-md">
                     EXIT DECK
-                </a>
+                </Link>
             </header>
 
             {/* Main Slide Content area */}

@@ -6,22 +6,22 @@ import { ScrollProgress } from "@/components/animations/ScrollProgress";
 export const metadata: Metadata = {
   metadataBase: new URL("https://novascaling.ai"),
   title: {
-    default: "NovaScaling — AI Automation for SMBs",
+    default: "NovaScaling — Business Automation for SMBs",
     template: "%s | NovaScaling",
   },
   description:
-    "Fractional Chief AI Officer & Margin Expansion as a Service. We deploy custom AI automations that eliminate 40+ hours of manual labor per month for SMBs.",
+    "Fractional Operations Partner & Margin Expansion as a Service. We build custom automated workflows that eliminate 40+ hours of manual labor per month for SMBs.",
   keywords: [
-    "AI automation",
-    "SMB automation",
-    "fractional AI officer",
     "business automation",
-    "AI consulting",
-    "operational efficiency",
+    "SMB automation",
+    "fractional operations partner",
     "workflow automation",
-    "fractional CAIO",
-    "AI for small business",
+    "operations consulting",
+    "operational efficiency",
+    "small business automation",
     "business process automation",
+    "automated workflows",
+    "operations outsourcing",
   ],
   authors: [{ name: "NovaScaling" }],
   openGraph: {
@@ -29,15 +29,15 @@ export const metadata: Metadata = {
     locale: "en_US",
     url: "https://novascaling.ai",
     siteName: "NovaScaling",
-    title: "NovaScaling — AI Automation for SMBs",
+    title: "NovaScaling — Business Automation for SMBs",
     description:
-      "Enterprise-grade AI automation at SMB pricing. Eliminate 40+ hours of manual work per month with your Fractional Chief AI Officer.",
+      "Enterprise-grade workflow automation at SMB pricing. Eliminate 40+ hours of manual work per month with your Fractional Operations Partner.",
   },
   twitter: {
     card: "summary_large_image",
-    title: "NovaScaling — AI Automation for SMBs",
+    title: "NovaScaling — Business Automation for SMBs",
     description:
-      "Enterprise-grade AI automation at SMB pricing. Eliminate 40+ hours of manual work per month.",
+      "Enterprise-grade workflow automation at SMB pricing. Eliminate 40+ hours of manual work per month.",
   },
   robots: { index: true, follow: true },
   alternates: { canonical: "https://novascaling.ai" },
@@ -49,7 +49,7 @@ const jsonLd = {
   name: "NovaScaling",
   url: "https://novascaling.ai",
   description:
-    "Fractional Chief AI Officer & Margin Expansion as a Service for SMBs",
+    "Fractional Operations Partner & Margin Expansion as a Service for SMBs",
   sameAs: [],
   offers: {
     "@type": "AggregateOffer",

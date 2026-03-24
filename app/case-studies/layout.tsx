@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Case Studies — Real AI Automation Results",
+  title: "Case Studies — Real Automation Results",
   description:
-    "See how SMBs saved 40-60 hours per month with NovaScaling's AI automation. Real results from e-commerce, HVAC, and real estate businesses.",
+    "See how SMBs saved 40-60 hours per month with NovaScaling's workflow automation. Real results from e-commerce, HVAC, and real estate businesses.",
   openGraph: {
-    title: "Case Studies — Real AI Automation Results | NovaScaling",
+    title: "Case Studies — Real Automation Results | NovaScaling",
     description:
-      "See how SMBs saved 40-60 hours per month with NovaScaling's AI automation. Real results from e-commerce, HVAC, and real estate businesses.",
+      "See how SMBs saved 40-60 hours per month with NovaScaling's workflow automation. Real results from e-commerce, HVAC, and real estate businesses.",
   },
 };
 

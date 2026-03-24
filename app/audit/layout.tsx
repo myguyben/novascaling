@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Free AI Bottleneck Audit",
+  title: "Free Bottleneck Audit",
   description:
-    "Get a free AI audit showing exactly how many hours and dollars your business loses to manual work. Custom report within 24 hours.",
+    "Get a free efficiency audit showing exactly how many hours and dollars your business loses to manual work. Custom report within 24 hours.",
   openGraph: {
-    title: "Free AI Bottleneck Audit | NovaScaling",
+    title: "Free Bottleneck Audit | NovaScaling",
     description:
-      "Get a free AI audit showing exactly how many hours and dollars your business loses to manual work. Custom report within 24 hours.",
+      "Get a free efficiency audit showing exactly how many hours and dollars your business loses to manual work. Custom report within 24 hours.",
   },
 };
 

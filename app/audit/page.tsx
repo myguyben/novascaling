@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { motion } from "framer-motion";
 import {
   ArrowRight,
@@ -96,9 +97,9 @@ export default function AuditPage() {
                 We&apos;ll review your submission and reach out within 24 hours with
                 your custom Bottleneck Audit. Check your inbox.
               </p>
-              <a href="/" className="btn btn-primary btn-lg">
+              <Link href="/" className="btn btn-primary btn-lg">
                 Back to Home <ArrowRight size={18} />
-              </a>
+              </Link>
             </motion.div>
           ) : (
             <div className="audit-layout">
@@ -120,9 +121,9 @@ export default function AuditPage() {
 
                 <p style={{ marginBottom: "1.5rem", color: "var(--text-secondary)", fontSize: "0.95rem" }}>
                   Prefer to talk?{" "}
-                  <a href="/schedule" style={{ color: "var(--accent)", fontWeight: 600, textDecoration: "underline" }}>
+                  <Link href="/schedule" style={{ color: "var(--accent)", fontWeight: 600, textDecoration: "underline" }}>
                     Book a free call instead
-                  </a>
+                  </Link>
                 </p>
 
                 <div className="audit-promises">

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { motion } from "framer-motion";
 import {
   ArrowRight,
@@ -161,9 +162,9 @@ export default function SchedulePage() {
                 })}{" "}
                 at {selectedTime}. Check your email for details.
               </p>
-              <a href="/" className="btn btn-primary btn-lg">
+              <Link href="/" className="btn btn-primary btn-lg">
                 Back to Home <ArrowRight size={18} />
-              </a>
+              </Link>
             </motion.div>
           ) : (
             <div className="audit-layout">

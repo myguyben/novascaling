@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { Calendar, Clock, ArrowRight } from "lucide-react";
 import PageLayout from "@/components/layout/PageLayout";
 import AnimatedSection from "@/components/animations/AnimatedSection";
@@ -21,9 +22,9 @@ export default function BlogPage() {
           <AnimatedSection>
             <SectionHeader
               label="Blog"
-              title="AI Automation"
+              title="Business Automation"
               titleHighlight="Insights"
-              subtitle="Expert strategies, real-world playbooks, and growth frameworks for SMBs embracing AI automation."
+              subtitle="Expert strategies, real-world playbooks, and growth frameworks for SMBs embracing workflow automation."
             />
           </AnimatedSection>
 
@@ -81,7 +82,7 @@ export default function BlogPage() {
           >
             {filteredPosts.map((post, i) => (
               <AnimatedSection key={post.slug} delay={i * 0.1}>
-                <a href={`/blog/${post.slug}`} style={{ display: "block" }}>
+                <Link href={`/blog/${post.slug}`} style={{ display: "block" }}>
                   <GlassCard
                     className="p-8 h-full"
                     hoverEffect="glow"
@@ -90,7 +91,7 @@ export default function BlogPage() {
                     <div style={{ marginBottom: "1.25rem" }}>
                       <Badge
                         className={
-                          post.category === "AI Strategy"
+                          post.category === "Operations Strategy"
                             ? "!border-[rgba(129,140,248,0.3)] !bg-[rgba(129,140,248,0.08)] !text-[#818cf8]"
                             : post.category === "Automation Playbooks"
                             ? "!border-[rgba(52,211,153,0.3)] !bg-[rgba(52,211,153,0.08)] !text-[#34d399]"
@@ -186,7 +187,7 @@ export default function BlogPage() {
                       </span>
                     </div>
                   </GlassCard>
-                </a>
+                </Link>
               </AnimatedSection>
             ))}
           </div>

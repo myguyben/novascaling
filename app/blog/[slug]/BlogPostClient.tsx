@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { ArrowLeft, Calendar, Clock, Tag } from "lucide-react";
 import PageLayout from "@/components/layout/PageLayout";
 import AnimatedSection from "@/components/animations/AnimatedSection";
@@ -93,7 +94,7 @@ export default function BlogPostClient({ post }: BlogPostClientProps) {
             <p style={{ color: "var(--text-secondary)", marginBottom: "2rem" }}>
               The blog post you are looking for does not exist.
             </p>
-            <a
+            <Link
               href="/blog"
               style={{
                 color: "var(--accent)",
@@ -104,7 +105,7 @@ export default function BlogPostClient({ post }: BlogPostClientProps) {
               }}
             >
               <ArrowLeft size={16} /> Back to Blog
-            </a>
+            </Link>
           </div>
         </section>
       </PageLayout>
@@ -118,7 +119,7 @@ export default function BlogPostClient({ post }: BlogPostClientProps) {
         <div style={{ maxWidth: 720, margin: "0 auto", padding: "0 2rem" }}>
           <AnimatedSection>
             {/* Back Link */}
-            <a
+            <Link
               href="/blog"
               style={{
                 display: "inline-flex",
@@ -138,7 +139,7 @@ export default function BlogPostClient({ post }: BlogPostClientProps) {
               }
             >
               <ArrowLeft size={16} /> Back to Blog
-            </a>
+            </Link>
 
             {/* Meta Row */}
             <div
