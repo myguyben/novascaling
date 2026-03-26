@@ -21,6 +21,10 @@ import {
   Mail,
   MessageSquareReply,
   Send,
+  Bell,
+  ChevronDown,
+  ChevronUp,
+  UserPlus,
 } from "lucide-react";
 
 /* ── Types ── */
@@ -558,6 +562,179 @@ function LeadRow({
 }
 
 /* ══════════════════════════════════════════════
+   NOTIFICATION RECIPIENTS PANEL
+   ══════════════════════════════════════════════ */
+interface Recipient {
+  id: string;
+  name: string;
+  email: string | null;
+  phone: string | null;
+  notify_email: boolean;
+  notify_sms: boolean;
+}
+
+function NotificationsPanel() {
+  const [open, setOpen] = useState(false);
+  const [recipients, setRecipients] = useState<Recipient[]>([]);
+  const [adding, setAdding] = useState(false);
+  const [newR, setNewR] = useState({ name: "", email: "", phone: "" });
+
+  useEffect(() => {
+    supabase.from("notification_recipients").select("*").order("created_at").then(({ data }) => {
+      if (data) setRecipients(data);
+    });
+  }, []);
+
+  async function toggleField(id: string, field: "notify_email" | "notify_sms", current: boolean) {
+    await supabase.from("notification_recipients").update({ [field]: !current }).eq("id", id);
+    setRecipients((prev) => prev.map((r) => r.id === id ? { ...r, [field]: !current } : r));
+  }
+
+  async function updateField(id: string, field: "email" | "phone", value: string) {
+    await supabase.from("notification_recipients").update({ [field]: value || null }).eq("id", id);
+    setRecipients((prev) => prev.map((r) => r.id === id ? { ...r, [field]: value || null } : r));
+  }
+
+  async function addRecipient() {
+    if (!newR.name) return;
+    const { data } = await supabase.from("notification_recipients").insert({
+      name: newR.name,
+      email: newR.email || null,
+      phone: newR.phone || null,
+      notify_email: !!newR.email,
+      notify_sms: !!newR.phone,
+    }).select().single();
+    if (data) setRecipients((prev) => [...prev, data]);
+    setNewR({ name: "", email: "", phone: "" });
+    setAdding(false);
+  }
+
+  async function removeRecipient(id: string) {
+    await supabase.from("notification_recipients").delete().eq("id", id);
+    setRecipients((prev) => prev.filter((r) => r.id !== id));
+  }
+
+  const inputStyle: React.CSSProperties = { background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)", color: "var(--text-primary)", fontFamily: "Inter, sans-serif" };
+
+  return (
+    <div className="px-4 sm:px-6 md:px-8 pb-8">
+      <button
+        onClick={() => setOpen(!open)}
+        className="w-full flex items-center justify-between px-5 py-3 rounded-2xl cursor-pointer border-none transition-all"
+        style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.04)" }}
+      >
+        <div className="flex items-center gap-2">
+          <Bell size={14} style={{ color: "var(--accent)" }} />
+          <span className="text-sm font-semibold" style={{ color: "var(--text-primary)", fontFamily: "Outfit, sans-serif" }}>
+            Notification Recipients
+          </span>
+          <span className="text-xs" style={{ color: "var(--text-tertiary)" }}>
+            ({recipients.filter((r) => r.notify_email || r.notify_sms).length} active)
+          </span>
+        </div>
+        {open ? <ChevronUp size={16} style={{ color: "var(--text-tertiary)" }} /> : <ChevronDown size={16} style={{ color: "var(--text-tertiary)" }} />}
+      </button>
+
+      {open && (
+        <div className="mt-2 rounded-2xl p-4 sm:p-5" style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.04)" }}>
+          <p className="text-xs mb-4" style={{ color: "var(--text-tertiary)" }}>
+            These people get notified when a lead is marked Hot, Won, or Replies.
+          </p>
+
+          <div className="flex flex-col gap-3">
+            {recipients.map((r) => (
+              <div key={r.id} className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-4 p-3 rounded-xl" style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.03)" }}>
+                {/* Name */}
+                <span className="text-sm font-bold shrink-0 w-20" style={{ color: "var(--text-primary)", fontFamily: "Outfit, sans-serif" }}>{r.name}</span>
+
+                {/* Email + checkbox */}
+                <div className="flex items-center gap-2 flex-1 min-w-0">
+                  <button
+                    onClick={() => toggleField(r.id, "notify_email", r.notify_email)}
+                    className="shrink-0 w-5 h-5 rounded flex items-center justify-center cursor-pointer border-none"
+                    style={{
+                      background: r.notify_email ? "linear-gradient(135deg, #38bdf8, #818cf8)" : "rgba(255,255,255,0.06)",
+                      border: r.notify_email ? "none" : "2px solid rgba(255,255,255,0.15)",
+                    }}
+                    title={r.notify_email ? "Disable email notifications" : "Enable email notifications"}
+                  >
+                    {r.notify_email && <span style={{ color: "#000", fontSize: "11px", fontWeight: 800 }}>&#10003;</span>}
+                  </button>
+                  <Mail size={12} style={{ color: "var(--text-tertiary)", shrink: 0 }} />
+                  <input
+                    type="email"
+                    defaultValue={r.email || ""}
+                    onBlur={(e) => updateField(r.id, "email", e.target.value)}
+                    placeholder="email@example.com"
+                    className="flex-1 min-w-0 px-2 py-1 rounded-lg text-xs outline-none"
+                    style={inputStyle}
+                  />
+                </div>
+
+                {/* Phone + checkbox */}
+                <div className="flex items-center gap-2 flex-1 min-w-0">
+                  <button
+                    onClick={() => toggleField(r.id, "notify_sms", r.notify_sms)}
+                    className="shrink-0 w-5 h-5 rounded flex items-center justify-center cursor-pointer border-none"
+                    style={{
+                      background: r.notify_sms ? "linear-gradient(135deg, #38bdf8, #818cf8)" : "rgba(255,255,255,0.06)",
+                      border: r.notify_sms ? "none" : "2px solid rgba(255,255,255,0.15)",
+                    }}
+                    title={r.notify_sms ? "Disable SMS notifications" : "Enable SMS notifications"}
+                  >
+                    {r.notify_sms && <span style={{ color: "#000", fontSize: "11px", fontWeight: 800 }}>&#10003;</span>}
+                  </button>
+                  <Phone size={12} style={{ color: "var(--text-tertiary)", shrink: 0 }} />
+                  <input
+                    type="tel"
+                    defaultValue={r.phone || ""}
+                    onBlur={(e) => updateField(r.id, "phone", e.target.value)}
+                    placeholder="+16041234567"
+                    className="flex-1 min-w-0 px-2 py-1 rounded-lg text-xs outline-none"
+                    style={inputStyle}
+                  />
+                </div>
+
+                {/* Remove */}
+                <button
+                  onClick={() => removeRecipient(r.id)}
+                  className="shrink-0 p-1.5 rounded-lg cursor-pointer bg-transparent border-none self-start sm:self-center"
+                  style={{ color: "var(--text-tertiary)" }}
+                  title="Remove recipient"
+                >
+                  <Trash2 size={13} />
+                </button>
+              </div>
+            ))}
+          </div>
+
+          {/* Add new */}
+          {adding ? (
+            <div className="mt-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3 p-3 rounded-xl" style={{ background: "rgba(56,189,248,0.03)", border: "1px solid rgba(56,189,248,0.1)" }}>
+              <input placeholder="Name *" value={newR.name} onChange={(e) => setNewR((n) => ({ ...n, name: e.target.value }))} className="px-3 py-2 rounded-lg text-xs outline-none sm:w-28" style={inputStyle} />
+              <input type="email" placeholder="Email" value={newR.email} onChange={(e) => setNewR((n) => ({ ...n, email: e.target.value }))} className="px-3 py-2 rounded-lg text-xs outline-none flex-1" style={inputStyle} />
+              <input type="tel" placeholder="+16041234567" value={newR.phone} onChange={(e) => setNewR((n) => ({ ...n, phone: e.target.value }))} className="px-3 py-2 rounded-lg text-xs outline-none flex-1" style={inputStyle} />
+              <div className="flex gap-2">
+                <button onClick={addRecipient} className="px-4 py-2 rounded-lg text-xs font-bold cursor-pointer border-none" style={{ background: "linear-gradient(135deg, #38bdf8, #818cf8)", color: "#000" }}>Add</button>
+                <button onClick={() => { setAdding(false); setNewR({ name: "", email: "", phone: "" }); }} className="px-3 py-2 rounded-lg text-xs cursor-pointer border-none" style={{ background: "rgba(255,255,255,0.05)", color: "var(--text-secondary)" }}>Cancel</button>
+              </div>
+            </div>
+          ) : (
+            <button
+              onClick={() => setAdding(true)}
+              className="mt-3 flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold cursor-pointer border-none"
+              style={{ background: "rgba(255,255,255,0.04)", color: "var(--text-secondary)" }}
+            >
+              <UserPlus size={13} /> Add Recipient
+            </button>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ══════════════════════════════════════════════
    MAIN PAGE
    ══════════════════════════════════════════════ */
 export default function LeadsPage() {
@@ -746,6 +923,9 @@ export default function LeadsPage() {
           </div>
         )}
       </div>
+
+      {/* Notification Recipients */}
+      <NotificationsPanel />
 
       <style>{`
         @keyframes slideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
