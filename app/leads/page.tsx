@@ -660,7 +660,7 @@ function NotificationsPanel() {
                   >
                     {r.notify_email && <span style={{ color: "#000", fontSize: "11px", fontWeight: 800 }}>&#10003;</span>}
                   </button>
-                  <Mail size={12} style={{ color: "var(--text-tertiary)", shrink: 0 }} />
+                  <Mail size={12} style={{ color: "var(--text-tertiary)", flexShrink: 0 }} />
                   <input
                     type="email"
                     defaultValue={r.email || ""}
@@ -684,7 +684,7 @@ function NotificationsPanel() {
                   >
                     {r.notify_sms && <span style={{ color: "#000", fontSize: "11px", fontWeight: 800 }}>&#10003;</span>}
                   </button>
-                  <Phone size={12} style={{ color: "var(--text-tertiary)", shrink: 0 }} />
+                  <Phone size={12} style={{ color: "var(--text-tertiary)", flexShrink: 0 }} />
                   <input
                     type="tel"
                     defaultValue={r.phone || ""}
