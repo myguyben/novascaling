@@ -119,6 +119,35 @@ export default function SchedulingPage() {
 
   useEffect(() => {
     fetchRequests();
+
+    const channel = supabase
+      .channel("schedule_requests_realtime")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "schedule_requests" },
+        (payload) => {
+          if (payload.eventType === "INSERT") {
+            setRequests((prev) => [payload.new as ScheduleRequest, ...prev]);
+          } else if (payload.eventType === "UPDATE") {
+            setRequests((prev) =>
+              prev.map((r) =>
+                r.id === (payload.new as ScheduleRequest).id
+                  ? (payload.new as ScheduleRequest)
+                  : r
+              )
+            );
+          } else if (payload.eventType === "DELETE") {
+            setRequests((prev) =>
+              prev.filter((r) => r.id !== (payload.old as { id: string }).id)
+            );
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   const filtered =
