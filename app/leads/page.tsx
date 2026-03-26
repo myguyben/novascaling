@@ -45,6 +45,10 @@ interface SalesLead {
   follow_up_count: number;
   last_follow_up_at: string | null;
   responded: boolean;
+  reply_text: string | null;
+  reply_from: string | null;
+  reply_subject: string | null;
+  replied_at: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -291,6 +295,50 @@ function Toast({ message, onClose }: { message: string; onClose: () => void }) {
 }
 
 /* ══════════════════════════════════════════════
+   REPLY MODAL
+   ══════════════════════════════════════════════ */
+function ReplyModal({ lead, onClose }: { lead: SalesLead; onClose: () => void }) {
+  const repliedDate = lead.replied_at ? new Date(lead.replied_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric", hour: "numeric", minute: "2-digit" }) : "";
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: "rgba(0,0,0,0.7)", backdropFilter: "blur(8px)" }} onClick={onClose}>
+      <div className="w-full max-w-lg max-h-[80vh] overflow-y-auto rounded-3xl p-6" style={{ background: "#0a0f1e", border: "1px solid rgba(255,255,255,0.06)" }} onClick={(e) => e.stopPropagation()}>
+        <div className="flex items-center justify-between mb-5">
+          <div>
+            <h2 className="text-lg font-bold" style={{ fontFamily: "Outfit, sans-serif", color: "var(--text-primary)" }}>
+              Reply from {lead.company_name}
+            </h2>
+            {repliedDate && <p className="text-xs mt-0.5" style={{ color: "var(--text-tertiary)" }}>{repliedDate}</p>}
+          </div>
+          <button onClick={onClose} className="cursor-pointer bg-transparent border-none" style={{ color: "var(--text-secondary)" }}><X size={20} /></button>
+        </div>
+
+        {lead.reply_from && (
+          <div className="mb-3">
+            <span className="text-[10px] font-semibold uppercase tracking-wider" style={{ color: "var(--text-tertiary)" }}>From</span>
+            <p className="text-sm mt-0.5" style={{ color: "var(--accent)" }}>{lead.reply_from}</p>
+          </div>
+        )}
+
+        {lead.reply_subject && (
+          <div className="mb-3">
+            <span className="text-[10px] font-semibold uppercase tracking-wider" style={{ color: "var(--text-tertiary)" }}>Subject</span>
+            <p className="text-sm mt-0.5" style={{ color: "var(--text-primary)" }}>{lead.reply_subject}</p>
+          </div>
+        )}
+
+        <div className="mt-4 p-4 rounded-2xl" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.04)" }}>
+          <span className="text-[10px] font-semibold uppercase tracking-wider" style={{ color: "var(--text-tertiary)" }}>Message</span>
+          <p className="text-sm mt-2 whitespace-pre-wrap leading-relaxed" style={{ color: "var(--text-secondary)" }}>
+            {lead.reply_text || "No message content captured."}
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ══════════════════════════════════════════════
    LEAD ROW — Full width, checkbox-driven
    ══════════════════════════════════════════════ */
 function LeadRow({
@@ -304,6 +352,7 @@ function LeadRow({
 }) {
   const [notes, setNotes] = useState(lead.notes || "");
   const [email, setEmail] = useState(lead.client_email || "");
+  const [showReply, setShowReply] = useState(false);
   const notesTimeout = useRef<ReturnType<typeof setTimeout>>(undefined);
   const emailTimeout = useRef<ReturnType<typeof setTimeout>>(undefined);
   const areaColor = AREA_COLORS[lead.area] || AREA_COLORS.other;
@@ -343,6 +392,8 @@ function LeadRow({
           : "1px solid rgba(255,255,255,0.04)",
       }}
     >
+      {showReply && <ReplyModal lead={lead} onClose={() => setShowReply(false)} />}
+
       {/* Mobile: stacked. Desktop: single row */}
       <div className="flex flex-col gap-3 md:flex-row md:items-center md:gap-4">
 
@@ -444,20 +495,29 @@ function LeadRow({
             <span className="hidden sm:inline">Hot</span>
           </button>
 
-          {/* Responded toggle */}
+          {/* Responded toggle / view reply */}
           {hot && lead.hot_email_sent_at && (
-            <button
-              onClick={() => onUpdate(lead.id, { responded: !lead.responded })}
-              className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-bold cursor-pointer border-none transition-all"
-              style={{
-                background: lead.responded ? "rgba(52,211,153,0.15)" : "rgba(255,255,255,0.04)",
-                color: lead.responded ? "#34d399" : "var(--text-tertiary)",
-              }}
-              title={lead.responded ? "Mark as not responded (resume follow-ups)" : "Mark as responded (stops follow-ups)"}
-            >
-              <MessageSquareReply size={14} />
-              <span className="hidden sm:inline">{lead.responded ? "Replied" : "No Reply"}</span>
-            </button>
+            lead.responded ? (
+              <button
+                onClick={() => setShowReply(true)}
+                className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-bold cursor-pointer border-none transition-all"
+                style={{ background: "rgba(52,211,153,0.15)", color: "#34d399" }}
+                title="Click to view reply"
+              >
+                <MessageSquareReply size={14} />
+                <span className="hidden sm:inline">Replied</span>
+              </button>
+            ) : (
+              <button
+                onClick={() => onUpdate(lead.id, { responded: true })}
+                className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-bold cursor-pointer border-none transition-all"
+                style={{ background: "rgba(255,255,255,0.04)", color: "var(--text-tertiary)" }}
+                title="Mark as responded (stops follow-ups)"
+              >
+                <MessageSquareReply size={14} />
+                <span className="hidden sm:inline">No Reply</span>
+              </button>
+            )
           )}
 
           {/* Follow-up indicator */}
