@@ -54,7 +54,7 @@ export default function Navbar() {
           href="/schedule"
           className="hidden md:inline-flex items-center gap-2 px-5 py-2.5 text-sm font-bold rounded-xl bg-gradient-to-br from-[#38bdf8] to-[#818cf8] text-black shadow-[0_0_20px_rgba(56,189,248,0.4),0_4px_15px_rgba(0,0,0,0.3)] transition-all duration-300 hover:translate-y-[-2px] hover:shadow-[0_0_30px_rgba(56,189,248,0.4),0_8px_25px_rgba(0,0,0,0.4)]"
         >
-          Book a Free Call <ArrowRight size={16} />
+          Let&apos;s Do Lunch <ArrowRight size={16} />
         </Link>
 
         {/* Mobile Hamburger */}
@@ -91,7 +91,7 @@ export default function Navbar() {
               href="/schedule"
               className="inline-flex items-center justify-center gap-2 w-full px-5 py-3 text-base font-bold rounded-xl bg-gradient-to-br from-[#38bdf8] to-[#818cf8] text-black"
             >
-              Book a Free Call
+              Let&apos;s Do Lunch
             </Link>
           </motion.div>
         )}

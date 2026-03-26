@@ -122,7 +122,7 @@ export default function AuditPage() {
                 <p style={{ marginBottom: "1.5rem", color: "var(--text-secondary)", fontSize: "0.95rem" }}>
                   Prefer to talk?{" "}
                   <Link href="/schedule" style={{ color: "var(--accent)", fontWeight: 600, textDecoration: "underline" }}>
-                    Book a free call instead
+                    Or let&apos;s grab lunch instead
                   </Link>
                 </p>
 

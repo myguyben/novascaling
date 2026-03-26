@@ -36,7 +36,7 @@ const TIME_SLOTS = [
 ];
 
 export default function SchedulePage() {
-  const [meetingType, setMeetingType] = useState<"video" | "lunch">("video");
+  const [meetingType, setMeetingType] = useState<"video" | "lunch">("lunch");
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedTime, setSelectedTime] = useState("");
   const [viewMonth, setViewMonth] = useState(() => {
@@ -176,30 +176,35 @@ export default function SchedulePage() {
                 transition={{ duration: 0.6 }}
               >
                 <h1 className="audit-title">
-                  Book a{" "}
-                  <span className="text-gradient-hero">Free Call</span>
+                  They say there&apos;s no such thing as a{" "}
+                  <span className="text-gradient-hero">free lunch.</span>
                 </h1>
-                <p className="audit-desc">
-                  20 minutes. No pitch. We&apos;ll tell you exactly what&apos;s
-                  broken in your operations and what it&apos;s costing you.
+                <p className="audit-desc" style={{ fontSize: "1.15rem", lineHeight: 1.7 }}>
+                  We&apos;re here to prove that wrong.
+                </p>
+                <p className="audit-desc" style={{ marginTop: "0.75rem" }}>
+                  No bullshit. No slides. We sit down and have a real conversation
+                  about your business. If there&apos;s a way we can make life easier
+                  for you and you want us to — we work together. If not, we pick up
+                  the check and wish each other the best.
                 </p>
 
                 <div className="audit-promises">
                   <div className="audit-promise">
                     <CheckCircle size={20} className="audit-promise-icon" />
-                    <span>No sales pitch — just straight answers</span>
+                    <span>Lunch or coffee — on us</span>
                   </div>
                   <div className="audit-promise">
                     <CheckCircle size={20} className="audit-promise-icon" />
-                    <span>We&apos;ll identify your biggest bottleneck</span>
+                    <span>No pitch, no slides — just a real conversation</span>
                   </div>
                   <div className="audit-promise">
                     <CheckCircle size={20} className="audit-promise-icon" />
-                    <span>Free custom website when you onboard</span>
+                    <span>We&apos;ll tell you what&apos;s costing you money</span>
                   </div>
                   <div className="audit-promise">
                     <CheckCircle size={20} className="audit-promise-icon" />
-                    <span>Video call or lunch — your choice</span>
+                    <span>Not local? We&apos;ll hop on a video call instead</span>
                   </div>
                 </div>
               </motion.div>
@@ -221,18 +226,18 @@ export default function SchedulePage() {
                     }`}
                     onClick={() => setMeetingType("video")}
                   >
-                    <Video size={18} />
-                    Video Call
+                    <Coffee size={18} />
+                    Lunch / Coffee
                   </button>
                   <button
                     type="button"
                     className={`meeting-type-btn${
-                      meetingType === "lunch" ? " meeting-type-btn--selected" : ""
+                      meetingType === "video" ? " meeting-type-btn--selected" : ""
                     }`}
-                    onClick={() => setMeetingType("lunch")}
+                    onClick={() => setMeetingType("video")}
                   >
-                    <Coffee size={18} />
-                    Lunch Meeting
+                    <Video size={18} />
+                    Video Call
                   </button>
                 </div>
 
@@ -428,7 +433,7 @@ export default function SchedulePage() {
                     id="message"
                     name="message"
                     rows={3}
-                    placeholder="Anything we should know before the call?"
+                    placeholder="Anything we should know beforehand?"
                     value={form.message}
                     onChange={handleChange}
                   />

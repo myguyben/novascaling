@@ -124,7 +124,7 @@ export default function Home() {
           >
             <MagneticButton>
               <Button variant="primary" size="lg" href="/schedule">
-                Book a Free Call <ArrowRight size={18} />
+                Let&apos;s Do Lunch <ArrowRight size={18} />
               </Button>
             </MagneticButton>
             <Button variant="ghost" size="lg" href="/services">
@@ -534,8 +534,8 @@ export default function Home() {
       <CTABanner
         title="Ready to stop"
         titleHighlight="leaving money on the table?"
-        subtitle="Book a free 20-minute call. We'll tell you exactly what's broken and what it's costing you. No pitch, no pressure."
-        buttonText="Book a Free Call"
+        subtitle="They say there's no such thing as a free lunch. We're here to prove that wrong. No bullshit, no slides — just a real conversation about your business. We pick up the check."
+        buttonText="Let's Do Lunch"
         buttonHref="/schedule"
       />
     </PageLayout>

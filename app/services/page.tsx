@@ -289,8 +289,8 @@ export default function ServicesPage() {
       <CTABanner
         title="Ready to automate your"
         titleHighlight="biggest bottleneck?"
-        subtitle="Book a free call and we'll show you exactly what's broken and how to fix it."
-        buttonText="Book a Free Call"
+        subtitle="No slides, no pitch. Just lunch, a real conversation, and we pick up the check."
+        buttonText="Let's Do Lunch"
         buttonHref="/schedule"
       />
     </PageLayout>

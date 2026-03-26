@@ -237,8 +237,8 @@ export default function CaseStudiesPage() {
       <CTABanner
         title="Ready to become the next"
         titleHighlight="success story?"
-        subtitle="Book a free call and see your projected savings in 20 minutes."
-        buttonText="Book a Free Call"
+        subtitle="Lunch is on us. We'll show you the projected savings for your business — no pitch, no slides."
+        buttonText="Let's Do Lunch"
         buttonHref="/schedule"
       />
     </PageLayout>

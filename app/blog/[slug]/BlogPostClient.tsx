@@ -256,8 +256,8 @@ export default function BlogPostClient({ post }: BlogPostClientProps) {
       <CTABanner
         title="Ready to eliminate"
         titleHighlight="manual work?"
-        subtitle="Book a free call and see exactly how many hours your business can reclaim."
-        buttonText="Book a Free Call"
+        subtitle="Lunch is on us. No pitch, no slides — just a real conversation about your business."
+        buttonText="Let's Do Lunch"
         buttonHref="/schedule"
       />
     </PageLayout>

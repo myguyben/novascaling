@@ -56,7 +56,7 @@ export default function Footer() {
               href="/schedule"
               className="text-sm text-[var(--text-secondary)] transition-colors duration-200 hover:text-[var(--text-primary)]"
             >
-              Book a Call
+              Let&apos;s Do Lunch
             </Link>
             <Link
               href="/dashboard"

@@ -261,8 +261,8 @@ export default function PricingPage() {
       <CTABanner
         title="Ready to see the"
         titleHighlight="math for yourself?"
-        subtitle="Book a free call and we'll walk you through the exact savings for your business."
-        buttonText="Book a Free Call"
+        subtitle="Grab lunch with us — we'll walk you through the exact savings for your business. We pick up the check."
+        buttonText="Let's Do Lunch"
         buttonHref="/schedule"
       />
     </PageLayout>

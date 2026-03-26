@@ -35,8 +35,8 @@ const SOCIAL_LINKS = [
 const LINKS = [
   {
     icon: <Calendar size={20} />,
-    title: "Book a Free Call",
-    desc: "20 min. No pitch, no pressure.",
+    title: "Let's Do Lunch",
+    desc: "On us. No pitch, no slides.",
     href: "/schedule",
     accent: "#38bdf8",
     featured: true,
