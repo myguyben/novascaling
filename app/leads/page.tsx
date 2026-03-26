@@ -18,6 +18,9 @@ import {
   Trophy,
   FileSpreadsheet,
   Flame,
+  Mail,
+  MessageSquareReply,
+  Send,
 } from "lucide-react";
 
 /* ── Types ── */
@@ -36,6 +39,12 @@ interface SalesLead {
   notes: string | null;
   industry: string | null;
   list_name: string | null;
+  client_email: string | null;
+  initial_message_id: string | null;
+  hot_email_sent_at: string | null;
+  follow_up_count: number;
+  last_follow_up_at: string | null;
+  responded: boolean;
   created_at: string;
   updated_at: string;
 }
@@ -118,6 +127,7 @@ function CSVUploadModal({ onClose, onUpload }: { onClose: () => void; onUpload: 
 
   const TARGET_FIELDS = [
     { key: "company_name", label: "Company Name", required: true },
+    { key: "client_email", label: "Email" },
     { key: "phone", label: "Phone" },
     { key: "address", label: "Address" },
     { key: "area", label: "Area (nv/van/sa/other)" },
@@ -216,7 +226,7 @@ function CSVUploadModal({ onClose, onUpload }: { onClose: () => void; onUpload: 
    ADD LEAD MODAL
    ══════════════════════════════════════════════ */
 function AddLeadModal({ onClose, onAdd }: { onClose: () => void; onAdd: (lead: Partial<SalesLead>) => void }) {
-  const [form, setForm] = useState({ company_name: "", phone: "", address: "", area: "other", area_label: "", rating: "", review_count: "", industry: "", notes: "" });
+  const [form, setForm] = useState({ company_name: "", phone: "", address: "", area: "other", area_label: "", rating: "", review_count: "", industry: "", notes: "", client_email: "" });
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -230,6 +240,7 @@ function AddLeadModal({ onClose, onAdd }: { onClose: () => void; onAdd: (lead: P
       review_count: form.review_count ? parseInt(form.review_count) : 0,
       industry: form.industry || null,
       notes: form.notes || null,
+      client_email: form.client_email || null,
       status: "new",
     });
   }
@@ -257,6 +268,7 @@ function AddLeadModal({ onClose, onAdd }: { onClose: () => void; onAdd: (lead: P
             <input type="number" step="0.1" min="0" max="5" placeholder="Rating" value={form.rating} onChange={(e) => setForm((f) => ({ ...f, rating: e.target.value }))} className="flex-1 px-4 py-3 rounded-xl text-sm outline-none" style={inputStyle} />
             <input type="number" min="0" placeholder="Reviews" value={form.review_count} onChange={(e) => setForm((f) => ({ ...f, review_count: e.target.value }))} className="flex-1 px-4 py-3 rounded-xl text-sm outline-none" style={inputStyle} />
           </div>
+          <input type="email" placeholder="Lead's Email (for outreach)" value={form.client_email} onChange={(e) => setForm((f) => ({ ...f, client_email: e.target.value }))} className="px-4 py-3 rounded-xl text-sm outline-none" style={inputStyle} />
           <input placeholder="Industry" value={form.industry} onChange={(e) => setForm((f) => ({ ...f, industry: e.target.value }))} className="px-4 py-3 rounded-xl text-sm outline-none" style={inputStyle} />
           <input placeholder="Notes" value={form.notes} onChange={(e) => setForm((f) => ({ ...f, notes: e.target.value }))} className="px-4 py-3 rounded-xl text-sm outline-none" style={inputStyle} />
           <button type="submit" className="mt-2 py-3 rounded-xl font-bold text-sm cursor-pointer" style={{ background: "linear-gradient(135deg, #38bdf8, #818cf8)", color: "#000" }}>Add Lead</button>
@@ -291,7 +303,9 @@ function LeadRow({
   onDelete: (id: string) => void;
 }) {
   const [notes, setNotes] = useState(lead.notes || "");
+  const [email, setEmail] = useState(lead.client_email || "");
   const notesTimeout = useRef<ReturnType<typeof setTimeout>>(undefined);
+  const emailTimeout = useRef<ReturnType<typeof setTimeout>>(undefined);
   const areaColor = AREA_COLORS[lead.area] || AREA_COLORS.other;
 
   function handleNotesChange(value: string) {
@@ -300,7 +314,14 @@ function LeadRow({
     notesTimeout.current = setTimeout(() => onUpdate(lead.id, { notes: value }), 800);
   }
 
+  function handleEmailChange(value: string) {
+    setEmail(value);
+    if (emailTimeout.current) clearTimeout(emailTimeout.current);
+    emailTimeout.current = setTimeout(() => onUpdate(lead.id, { client_email: value || null }), 800);
+  }
+
   useEffect(() => { setNotes(lead.notes || ""); }, [lead.notes]);
+  useEffect(() => { setEmail(lead.client_email || ""); }, [lead.client_email]);
 
   const contacted = lead.contacted;
   const hot = lead.hot;
@@ -384,18 +405,31 @@ function LeadRow({
           </div>
         </div>
 
-        {/* Notes input */}
-        <input
-          type="text"
-          value={notes}
-          onChange={(e) => handleNotesChange(e.target.value)}
-          placeholder="Notes..."
-          className="w-full md:w-48 lg:w-64 px-3 py-2 rounded-lg text-xs outline-none shrink-0"
-          style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.04)", color: "var(--text-secondary)", fontFamily: "Inter, sans-serif" }}
-        />
+        {/* Email + Notes inputs */}
+        <div className="flex flex-col gap-1.5 w-full md:w-56 lg:w-72 shrink-0">
+          <div className="relative">
+            <Mail size={11} className="absolute left-2.5 top-1/2 -translate-y-1/2" style={{ color: "var(--text-tertiary)" }} />
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => handleEmailChange(e.target.value)}
+              placeholder="Lead's email..."
+              className="w-full pl-7 pr-3 py-1.5 rounded-lg text-xs outline-none"
+              style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.04)", color: email ? "var(--accent)" : "var(--text-secondary)", fontFamily: "Inter, sans-serif" }}
+            />
+          </div>
+          <input
+            type="text"
+            value={notes}
+            onChange={(e) => handleNotesChange(e.target.value)}
+            placeholder="Notes..."
+            className="w-full px-3 py-1.5 rounded-lg text-xs outline-none"
+            style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.04)", color: "var(--text-secondary)", fontFamily: "Inter, sans-serif" }}
+          />
+        </div>
 
-        {/* Action buttons: Hot + Client + Delete */}
-        <div className="flex items-center gap-2 shrink-0">
+        {/* Action buttons + follow-up status */}
+        <div className="flex items-center gap-2 shrink-0 flex-wrap">
           {/* Hot lead toggle */}
           <button
             onClick={() => onUpdate(lead.id, { hot: !hot })}
@@ -404,11 +438,35 @@ function LeadRow({
               background: hot ? "rgba(239,68,68,0.15)" : "rgba(255,255,255,0.04)",
               color: hot ? "#ef4444" : "var(--text-tertiary)",
             }}
-            title={hot ? "Unmark as hot lead" : "Mark as hot lead"}
+            title={hot ? "Unmark as hot lead" : "Mark as hot lead (sends outreach email)"}
           >
             <Flame size={14} fill={hot ? "#ef4444" : "none"} />
             <span className="hidden sm:inline">Hot</span>
           </button>
+
+          {/* Responded toggle */}
+          {hot && lead.hot_email_sent_at && (
+            <button
+              onClick={() => onUpdate(lead.id, { responded: !lead.responded })}
+              className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-bold cursor-pointer border-none transition-all"
+              style={{
+                background: lead.responded ? "rgba(52,211,153,0.15)" : "rgba(255,255,255,0.04)",
+                color: lead.responded ? "#34d399" : "var(--text-tertiary)",
+              }}
+              title={lead.responded ? "Mark as not responded (resume follow-ups)" : "Mark as responded (stops follow-ups)"}
+            >
+              <MessageSquareReply size={14} />
+              <span className="hidden sm:inline">{lead.responded ? "Replied" : "No Reply"}</span>
+            </button>
+          )}
+
+          {/* Follow-up indicator */}
+          {hot && lead.hot_email_sent_at && !lead.responded && lead.follow_up_count < 4 && (
+            <span className="flex items-center gap-1 px-2 py-1.5 rounded-lg text-[10px] font-semibold" style={{ background: "rgba(56,189,248,0.08)", color: "var(--accent)" }}>
+              <Send size={10} />
+              {lead.follow_up_count}/4 sent
+            </span>
+          )}
 
           {/* Mark as client */}
           <button
