@@ -40,12 +40,12 @@ export default function Footer() {
             >
               Pricing
             </Link>
-            <Link
+            {/* <Link
               href="/case-studies"
               className="text-sm text-[var(--text-secondary)] transition-colors duration-200 hover:text-[var(--text-primary)]"
             >
               Case Studies
-            </Link>
+            </Link> */}
           </div>
 
           <div className="flex flex-col gap-3">
@@ -63,6 +63,12 @@ export default function Footer() {
               className="text-sm text-[var(--text-secondary)] transition-colors duration-200 hover:text-[var(--text-primary)]"
             >
               Client Portal
+            </Link>
+            <Link
+              href="/links"
+              className="text-sm text-[var(--text-secondary)] transition-colors duration-200 hover:text-[var(--text-primary)]"
+            >
+              Links
             </Link>
           </div>
         </div>

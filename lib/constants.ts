@@ -1,7 +1,7 @@
 export const NAV_LINKS = [
   { label: "Services", href: "/services" },
   { label: "Pricing", href: "/pricing" },
-  { label: "Case Studies", href: "/case-studies" },
+  // { label: "Case Studies", href: "/case-studies" },
   { label: "Schedule", href: "/schedule" },
 ];
 
