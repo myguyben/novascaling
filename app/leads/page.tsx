@@ -461,10 +461,10 @@ function LeadRow({
           )}
 
           {/* Follow-up indicator */}
-          {hot && lead.hot_email_sent_at && !lead.responded && lead.follow_up_count < 4 && (
+          {hot && lead.hot_email_sent_at && !lead.responded && (
             <span className="flex items-center gap-1 px-2 py-1.5 rounded-lg text-[10px] font-semibold" style={{ background: "rgba(56,189,248,0.08)", color: "var(--accent)" }}>
               <Send size={10} />
-              {lead.follow_up_count}/4 sent
+              {lead.follow_up_count + 1}/5 emails
             </span>
           )}
 
