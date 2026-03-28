@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { createClient } from "@supabase/supabase-js";
+import { supabase } from "@/lib/supabase";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Calendar,
@@ -21,11 +21,7 @@ import {
   MessageSquare,
 } from "lucide-react";
 import Link from "next/link";
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
+import { AuthGate } from "@/components/auth/AuthGate";
 
 interface ScheduleRequest {
   id: string;
@@ -168,6 +164,7 @@ export default function SchedulingPage() {
   );
 
   return (
+    <AuthGate title="Scheduling">
     <div
       style={{
         minHeight: "100vh",
@@ -544,6 +541,7 @@ export default function SchedulingPage() {
         }
       `}</style>
     </div>
+    </AuthGate>
   );
 }
 

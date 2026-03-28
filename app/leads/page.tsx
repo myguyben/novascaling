@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from "react";
 import { supabase } from "@/lib/supabase";
+import { AuthGate } from "@/components/auth/AuthGate";
 import Papa from "papaparse";
 import {
   Search,
@@ -71,56 +72,7 @@ const AREA_COLORS: Record<string, { bg: string; text: string }> = {
   other: { bg: "rgba(148,163,184,0.12)", text: "#94a3b8" },
 };
 
-/* ══════════════════════════════════════════════
-   AUTH GATE
-   ══════════════════════════════════════════════ */
-function AuthGate({ onAuth }: { onAuth: () => void }) {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [isSignUp, setIsSignUp] = useState(false);
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
-
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    setError("");
-    setLoading(true);
-    const { error: authError } = isSignUp
-      ? await supabase.auth.signUp({ email, password })
-      : await supabase.auth.signInWithPassword({ email, password });
-    setLoading(false);
-    if (authError) setError(authError.message);
-    else onAuth();
-  }
-
-  const inputStyle: React.CSSProperties = {
-    background: "rgba(255,255,255,0.05)",
-    border: "1px solid rgba(255,255,255,0.08)",
-    color: "var(--text-primary)",
-    fontFamily: "Inter, sans-serif",
-  };
-
-  return (
-    <div className="min-h-screen flex items-center justify-center px-4" style={{ background: "var(--bg-deep)" }}>
-      <div className="w-full max-w-md p-8 rounded-3xl backdrop-blur-2xl" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}>
-        <div className="flex items-center gap-3 mb-2">
-          <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: "linear-gradient(135deg, #38bdf8, #818cf8)" }}>
-            <Users size={18} color="#000" />
-          </div>
-          <h1 style={{ fontFamily: "Outfit, sans-serif", fontWeight: 700, fontSize: "1.4rem", color: "var(--text-primary)" }}>NovaScaling Leads</h1>
-        </div>
-        <p className="text-sm mb-8" style={{ color: "var(--text-secondary)" }}>{isSignUp ? "Create your team account" : "Sign in to manage leads"}</p>
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-          <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} required className="w-full px-4 py-3 rounded-xl text-sm outline-none" style={inputStyle} />
-          <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} required minLength={6} className="w-full px-4 py-3 rounded-xl text-sm outline-none" style={inputStyle} />
-          {error && <p className="text-sm" style={{ color: "#ef4444" }}>{error}</p>}
-          <button type="submit" disabled={loading} className="w-full py-3 rounded-xl font-bold text-sm cursor-pointer transition-all" style={{ background: "linear-gradient(135deg, #38bdf8, #818cf8)", color: "#000", opacity: loading ? 0.6 : 1 }}>{loading ? "..." : isSignUp ? "Create Account" : "Sign In"}</button>
-        </form>
-        <button onClick={() => { setIsSignUp(!isSignUp); setError(""); }} className="mt-4 text-sm cursor-pointer bg-transparent border-none" style={{ color: "var(--accent)" }}>{isSignUp ? "Already have an account? Sign in" : "Need an account? Sign up"}</button>
-      </div>
-    </div>
-  );
-}
+/* Auth gate removed — now using shared AuthGate component from @/components/auth/AuthGate */
 
 /* ══════════════════════════════════════════════
    CSV UPLOAD MODAL
@@ -738,7 +690,14 @@ function NotificationsPanel() {
    MAIN PAGE
    ══════════════════════════════════════════════ */
 export default function LeadsPage() {
-  const [authed, setAuthed] = useState<boolean | null>(null);
+  return (
+    <AuthGate title="NovaScaling Leads">
+      <LeadsContent />
+    </AuthGate>
+  );
+}
+
+function LeadsContent() {
   const [leads, setLeads] = useState<SalesLead[]>([]);
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("all");
@@ -747,23 +706,16 @@ export default function LeadsPage() {
   const [toast, setToast] = useState("");
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => setAuthed(!!data.session));
-    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => setAuthed(!!session));
-    return () => listener.subscription.unsubscribe();
-  }, []);
-
   const fetchLeads = useCallback(async () => {
     const { data } = await supabase.from("sales_leads").select("*").order("created_at", { ascending: true });
     if (data) setLeads(data);
     setLoading(false);
   }, []);
 
-  useEffect(() => { if (authed) fetchLeads(); }, [authed, fetchLeads]);
+  useEffect(() => { fetchLeads(); }, [fetchLeads]);
 
   // Realtime
   useEffect(() => {
-    if (!authed) return;
     const channel = supabase
       .channel("sales_leads_changes")
       .on("postgres_changes", { event: "*", schema: "public", table: "sales_leads" }, (payload) => {
@@ -779,7 +731,7 @@ export default function LeadsPage() {
       })
       .subscribe();
     return () => { supabase.removeChannel(channel); };
-  }, [authed]);
+  }, []);
 
   async function updateLead(id: string, data: Partial<SalesLead>) {
     await supabase.from("sales_leads").update(data).eq("id", id);
@@ -821,8 +773,6 @@ export default function LeadsPage() {
     client: leads.filter((l) => l.status === "client").length,
   };
 
-  if (authed === null) return <div className="min-h-screen flex items-center justify-center" style={{ background: "var(--bg-deep)" }}><div className="w-6 h-6 rounded-full animate-spin" style={{ border: "2px solid var(--accent)", borderTopColor: "transparent" }} /></div>;
-  if (!authed) return <AuthGate onAuth={() => setAuthed(true)} />;
 
   const FILTER_PILLS = [
     { key: "all", label: `All ${stats.total}` },
@@ -858,7 +808,7 @@ export default function LeadsPage() {
               <button onClick={() => setShowAdd(true)} className="flex items-center gap-1.5 px-3 sm:px-4 py-2 rounded-xl text-xs font-semibold cursor-pointer" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)", color: "var(--text-primary)" }}>
                 <Plus size={13} /><span className="hidden sm:inline">Add</span>
               </button>
-              <button onClick={() => supabase.auth.signOut().then(() => setAuthed(false))} className="p-2 rounded-xl cursor-pointer bg-transparent border-none" style={{ color: "var(--text-tertiary)" }} title="Sign out">
+              <button onClick={() => supabase.auth.signOut()} className="p-2 rounded-xl cursor-pointer bg-transparent border-none" style={{ color: "var(--text-tertiary)" }} title="Sign out">
                 <LogOut size={16} />
               </button>
             </div>
