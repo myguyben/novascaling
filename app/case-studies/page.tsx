@@ -22,7 +22,7 @@ export default function CaseStudiesPage() {
               label="Case Studies"
               title="Real results from"
               titleHighlight="real businesses."
-              subtitle="See how SMBs like yours eliminated manual work, cut response times, and scaled faster with NovaScaling."
+              subtitle="See how SMBs like yours eliminated manual work, cut response times, and scaled faster with Ozio Consulting."
             />
           </AnimatedSection>
         </div>

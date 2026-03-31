@@ -5,7 +5,7 @@ export const metadata: Metadata = {
   description:
     "Get a free efficiency audit showing exactly how many hours and dollars your business loses to manual work. Custom report within 24 hours.",
   openGraph: {
-    title: "Free Bottleneck Audit | NovaScaling",
+    title: "Free Bottleneck Audit | Ozio Consulting",
     description:
       "Get a free efficiency audit showing exactly how many hours and dollars your business loses to manual work. Custom report within 24 hours.",
   },

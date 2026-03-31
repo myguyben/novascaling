@@ -325,7 +325,7 @@ export function IntroAnimation({ children }: { children: React.ReactNode }) {
                       color: "#f1f5f9",
                     }}
                   >
-                    Nova
+                    Ozio
                     <span
                       style={{
                         background: "linear-gradient(135deg, #38bdf8, #818cf8)",
@@ -334,7 +334,7 @@ export function IntroAnimation({ children }: { children: React.ReactNode }) {
                         backgroundClip: "text",
                       }}
                     >
-                      Scaling
+                      {" "}Consulting
                     </span>
                   </motion.h1>
 

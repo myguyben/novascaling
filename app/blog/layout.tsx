@@ -5,7 +5,7 @@ export const metadata: Metadata = {
   description:
     "Expert insights on workflow automation, operational efficiency, and growth strategies for small and medium businesses.",
   openGraph: {
-    title: "Business Automation Blog for SMBs | NovaScaling",
+    title: "Business Automation Blog for SMBs | Ozio Consulting",
     description:
       "Expert insights on workflow automation, operational efficiency, and growth strategies for small and medium businesses.",
   },

@@ -14,7 +14,7 @@ export default function Footer() {
               <TrendingUp size={18} />
             </div>
             <span className="font-['Outfit'] font-bold text-[1.3rem] tracking-tight text-[var(--text-primary)]">
-              NovaScaling
+              Ozio Consulting
             </span>
           </Link>
           <p className="text-[var(--text-tertiary)] text-sm mt-3">
@@ -77,7 +77,7 @@ export default function Footer() {
       {/* Bottom */}
       <div className="max-w-[1200px] mx-auto pt-8 border-t border-[var(--glass-border)]">
         <p className="text-xs text-[var(--text-tertiary)]">
-          &copy; 2026 NovaScaling. All rights reserved.
+          &copy; 2026 Ozio Consulting. All rights reserved.
         </p>
       </div>
     </footer>

@@ -4,4 +4,4 @@ Disallow: /dashboard
 Disallow: /deck
 Disallow: /plan
 
-Sitemap: https://novascaling.ai/sitemap.xml
+Sitemap: https://ozioconsulting.com/sitemap.xml

@@ -76,7 +76,7 @@ export default function PricingPage() {
                   Free Website Design With Every Plan
                 </h3>
                 <p style={{ color: "var(--text-secondary)", lineHeight: 1.7, fontSize: "0.95rem" }}>
-                  Every NovaScaling client gets a professionally built, mobile-optimized website at no extra cost.
+                  Every Ozio Consulting client gets a professionally built, mobile-optimized website at no extra cost.
                   Not a template. Custom designed for your brand.
                 </p>
               </div>

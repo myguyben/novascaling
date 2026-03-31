@@ -32,7 +32,7 @@ export default function Navbar() {
             <TrendingUp size={20} />
           </div>
           <span className="font-['Outfit'] font-bold text-[1.3rem] tracking-tight text-[var(--text-primary)]">
-            NovaScaling
+            Ozio Consulting
           </span>
         </Link>
 

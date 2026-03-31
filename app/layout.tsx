@@ -4,10 +4,10 @@ import { CursorGlow } from "@/components/animations/CursorGlow";
 import { ScrollProgress } from "@/components/animations/ScrollProgress";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://novascaling.ai"),
+  metadataBase: new URL("https://ozioconsulting.com"),
   title: {
-    default: "NovaScaling — Business Automation for SMBs",
-    template: "%s | NovaScaling",
+    default: "Ozio Consulting — Business Automation for SMBs",
+    template: "%s | Ozio Consulting",
   },
   description:
     "Fractional Operations Partner & Margin Expansion as a Service. We build custom automated workflows that eliminate 40+ hours of manual labor per month for SMBs.",
@@ -23,31 +23,31 @@ export const metadata: Metadata = {
     "automated workflows",
     "operations outsourcing",
   ],
-  authors: [{ name: "NovaScaling" }],
+  authors: [{ name: "Ozio Consulting" }],
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://novascaling.ai",
-    siteName: "NovaScaling",
-    title: "NovaScaling — Business Automation for SMBs",
+    url: "https://ozioconsulting.com",
+    siteName: "Ozio Consulting",
+    title: "Ozio Consulting — Business Automation for SMBs",
     description:
       "Enterprise-grade workflow automation at SMB pricing. Eliminate 40+ hours of manual work per month with your Fractional Operations Partner.",
   },
   twitter: {
     card: "summary_large_image",
-    title: "NovaScaling — Business Automation for SMBs",
+    title: "Ozio Consulting — Business Automation for SMBs",
     description:
       "Enterprise-grade workflow automation at SMB pricing. Eliminate 40+ hours of manual work per month.",
   },
   robots: { index: true, follow: true },
-  alternates: { canonical: "https://novascaling.ai" },
+  alternates: { canonical: "https://ozioconsulting.com" },
 };
 
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "Organization",
-  name: "NovaScaling",
-  url: "https://novascaling.ai",
+  name: "Ozio Consulting",
+  url: "https://ozioconsulting.com",
   description:
     "Fractional Operations Partner & Margin Expansion as a Service for SMBs",
   sameAs: [],

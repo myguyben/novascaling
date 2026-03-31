@@ -430,14 +430,14 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── Why NovaScaling ── */}
+      {/* ── Why Ozio Consulting ── */}
       <section className="section section-dark">
         <div className="section-container">
           <AnimatedSection>
             <SectionHeader
               label="Why Us"
               title="5 reasons to pick"
-              titleHighlight="NovaScaling"
+              titleHighlight="Ozio Consulting"
             />
           </AnimatedSection>
 

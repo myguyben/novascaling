@@ -691,7 +691,7 @@ function NotificationsPanel() {
    ══════════════════════════════════════════════ */
 export default function LeadsPage() {
   return (
-    <AuthGate title="NovaScaling Leads">
+    <AuthGate title="Ozio Consulting Leads">
       <LeadsContent />
     </AuthGate>
   );
@@ -813,7 +813,7 @@ function LeadsContent() {
               </button>
             </div>
           </div>
-          <p className="text-xs mb-4" style={{ color: "var(--text-tertiary)" }}>NovaScaling · Real-time Lead Tracker</p>
+          <p className="text-xs mb-4" style={{ color: "var(--text-tertiary)" }}>Ozio Consulting · Real-time Lead Tracker</p>
 
           {/* Stats */}
           <div className="flex gap-5 sm:gap-8">

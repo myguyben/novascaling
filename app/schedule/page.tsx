@@ -67,7 +67,7 @@ export default function SchedulePage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          site_id: "novascaling",
+          site_id: "ozioconsulting",
           name: form.name,
           email: form.email,
           phone: form.phone || null,

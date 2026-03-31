@@ -17,17 +17,17 @@ import {
 const SOCIAL_LINKS = [
   {
     icon: <Instagram size={20} />,
-    href: "https://www.instagram.com/novascaling",
+    href: "https://www.instagram.com/ozioconsulting",
     label: "Instagram",
   },
   {
     icon: <Facebook size={20} />,
-    href: "https://www.facebook.com/novascaling",
+    href: "https://www.facebook.com/ozioconsulting",
     label: "Facebook",
   },
   {
     icon: <Youtube size={20} />,
-    href: "https://www.youtube.com/@novascaling",
+    href: "https://www.youtube.com/@ozioconsulting",
     label: "YouTube",
   },
 ];
@@ -45,7 +45,7 @@ const LINKS = [
     icon: <Globe size={20} />,
     title: "Visit Our Website",
     desc: "See what we do and how we do it.",
-    href: "https://novascaling.ai",
+    href: "https://ozioconsulting.ai",
     accent: "#818cf8",
   },
   {
@@ -65,8 +65,8 @@ const LINKS = [
   {
     icon: <Mail size={20} />,
     title: "Email Us",
-    desc: "ben@novascaling.ai",
-    href: "mailto:ben@novascaling.ai",
+    desc: "ben@ozioconsulting.ai",
+    href: "mailto:ben@ozioconsulting.ai",
     accent: "#64748b",
   },
 ];
@@ -173,7 +173,7 @@ export default function LinksPage() {
             color: "var(--text-primary)",
           }}
         >
-          NovaScaling
+          Ozio Consulting
         </motion.h1>
 
         {/* Tagline */}
@@ -373,7 +373,7 @@ export default function LinksPage() {
             }}
           />
           <a
-            href="https://novascaling.ai"
+            href="https://ozioconsulting.ai"
             style={{
               fontSize: "0.7rem",
               color: "var(--text-tertiary)",
@@ -385,7 +385,7 @@ export default function LinksPage() {
             onMouseEnter={(e) => (e.currentTarget.style.color = "var(--text-secondary)")}
             onMouseLeave={(e) => (e.currentTarget.style.color = "var(--text-tertiary)")}
           >
-            novascaling.ai
+            ozioconsulting.ai
           </a>
         </motion.div>
       </motion.div>

@@ -4,14 +4,14 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { Lock, Loader2 } from "lucide-react";
 
-const ALLOWED_DOMAIN = "novascaling.ai";
+const ALLOWED_DOMAIN = "ozioconsulting.com";
 
 interface AuthGateProps {
   children: React.ReactNode;
   title?: string;
 }
 
-export function AuthGate({ children, title = "NovaScaling" }: AuthGateProps) {
+export function AuthGate({ children, title = "Ozio Consulting" }: AuthGateProps) {
   const [state, setState] = useState<"loading" | "login" | "authed" | "denied">("loading");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -123,7 +123,7 @@ export function AuthGate({ children, title = "NovaScaling" }: AuthGateProps) {
           <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
             <input
               type="email"
-              placeholder="you@novascaling.ai"
+              placeholder="you@ozioconsulting.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required

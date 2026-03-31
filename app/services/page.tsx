@@ -216,7 +216,7 @@ export default function ServicesPage() {
                 verdict: "Breaks fast",
               },
               {
-                label: "NovaScaling",
+                label: "Ozio Consulting",
                 color: "#34d399",
                 items: [
                   "Custom-built for your workflows",

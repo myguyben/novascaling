@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Scheduling | NovaScaling",
-  description: "Internal scheduling dashboard for NovaScaling.",
+  title: "Scheduling | Ozio Consulting",
+  description: "Internal scheduling dashboard for Ozio Consulting.",
   robots: { index: false, follow: false },
 };
 

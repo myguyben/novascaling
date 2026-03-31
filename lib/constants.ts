@@ -64,7 +64,7 @@ export const SERVICES = [
 
 export const PRICING_TIERS = [
   {
-    name: "Core Operations",
+    name: "Starter",
     price: 850,
     period: "/mo",
     target: "For businesses $100k–$250k revenue",
@@ -80,7 +80,7 @@ export const PRICING_TIERS = [
     websiteBadge: true,
   },
   {
-    name: "Growth Engine",
+    name: "Growth",
     price: 2500,
     period: "/mo",
     target: "For businesses $250k–$750k revenue",
@@ -99,7 +99,7 @@ export const PRICING_TIERS = [
     websiteBadge: true,
   },
   {
-    name: "Enterprise Matrix",
+    name: "Scale",
     price: 5000,
     period: "+/mo",
     target: "For businesses scaling to $3M+",

@@ -5,7 +5,7 @@ export const metadata: Metadata = {
   description:
     "Business automation starting at $850/mo. Three tiers: Core Operations, Growth Engine, Enterprise Matrix. 40-hour guarantee. No setup fees, no contracts.",
   openGraph: {
-    title: "Pricing — Transparent Automation Plans | NovaScaling",
+    title: "Pricing — Transparent Automation Plans | Ozio Consulting",
     description:
       "Business automation starting at $850/mo. Three tiers: Core Operations, Growth Engine, Enterprise Matrix. 40-hour guarantee. No setup fees, no contracts.",
   },

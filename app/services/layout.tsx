@@ -5,7 +5,7 @@ export const metadata: Metadata = {
   description:
     "Customer support triage, lead qualification, automated follow-ups, internal knowledge bases, and sales pipeline automation. Enterprise-grade automation at SMB prices.",
   openGraph: {
-    title: "Business Automation Services for SMBs | NovaScaling",
+    title: "Business Automation Services for SMBs | Ozio Consulting",
     description:
       "Customer support triage, lead qualification, automated follow-ups, internal knowledge bases, and sales pipeline automation. Enterprise-grade automation at SMB prices.",
   },
