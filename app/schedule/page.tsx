@@ -222,9 +222,9 @@ export default function SchedulePage() {
                   <button
                     type="button"
                     className={`meeting-type-btn${
-                      meetingType === "video" ? " meeting-type-btn--selected" : ""
+                      meetingType === "lunch" ? " meeting-type-btn--selected" : ""
                     }`}
-                    onClick={() => setMeetingType("video")}
+                    onClick={() => setMeetingType("lunch")}
                   >
                     <Coffee size={18} />
                     Lunch / Coffee
