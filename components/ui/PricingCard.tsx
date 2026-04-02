@@ -68,7 +68,7 @@ export function PricingCard({
 
         {/* Free Website Badge */}
         {websiteBadge && (
-          <div className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[rgba(52,211,153,0.1)] border border-[rgba(52,211,153,0.25)] rounded-full text-[#34d399] text-xs font-semibold mb-4">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[rgba(212,168,83,0.1)] border border-[rgba(212,168,83,0.25)] rounded-full text-[#d4a853] text-xs font-semibold mb-4">
             <Gift size={14} /> Free Website Included
           </div>
         )}

@@ -117,7 +117,7 @@ export default function CaseStudiesPage() {
                         fontSize: "0.75rem",
                         textTransform: "uppercase",
                         letterSpacing: "0.1em",
-                        color: "#34d399",
+                        color: "#d4a853",
                         fontWeight: 600,
                         marginBottom: "0.75rem",
                       }}
@@ -142,7 +142,7 @@ export default function CaseStudiesPage() {
                     }}
                   >
                     <Clock size={18} style={{ color: "#f59e0b", marginBottom: "0.5rem" }} />
-                    <div style={{ fontSize: "1.8rem", fontWeight: 700, fontFamily: "Cormorant Garamond, serif", color: "#34d399" }}>
+                    <div style={{ fontSize: "1.8rem", fontWeight: 700, fontFamily: "Cormorant Garamond, serif", color: "#d4a853" }}>
                       <CountUp end={cs.metrics.hoursSaved} />
                     </div>
                     <div style={{ fontSize: "0.75rem", color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.05em" }}>
@@ -164,7 +164,7 @@ export default function CaseStudiesPage() {
                       Before: <span style={{ color: "#f87171" }}>{cs.metrics.responseTime.before}</span>
                     </div>
                     <div style={{ fontSize: "0.8rem", color: "var(--text-tertiary)" }}>
-                      After: <span style={{ color: "#34d399", fontWeight: 600 }}>{cs.metrics.responseTime.after}</span>
+                      After: <span style={{ color: "#d4a853", fontWeight: 600 }}>{cs.metrics.responseTime.after}</span>
                     </div>
                     <div style={{ fontSize: "0.75rem", color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.05em", marginTop: "0.5rem" }}>
                       Response Time
@@ -185,7 +185,7 @@ export default function CaseStudiesPage() {
                       Before: <span style={{ color: "#f87171" }}>{cs.metrics.satisfaction.before}</span>
                     </div>
                     <div style={{ fontSize: "0.8rem", color: "var(--text-tertiary)" }}>
-                      After: <span style={{ color: "#34d399", fontWeight: 600 }}>{cs.metrics.satisfaction.after}</span>
+                      After: <span style={{ color: "#d4a853", fontWeight: 600 }}>{cs.metrics.satisfaction.after}</span>
                     </div>
                     <div style={{ fontSize: "0.75rem", color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.05em", marginTop: "0.5rem" }}>
                       Satisfaction
@@ -202,7 +202,7 @@ export default function CaseStudiesPage() {
                     }}
                   >
                     <DollarSign size={18} style={{ color: "#f59e0b", marginBottom: "0.5rem" }} />
-                    <div style={{ fontSize: "1.8rem", fontWeight: 700, fontFamily: "Cormorant Garamond, serif", color: "#34d399" }}>
+                    <div style={{ fontSize: "1.8rem", fontWeight: 700, fontFamily: "Cormorant Garamond, serif", color: "#d4a853" }}>
                       $<CountUp end={cs.metrics.monthlySavings} />
                     </div>
                     <div style={{ fontSize: "0.75rem", color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.05em" }}>

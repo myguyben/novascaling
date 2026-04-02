@@ -73,7 +73,7 @@ export default function PricingPage() {
           <AnimatedSection delay={0.15}>
             <GlassCard className="p-8" hoverEffect="glow" style={{ maxWidth: 600, margin: "0 auto 2rem" }}>
               <div style={{ textAlign: "center" }}>
-                <Gift size={28} style={{ color: "#34d399", marginBottom: "1rem", display: "inline-block" }} />
+                <Gift size={28} style={{ color: "#d4a853", marginBottom: "1rem", display: "inline-block" }} />
                 <h3 style={{ fontSize: "1.3rem", fontWeight: 700, fontFamily: "Cormorant Garamond, serif", marginBottom: "0.5rem" }}>
                   Free Website Design With Every Plan
                 </h3>
@@ -166,7 +166,7 @@ export default function PricingPage() {
                               borderBottom: "1px solid rgba(255,255,255,0.03)",
                               color:
                                 val === "\u2713"
-                                  ? "#34d399"
+                                  ? "#d4a853"
                                   : val === "\u2014"
                                   ? "var(--text-tertiary)"
                                   : "var(--text-primary)",
@@ -195,7 +195,7 @@ export default function PricingPage() {
               className="p-10 md:p-14 text-center"
               hoverEffect="glow"
             >
-              <Sparkles size={32} style={{ color: "#34d399", marginBottom: "1.5rem", display: "inline-block" }} />
+              <Sparkles size={32} style={{ color: "#d4a853", marginBottom: "1.5rem", display: "inline-block" }} />
               <h2
                 style={{
                   fontSize: "clamp(1.5rem, 3vw, 2.2rem)",
@@ -216,9 +216,9 @@ export default function PricingPage() {
                 }}
               >
                 On our Growth and Partner tiers: if we don&apos;t mathematically
-                prove we saved you at least <strong style={{ color: "#34d399" }}>40 hours of manual labor</strong> in
+                prove we saved you at least <strong style={{ color: "#d4a853" }}>40 hours of manual labor</strong> in
                 our Monthly Growth Payload report, your next month is{" "}
-                <strong style={{ color: "#34d399" }}>completely free</strong>.
+                <strong style={{ color: "#d4a853" }}>completely free</strong>.
               </p>
               <div style={{ display: "flex", justifyContent: "center", gap: "1.5rem", flexWrap: "wrap" }}>
                 {["No setup fees", "No long-term contracts", "Cancel anytime"].map((item, i) => (
@@ -232,7 +232,7 @@ export default function PricingPage() {
                       fontSize: "0.9rem",
                     }}
                   >
-                    <CheckCircle size={16} style={{ color: "#34d399" }} />
+                    <CheckCircle size={16} style={{ color: "#d4a853" }} />
                     {item}
                   </div>
                 ))}

@@ -173,7 +173,7 @@ export default function Home() {
       <section style={{ padding: "1.5rem 2rem 0" }}>
         <div className="section-container" style={{ textAlign: "center" }}>
           <AnimatedSection>
-            <div style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", padding: "0.75rem 1.5rem", background: "rgba(52,211,153,0.1)", border: "1px solid rgba(52,211,153,0.3)", borderRadius: "100px", color: "#34d399", fontSize: "0.9rem", fontWeight: 600 }}>
+            <div style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", padding: "0.75rem 1.5rem", background: "rgba(212,168,83,0.1)", border: "1px solid rgba(212,168,83,0.3)", borderRadius: "100px", color: "#d4a853", fontSize: "0.9rem", fontWeight: 600 }}>
               <Gift size={18} />
               <span>Free custom website when you onboard — no strings attached</span>
             </div>
@@ -258,7 +258,7 @@ export default function Home() {
                 icon: <LineChart size={28} />,
                 title: "Prove the ROI",
                 desc: "Every month you get a Performance Report with exact hours saved and dollars returned. If we don't save you 40+ hours, next month is free.",
-                color: "#34d399",
+                color: "#d4a853",
               },
             ].map((item, i) => (
               <AnimatedSection key={i} delay={i * 0.15}>

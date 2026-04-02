@@ -62,12 +62,6 @@ export default function Footer() {
               Tell Us Your Problems
             </Link>
             <Link
-              href="/dashboard"
-              className="text-sm text-[var(--text-secondary)] transition-colors duration-200 hover:text-[var(--text-primary)]"
-            >
-              Client Portal
-            </Link>
-            <Link
               href="/links"
               className="text-sm text-[var(--text-secondary)] transition-colors duration-200 hover:text-[var(--text-primary)]"
             >

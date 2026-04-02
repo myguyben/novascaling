@@ -6,10 +6,9 @@ import {
   ArrowRight,
   Calendar,
   CheckCircle,
+  DollarSign,
   LineChart,
   Phone,
-  Rocket,
-  Search,
   Star,
   Wrench,
   X as XIcon,
@@ -45,6 +44,7 @@ const ICON_MAP_LG: Record<string, React.ReactNode> = {
 
 export default function ServicesPage() {
   const [selected, setSelected] = useState(0);
+  const svc = SERVICES[selected];
 
   return (
     <PageLayout>
@@ -54,15 +54,15 @@ export default function ServicesPage() {
           <AnimatedSection>
             <SectionHeader
               label="Our Services"
-              title="Enterprise-grade automation,"
-              titleHighlight="built for your budget."
-              subtitle="We don't sell chatbots. We build fully managed automation systems that eliminate manual work for trades and home services businesses — and prove their ROI every month."
+              title="Everything your business needs,"
+              titleHighlight="automated."
+              subtitle="We build fully managed automation systems for trades and home services businesses. Each service is custom-built for how you actually work — not how software thinks you should."
             />
           </AnimatedSection>
         </div>
       </section>
 
-      {/* Interactive Service Explorer */}
+      {/* Service Explorer */}
       <section className="section section-dark">
         <div className="section-container">
           <AnimatedSection>
@@ -74,93 +74,181 @@ export default function ServicesPage() {
           </AnimatedSection>
 
           <AnimatedSection delay={0.2}>
-            <div className="grid grid-cols-1 md:grid-cols-[300px_1fr] gap-6" style={{ minHeight: 400 }}>
-              {/* Service list */}
-              <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-                {SERVICES.map((svc, i) => (
-                  <button
-                    key={svc.id}
-                    onClick={() => setSelected(i)}
+            {/* Service selector tabs */}
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))", gap: "0.5rem", marginBottom: "2rem" }}>
+              {SERVICES.map((s, i) => (
+                <button
+                  key={s.id}
+                  onClick={() => setSelected(i)}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "0.6rem",
+                    padding: "0.85rem 1rem",
+                    background: selected === i ? "rgba(245,158,11,0.1)" : "rgba(255,255,255,0.03)",
+                    border: `1px solid ${selected === i ? "rgba(245,158,11,0.4)" : "rgba(255,255,255,0.06)"}`,
+                    borderRadius: 12,
+                    color: selected === i ? "#f59e0b" : "var(--text-secondary)",
+                    cursor: "pointer",
+                    textAlign: "left",
+                    fontFamily: "Inter, sans-serif",
+                    fontSize: "0.85rem",
+                    fontWeight: selected === i ? 600 : 400,
+                    transition: "all 0.2s",
+                  }}
+                >
+                  <span style={{ flexShrink: 0 }}>{ICON_MAP[s.icon]}</span>
+                  {s.title}
+                </button>
+              ))}
+            </div>
+
+            {/* Detail panel */}
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={selected}
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -12 }}
+                transition={{ duration: 0.3 }}
+              >
+                {/* Header row */}
+                <div style={{ display: "flex", alignItems: "center", gap: "1rem", marginBottom: "2rem" }}>
+                  <div
                     style={{
+                      width: 56,
+                      height: 56,
+                      borderRadius: 16,
+                      background: "linear-gradient(135deg, rgba(245,158,11,0.15), rgba(234,88,12,0.15))",
+                      border: "1px solid rgba(245,158,11,0.3)",
                       display: "flex",
                       alignItems: "center",
-                      gap: "0.75rem",
-                      padding: "1rem 1.25rem",
-                      background: selected === i ? "rgba(245,158,11,0.08)" : "transparent",
-                      border: `1px solid ${selected === i ? "rgba(245,158,11,0.3)" : "rgba(255,255,255,0.06)"}`,
-                      borderRadius: 14,
-                      color: selected === i ? "#f59e0b" : "var(--text-secondary)",
-                      cursor: "pointer",
-                      textAlign: "left",
-                      fontFamily: "Inter, sans-serif",
-                      fontSize: "0.9rem",
-                      fontWeight: selected === i ? 600 : 400,
-                      transition: "all 0.2s",
+                      justifyContent: "center",
+                      color: "#f59e0b",
+                      flexShrink: 0,
                     }}
                   >
-                    <span style={{ flexShrink: 0 }}>{ICON_MAP[svc.icon]}</span>
-                    {svc.title}
-                  </button>
-                ))}
-              </div>
-
-              {/* Detail panel */}
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={selected}
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -20 }}
-                  transition={{ duration: 0.3 }}
-                >
-                  <GlassCard className="p-8 h-full" hoverEffect="border">
-                    <div style={{ display: "flex", alignItems: "center", gap: "1rem", marginBottom: "2rem" }}>
-                      <div
-                        style={{
-                          width: 56,
-                          height: 56,
-                          borderRadius: 16,
-                          background: "linear-gradient(135deg, rgba(245,158,11,0.15), rgba(234,88,12,0.15))",
-                          border: "1px solid rgba(245,158,11,0.3)",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          color: "#f59e0b",
-                        }}
-                      >
-                        {ICON_MAP_LG[SERVICES[selected].icon]}
-                      </div>
-                      <div>
-                        <h3 style={{ fontSize: "1.4rem", fontWeight: 600, fontFamily: "Cormorant Garamond, serif" }}>
-                          {SERVICES[selected].title}
-                        </h3>
-                        <p style={{ color: "var(--accent)", fontSize: "0.85rem", fontWeight: 600 }}>
-                          {SERVICES[selected].metric}
-                        </p>
-                      </div>
+                    {ICON_MAP_LG[svc.icon]}
+                  </div>
+                  <div style={{ flex: 1 }}>
+                    <h3 style={{ fontSize: "1.6rem", fontWeight: 700, fontFamily: "Cormorant Garamond, serif", marginBottom: "0.15rem" }}>
+                      {svc.title}
+                    </h3>
+                    <p style={{ color: "var(--text-secondary)", fontSize: "0.95rem" }}>
+                      {svc.short}
+                    </p>
+                  </div>
+                  <div
+                    style={{
+                      padding: "0.5rem 1rem",
+                      borderRadius: 10,
+                      background: "linear-gradient(135deg, rgba(245,158,11,0.12), rgba(234,88,12,0.08))",
+                      border: "1px solid rgba(245,158,11,0.25)",
+                      textAlign: "center",
+                      flexShrink: 0,
+                    }}
+                  >
+                    <div style={{ fontSize: "1.1rem", fontWeight: 700, fontFamily: "Cormorant Garamond, serif", color: "#f59e0b" }}>
+                      {svc.metric}
                     </div>
+                  </div>
+                </div>
 
-                    <div style={{ marginBottom: "1.5rem" }}>
-                      <h4 style={{ fontSize: "0.8rem", textTransform: "uppercase", letterSpacing: "0.1em", color: "#f87171", marginBottom: "0.5rem", fontWeight: 600 }}>
+                {/* Two-column layout */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  {/* Left — Problem, How It Works, Example */}
+                  <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
+                    {/* Problem */}
+                    <GlassCard className="p-6" hoverEffect="border">
+                      <h4 style={{ fontSize: "0.75rem", textTransform: "uppercase", letterSpacing: "0.1em", color: "#f87171", marginBottom: "0.6rem", fontWeight: 600 }}>
                         The Problem
                       </h4>
-                      <p style={{ color: "var(--text-secondary)", lineHeight: 1.7 }}>
-                        {SERVICES[selected].problem}
+                      <p style={{ color: "var(--text-secondary)", lineHeight: 1.7, fontSize: "0.9rem" }}>
+                        {svc.problem}
                       </p>
-                    </div>
+                    </GlassCard>
 
-                    <div>
-                      <h4 style={{ fontSize: "0.8rem", textTransform: "uppercase", letterSpacing: "0.1em", color: "var(--success)", marginBottom: "0.5rem", fontWeight: 600 }}>
-                        Our Solution
+                    {/* How It Works */}
+                    <GlassCard className="p-6" hoverEffect="border">
+                      <h4 style={{ fontSize: "0.75rem", textTransform: "uppercase", letterSpacing: "0.1em", color: "var(--accent)", marginBottom: "0.75rem", fontWeight: 600 }}>
+                        How It Works
                       </h4>
-                      <p style={{ color: "var(--text-secondary)", lineHeight: 1.7 }}>
-                        {SERVICES[selected].solution}
+                      <div style={{ display: "flex", flexDirection: "column", gap: "0.6rem" }}>
+                        {svc.steps.map((step, j) => (
+                          <div key={j} style={{ display: "flex", gap: "0.6rem", alignItems: "flex-start" }}>
+                            <div
+                              style={{
+                                width: 22,
+                                height: 22,
+                                borderRadius: "50%",
+                                background: "linear-gradient(135deg, #f59e0b, #ea580c)",
+                                color: "#000",
+                                fontSize: "0.6rem",
+                                fontWeight: 700,
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                flexShrink: 0,
+                                marginTop: 2,
+                              }}
+                            >
+                              {j + 1}
+                            </div>
+                            <p style={{ color: "var(--text-secondary)", lineHeight: 1.55, fontSize: "0.85rem" }}>
+                              {step}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+                    </GlassCard>
+
+                    {/* Real Example */}
+                    <GlassCard className="p-6" hoverEffect="border">
+                      <h4 style={{ fontSize: "0.75rem", textTransform: "uppercase", letterSpacing: "0.1em", color: "var(--success)", marginBottom: "0.6rem", fontWeight: 600 }}>
+                        Real Example
+                      </h4>
+                      <p style={{ color: "var(--text-secondary)", lineHeight: 1.7, fontSize: "0.85rem", fontStyle: "italic" }}>
+                        {svc.example}
                       </p>
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "0.5rem",
+                          marginTop: "0.75rem",
+                          padding: "0.45rem 0.75rem",
+                          borderRadius: 8,
+                          background: "rgba(212,168,83,0.08)",
+                          border: "1px solid rgba(212,168,83,0.2)",
+                        }}
+                      >
+                        <DollarSign size={14} style={{ color: "#d4a853", flexShrink: 0 }} />
+                        <span style={{ color: "#d4a853", fontSize: "0.8rem", fontWeight: 600 }}>
+                          {svc.roi}
+                        </span>
+                      </div>
+                    </GlassCard>
+                  </div>
+
+                  {/* Right — What's Included */}
+                  <GlassCard className="p-6" hoverEffect="glow" style={{ height: "100%" }}>
+                    <h4 style={{ fontSize: "0.75rem", textTransform: "uppercase", letterSpacing: "0.1em", color: "var(--text-primary)", marginBottom: "1rem", fontWeight: 600 }}>
+                      What&apos;s Included
+                    </h4>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "0.65rem" }}>
+                      {svc.features.map((feature, j) => (
+                        <div key={j} style={{ display: "flex", alignItems: "flex-start", gap: "0.5rem" }}>
+                          <CheckCircle size={15} style={{ color: "#d4a853", flexShrink: 0, marginTop: 2 }} />
+                          <span style={{ color: "var(--text-secondary)", fontSize: "0.85rem", lineHeight: 1.5 }}>
+                            {feature}
+                          </span>
+                        </div>
+                      ))}
                     </div>
                   </GlassCard>
-                </motion.div>
-              </AnimatePresence>
-            </div>
+                </div>
+              </motion.div>
+            </AnimatePresence>
           </AnimatedSection>
         </div>
       </section>
@@ -173,7 +261,7 @@ export default function ServicesPage() {
               label="Integrations"
               title="Connects with the tools"
               titleHighlight="you already use"
-              subtitle="If it has an API, we can connect it. Here are the platforms we integrate with most."
+              subtitle="We don't replace your existing software. We plug into it and automate the gaps. If it has an API, we can connect it."
             />
           </AnimatedSection>
           <AnimatedSection delay={0.2}>
@@ -219,7 +307,7 @@ export default function ServicesPage() {
               },
               {
                 label: "Ozio Consulting",
-                color: "#34d399",
+                color: "#d4a853",
                 items: [
                   "Custom-built for your business",
                   "Fully managed & maintained monthly",
@@ -228,11 +316,11 @@ export default function ServicesPage() {
                 ],
                 verdict: "Built to last",
               },
-            ].map((col, i) => (
-              <AnimatedSection key={i} delay={i * 0.15}>
+            ].map((col, ci) => (
+              <AnimatedSection key={ci} delay={ci * 0.15}>
                 <GlassCard
                   className="p-8"
-                  hoverEffect={i === 2 ? "glow" : "lift"}
+                  hoverEffect={ci === 2 ? "glow" : "lift"}
                 >
                   <div
                     style={{
@@ -258,8 +346,8 @@ export default function ServicesPage() {
                           fontSize: "0.9rem",
                         }}
                       >
-                        {i === 2 ? (
-                          <CheckCircle size={16} style={{ color: "#34d399", flexShrink: 0 }} />
+                        {ci === 2 ? (
+                          <CheckCircle size={16} style={{ color: "#d4a853", flexShrink: 0 }} />
                         ) : (
                           <XIcon size={16} style={{ color: col.color, flexShrink: 0, opacity: 0.6 }} />
                         )}
@@ -291,7 +379,7 @@ export default function ServicesPage() {
       <CTABanner
         title="Ready to automate your"
         titleHighlight="biggest bottleneck?"
-        subtitle="No slides, no pitch. Just lunch, a real conversation, and we pick up the check."
+        subtitle="No slides, no pitch. Just a real conversation about your business — and we'll show you exactly where you're losing money."
         buttonText="Tell Us Your Problems"
         buttonHref="/schedule"
       />

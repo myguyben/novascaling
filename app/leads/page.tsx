@@ -244,7 +244,7 @@ function AddLeadModal({ onClose, onAdd }: { onClose: () => void; onAdd: (lead: P
 function Toast({ message, onClose }: { message: string; onClose: () => void }) {
   useEffect(() => { const t = setTimeout(onClose, 4000); return () => clearTimeout(t); }, [onClose]);
   return (
-    <div className="fixed top-6 right-6 z-50 px-5 py-3 rounded-2xl text-sm font-semibold flex items-center gap-2 animate-[slideIn_0.3s_ease-out]" style={{ background: "linear-gradient(135deg, #34d399, #f59e0b)", color: "#000", boxShadow: "0 8px 30px rgba(52,211,153,0.3)" }}>
+    <div className="fixed top-6 right-6 z-50 px-5 py-3 rounded-2xl text-sm font-semibold flex items-center gap-2 animate-[slideIn_0.3s_ease-out]" style={{ background: "linear-gradient(135deg, #d4a853, #f59e0b)", color: "#000", boxShadow: "0 8px 30px rgba(212,168,83,0.3)" }}>
       <Trophy size={16} />{message}
     </div>
   );
@@ -337,12 +337,12 @@ function LeadRow({
       className="w-full rounded-2xl p-4 md:p-5 transition-all duration-200"
       style={{
         background: isClient
-          ? "rgba(52,211,153,0.04)"
+          ? "rgba(212,168,83,0.04)"
           : hot
           ? "rgba(239,68,68,0.04)"
           : "rgba(255,255,255,0.02)",
         border: isClient
-          ? "1px solid rgba(52,211,153,0.15)"
+          ? "1px solid rgba(212,168,83,0.15)"
           : hot
           ? "1px solid rgba(239,68,68,0.12)"
           : "1px solid rgba(255,255,255,0.04)",
@@ -384,7 +384,7 @@ function LeadRow({
               {lead.area_label || AREA_OPTIONS.find((a) => a.value === lead.area)?.label || lead.area}
             </span>
             {isClient && (
-              <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full whitespace-nowrap shrink-0" style={{ background: "rgba(52,211,153,0.15)", color: "#34d399" }}>
+              <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full whitespace-nowrap shrink-0" style={{ background: "rgba(212,168,83,0.15)", color: "#d4a853" }}>
                 Client
               </span>
             )}
@@ -457,7 +457,7 @@ function LeadRow({
               <button
                 onClick={() => setShowReply(true)}
                 className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-bold cursor-pointer border-none transition-all"
-                style={{ background: "rgba(52,211,153,0.15)", color: "#34d399" }}
+                style={{ background: "rgba(212,168,83,0.15)", color: "#d4a853" }}
                 title="Click to view reply"
               >
                 <MessageSquareReply size={14} />
@@ -489,8 +489,8 @@ function LeadRow({
             onClick={() => onUpdate(lead.id, { status: isClient ? "new" : "client" })}
             className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-bold cursor-pointer border-none transition-all"
             style={{
-              background: isClient ? "rgba(52,211,153,0.15)" : "rgba(255,255,255,0.04)",
-              color: isClient ? "#34d399" : "var(--text-tertiary)",
+              background: isClient ? "rgba(212,168,83,0.15)" : "rgba(255,255,255,0.04)",
+              color: isClient ? "#d4a853" : "var(--text-tertiary)",
             }}
             title={isClient ? "Remove client status" : "Mark as client (sends notification)"}
           >

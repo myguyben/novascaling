@@ -43,7 +43,7 @@ type StatusFilter = "all" | "pending" | "confirmed" | "completed" | "cancelled";
 const STATUS_CONFIG: Record<string, { color: string; bg: string; border: string; label: string }> = {
   pending: { color: "#f59e0b", bg: "rgba(245,158,11,0.1)", border: "rgba(245,158,11,0.25)", label: "Pending" },
   confirmed: { color: "#f59e0b", bg: "rgba(245,158,11,0.1)", border: "rgba(245,158,11,0.25)", label: "Confirmed" },
-  completed: { color: "#34d399", bg: "rgba(52,211,153,0.1)", border: "rgba(52,211,153,0.25)", label: "Completed" },
+  completed: { color: "#d4a853", bg: "rgba(212,168,83,0.1)", border: "rgba(212,168,83,0.25)", label: "Completed" },
   cancelled: { color: "#ef4444", bg: "rgba(239,68,68,0.1)", border: "rgba(239,68,68,0.25)", label: "Cancelled" },
 };
 
@@ -499,7 +499,7 @@ export default function SchedulingPage() {
                         <>
                           <ActionButton
                             label="Completed"
-                            color="#34d399"
+                            color="#d4a853"
                             icon={<CheckCircle size={14} />}
                             loading={updating === req.id}
                             onClick={() => updateStatus(req.id, "completed")}

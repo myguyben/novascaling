@@ -40,7 +40,7 @@ export function CTABanner({
           {title}{" "}
           <span
             style={{
-              background: "linear-gradient(135deg, #f59e0b, #ea580c, #34d399)",
+              background: "linear-gradient(135deg, #f59e0b, #ea580c, #d4a853)",
               WebkitBackgroundClip: "text",
               WebkitTextFillColor: "transparent",
               backgroundClip: "text",

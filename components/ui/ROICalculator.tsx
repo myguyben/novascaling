@@ -105,7 +105,7 @@ export function ROICalculator() {
         </div>
 
         <div className="bg-[rgba(255,255,255,0.03)] border border-[rgba(255,255,255,0.06)] rounded-2xl p-5 text-center">
-          <div className="w-10 h-10 bg-[rgba(52,211,153,0.1)] rounded-xl flex items-center justify-center mx-auto mb-3 text-[var(--success)]">
+          <div className="w-10 h-10 bg-[rgba(212,168,83,0.1)] rounded-xl flex items-center justify-center mx-auto mb-3 text-[var(--success)]">
             <TrendingUp size={20} />
           </div>
           <div className="font-['Cormorant_Garamond'] text-2xl font-bold text-[var(--text-primary)]">

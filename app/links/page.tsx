@@ -53,7 +53,7 @@ const LINKS = [
     title: "Free Operations Audit",
     desc: "Find out where you're bleeding money.",
     href: "/audit",
-    accent: "#34d399",
+    accent: "#d4a853",
   },
   {
     icon: <Sparkles size={20} />,
@@ -121,7 +121,7 @@ export default function LinksPage() {
           width: "400px",
           height: "400px",
           background:
-            "radial-gradient(circle, rgba(52,211,153,0.08) 0%, transparent 60%)",
+            "radial-gradient(circle, rgba(212,168,83,0.08) 0%, transparent 60%)",
           borderRadius: "50%",
           pointerEvents: "none",
         }}

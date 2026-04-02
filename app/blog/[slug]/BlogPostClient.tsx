@@ -156,7 +156,7 @@ export default function BlogPostClient({ post }: BlogPostClientProps) {
                   post.category === "Operations Strategy"
                     ? "!border-[rgba(234,88,12,0.3)] !bg-[rgba(234,88,12,0.08)] !text-[#ea580c]"
                     : post.category === "Automation Playbooks"
-                    ? "!border-[rgba(52,211,153,0.3)] !bg-[rgba(52,211,153,0.08)] !text-[#34d399]"
+                    ? "!border-[rgba(212,168,83,0.3)] !bg-[rgba(212,168,83,0.08)] !text-[#d4a853]"
                     : undefined
                 }
               >
