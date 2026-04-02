@@ -423,32 +423,53 @@ export default function CampaignsPage() {
               </div>
             ) : detail && (
               <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
-                {/* Stats Row */}
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))", gap: "0.75rem" }}>
-                  {[
-                    { label: "Enrolled", value: detail.enrollments?.length || 0, color: "#f59e0b" },
-                    { label: "Active", value: detail.enrollments?.filter((e: any) => e.status === "active").length || 0, color: "#d4a853" },
-                    { label: "Completed", value: detail.enrollments?.filter((e: any) => e.status === "completed").length || 0, color: "#d4a853" },
-                    { label: "Replied", value: detail.enrollments?.filter((e: any) => e.status === "replied").length || 0, color: "#f59e0b" },
-                    { label: "Unsubscribed", value: detail.enrollments?.filter((e: any) => e.status === "unsubscribed").length || 0, color: "#ef4444" },
-                  ].map((s, i) => (
-                    <div key={i} style={{ padding: "1rem", borderRadius: 14, background: `${s.color}10`, border: `1px solid ${s.color}25`, textAlign: "center" }}>
-                      <div style={{ fontSize: "1.8rem", fontWeight: 700, fontFamily: "Cormorant Garamond, serif", color: s.color }}>{s.value}</div>
-                      <div style={{ fontSize: "0.7rem", color: "var(--text-secondary)", textTransform: "uppercase", letterSpacing: "0.05em", fontWeight: 600 }}>{s.label}</div>
-                    </div>
-                  ))}
+                {/* Enrollment Stats */}
+                <div style={{ ...cardStyle }}>
+                  <h3 style={cardTitle}>Enrollment Status</h3>
+                  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(100px, 1fr))", gap: "0.5rem" }}>
+                    {[
+                      { label: "Enrolled", value: detail.enrollments?.length || 0, color: "#f59e0b" },
+                      { label: "Active", value: detail.enrollments?.filter((e: any) => e.status === "active").length || 0, color: "#d4a853" },
+                      { label: "Completed", value: detail.enrollments?.filter((e: any) => e.status === "completed").length || 0, color: "#d4a853" },
+                      { label: "Replied", value: detail.enrollments?.filter((e: any) => e.status === "replied").length || 0, color: "#f59e0b" },
+                      { label: "Bounced", value: detail.enrollments?.filter((e: any) => e.status === "bounced").length || 0, color: "#ef4444" },
+                      { label: "Unsubscribed", value: detail.enrollments?.filter((e: any) => e.status === "unsubscribed").length || 0, color: "#ef4444" },
+                    ].map((s, i) => (
+                      <div key={i} style={{ padding: "0.75rem", borderRadius: 12, background: `${s.color}10`, border: `1px solid ${s.color}25`, textAlign: "center" }}>
+                        <div style={{ fontSize: "1.5rem", fontWeight: 700, fontFamily: "Cormorant Garamond, serif", color: s.color }}>{s.value}</div>
+                        <div style={{ fontSize: "0.6rem", color: "var(--text-secondary)", textTransform: "uppercase", letterSpacing: "0.05em", fontWeight: 600 }}>{s.label}</div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
 
-                {/* Steps */}
+                {/* Steps with delivery stats */}
                 <div style={{ ...cardStyle }}>
-                  <h3 style={cardTitle}>Sequence Steps</h3>
+                  <h3 style={cardTitle}>Sequence Steps — Delivery Stats</h3>
                   <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
                     {(detail.steps || []).map((step: any, i: number) => (
                       <div key={step.id} style={{ padding: "1rem", borderRadius: 12, background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.04)" }}>
-                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.25rem" }}>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.5rem" }}>
                           <span style={{ fontSize: "0.8rem", fontWeight: 600, color: "#f59e0b" }}>Step {step.step_number} — {step.delay_days === 0 ? "Immediate" : `Day ${step.delay_days}`}</span>
                         </div>
-                        <p style={{ fontSize: "0.9rem", fontWeight: 500, color: "var(--text-primary)" }}>{step.subject}</p>
+                        <p style={{ fontSize: "0.9rem", fontWeight: 500, color: "var(--text-primary)", marginBottom: "0.5rem" }}>{step.subject}</p>
+                        {step.stats && step.stats.total > 0 && (
+                          <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
+                            {[
+                              { label: "Sent", value: step.stats.total, color: "#64748b" },
+                              { label: "Delivered", value: step.stats.delivered, color: "#d4a853" },
+                              { label: "Opened", value: step.stats.opened, color: "#f59e0b" },
+                              { label: "Clicked", value: step.stats.clicked, color: "#f59e0b" },
+                              { label: "Bounced", value: step.stats.bounced, color: "#ef4444" },
+                              { label: "Spam", value: step.stats.spam, color: "#ef4444" },
+                              { label: "Dropped", value: step.stats.dropped, color: "#ef4444" },
+                            ].filter((s) => s.value > 0).map((s, j) => (
+                              <span key={j} style={{ padding: "0.15rem 0.5rem", borderRadius: 6, fontSize: "0.65rem", fontWeight: 600, color: s.color, background: `${s.color}15`, border: `1px solid ${s.color}25` }}>
+                                {s.value} {s.label}
+                              </span>
+                            ))}
+                          </div>
+                        )}
                       </div>
                     ))}
                   </div>

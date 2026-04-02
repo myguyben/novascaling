@@ -13,9 +13,11 @@ interface AuthGateProps {
 
 export function AuthGate({ children, title = "Ozio Consulting" }: AuthGateProps) {
   const [state, setState] = useState<"loading" | "login" | "authed" | "denied">("loading");
+  const [mode, setMode] = useState<"signin" | "signup">("signin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
@@ -47,6 +49,7 @@ export function AuthGate({ children, title = "Ozio Consulting" }: AuthGateProps)
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
+    setSuccess("");
 
     if (!email.endsWith(`@${ALLOWED_DOMAIN}`)) {
       setError(`Only @${ALLOWED_DOMAIN} emails are allowed.`);
@@ -54,14 +57,23 @@ export function AuthGate({ children, title = "Ozio Consulting" }: AuthGateProps)
     }
 
     setSubmitting(true);
-    const { error: authError } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-    setSubmitting(false);
 
-    if (authError) {
-      setError(authError.message);
+    if (mode === "signup") {
+      const { error: signUpError } = await supabase.auth.signUp({ email, password });
+      setSubmitting(false);
+      if (signUpError) {
+        setError(signUpError.message);
+      } else {
+        setSuccess("Account created! You can now sign in.");
+        setMode("signin");
+        setPassword("");
+      }
+    } else {
+      const { error: authError } = await supabase.auth.signInWithPassword({ email, password });
+      setSubmitting(false);
+      if (authError) {
+        setError(authError.message);
+      }
     }
   }
 
@@ -118,7 +130,7 @@ export function AuthGate({ children, title = "Ozio Consulting" }: AuthGateProps)
             <h1 style={headingStyle}>{title}</h1>
           </div>
           <p style={{ ...subStyle, marginBottom: "1.5rem" }}>
-            Sign in with your @{ALLOWED_DOMAIN} email
+            {mode === "signin" ? "Sign in" : "Create an account"} with your @{ALLOWED_DOMAIN} email
           </p>
           <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
             <input
@@ -131,7 +143,7 @@ export function AuthGate({ children, title = "Ozio Consulting" }: AuthGateProps)
             />
             <input
               type="password"
-              placeholder="Password"
+              placeholder={mode === "signup" ? "Create a password (min 6 chars)" : "Password"}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
@@ -140,6 +152,9 @@ export function AuthGate({ children, title = "Ozio Consulting" }: AuthGateProps)
             />
             {error && (
               <p style={{ color: "#ef4444", fontSize: "0.8rem", margin: 0 }}>{error}</p>
+            )}
+            {success && (
+              <p style={{ color: "#d4a853", fontSize: "0.8rem", margin: 0 }}>{success}</p>
             )}
             <button
               type="submit"
@@ -150,7 +165,14 @@ export function AuthGate({ children, title = "Ozio Consulting" }: AuthGateProps)
                 cursor: submitting ? "wait" : "pointer",
               }}
             >
-              {submitting ? "Signing in..." : "Sign In"}
+              {submitting ? (mode === "signup" ? "Creating account..." : "Signing in...") : (mode === "signup" ? "Create Account" : "Sign In")}
+            </button>
+            <button
+              type="button"
+              onClick={() => { setMode(mode === "signin" ? "signup" : "signin"); setError(""); setSuccess(""); }}
+              style={{ background: "none", border: "none", color: "#f59e0b", fontSize: "0.8rem", cursor: "pointer", padding: "0.25rem 0" }}
+            >
+              {mode === "signin" ? "Need an account? Sign up" : "Already have an account? Sign in"}
             </button>
           </form>
         </div>
