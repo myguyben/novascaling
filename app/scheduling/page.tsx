@@ -42,7 +42,7 @@ type StatusFilter = "all" | "pending" | "confirmed" | "completed" | "cancelled";
 
 const STATUS_CONFIG: Record<string, { color: string; bg: string; border: string; label: string }> = {
   pending: { color: "#f59e0b", bg: "rgba(245,158,11,0.1)", border: "rgba(245,158,11,0.25)", label: "Pending" },
-  confirmed: { color: "#38bdf8", bg: "rgba(56,189,248,0.1)", border: "rgba(56,189,248,0.25)", label: "Confirmed" },
+  confirmed: { color: "#f59e0b", bg: "rgba(245,158,11,0.1)", border: "rgba(245,158,11,0.25)", label: "Confirmed" },
   completed: { color: "#34d399", bg: "rgba(52,211,153,0.1)", border: "rgba(52,211,153,0.25)", label: "Completed" },
   cancelled: { color: "#ef4444", bg: "rgba(239,68,68,0.1)", border: "rgba(239,68,68,0.25)", label: "Cancelled" },
 };
@@ -191,7 +191,7 @@ export default function SchedulingPage() {
                   width: 36,
                   height: 36,
                   borderRadius: 10,
-                  background: "linear-gradient(135deg, #38bdf8, #818cf8)",
+                  background: "linear-gradient(135deg, #f59e0b, #ea580c)",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
@@ -203,7 +203,7 @@ export default function SchedulingPage() {
             <div>
               <h1
                 style={{
-                  fontFamily: "Outfit, sans-serif",
+                  fontFamily: "Cormorant Garamond, serif",
                   fontSize: "1.6rem",
                   fontWeight: 700,
                   letterSpacing: "-0.03em",
@@ -265,7 +265,7 @@ export default function SchedulingPage() {
                   style={{
                     fontSize: "1.8rem",
                     fontWeight: 700,
-                    fontFamily: "Outfit, sans-serif",
+                    fontFamily: "Cormorant Garamond, serif",
                     color: cfg.color,
                   }}
                 >
@@ -383,19 +383,19 @@ export default function SchedulingPage() {
                             width: 40,
                             height: 40,
                             borderRadius: 12,
-                            background: req.meeting_type === "lunch" ? "rgba(245,158,11,0.12)" : "rgba(56,189,248,0.12)",
-                            border: `1px solid ${req.meeting_type === "lunch" ? "rgba(245,158,11,0.25)" : "rgba(56,189,248,0.25)"}`,
+                            background: req.meeting_type === "lunch" ? "rgba(245,158,11,0.12)" : "rgba(245,158,11,0.12)",
+                            border: `1px solid ${req.meeting_type === "lunch" ? "rgba(245,158,11,0.25)" : "rgba(245,158,11,0.25)"}`,
                             display: "flex",
                             alignItems: "center",
                             justifyContent: "center",
-                            color: req.meeting_type === "lunch" ? "#f59e0b" : "#38bdf8",
+                            color: req.meeting_type === "lunch" ? "#f59e0b" : "#f59e0b",
                             flexShrink: 0,
                           }}
                         >
                           {req.meeting_type === "lunch" ? <Coffee size={18} /> : <Video size={18} />}
                         </div>
                         <div>
-                          <div style={{ fontFamily: "Outfit, sans-serif", fontWeight: 600, fontSize: "1rem" }}>
+                          <div style={{ fontFamily: "Cormorant Garamond, serif", fontWeight: 600, fontSize: "1rem" }}>
                             {req.name}
                           </div>
                           <div style={{ color: "var(--text-secondary)", fontSize: "0.8rem" }}>
@@ -481,7 +481,7 @@ export default function SchedulingPage() {
                         <>
                           <ActionButton
                             label="Confirm"
-                            color="#38bdf8"
+                            color="#f59e0b"
                             icon={<CheckCircle size={14} />}
                             loading={updating === req.id}
                             onClick={() => updateStatus(req.id, "confirmed")}

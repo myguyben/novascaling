@@ -30,17 +30,17 @@ export function CTABanner({
     >
       {/* Gradient Orbs */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute w-[500px] h-[500px] rounded-full blur-[100px] bg-[radial-gradient(circle,rgba(56,189,248,0.2)_0%,transparent_70%)] top-[-20%] right-[-10%]" />
-        <div className="absolute w-[400px] h-[400px] rounded-full blur-[100px] bg-[radial-gradient(circle,rgba(129,140,248,0.15)_0%,transparent_70%)] bottom-[-20%] left-[-10%]" />
+        <div className="absolute w-[500px] h-[500px] rounded-full blur-[100px] bg-[radial-gradient(circle,rgba(245,158,11,0.2)_0%,transparent_70%)] top-[-20%] right-[-10%]" />
+        <div className="absolute w-[400px] h-[400px] rounded-full blur-[100px] bg-[radial-gradient(circle,rgba(234,88,12,0.15)_0%,transparent_70%)] bottom-[-20%] left-[-10%]" />
       </div>
 
       {/* Content */}
       <div className="relative z-10 max-w-[700px] mx-auto text-center">
-        <h2 className="font-['Outfit'] text-[clamp(2.2rem,4vw,3.5rem)] font-bold mb-6 leading-tight">
+        <h2 className="font-['Cormorant_Garamond'] text-[clamp(2.2rem,4vw,3.5rem)] font-bold mb-6 leading-tight">
           {title}{" "}
           <span
             style={{
-              background: "linear-gradient(135deg, #38bdf8, #818cf8, #34d399)",
+              background: "linear-gradient(135deg, #f59e0b, #ea580c, #34d399)",
               WebkitBackgroundClip: "text",
               WebkitTextFillColor: "transparent",
               backgroundClip: "text",

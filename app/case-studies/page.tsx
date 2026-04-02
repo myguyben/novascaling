@@ -50,8 +50,8 @@ export default function CaseStudiesPage() {
                     style={{
                       fontSize: "3.5rem",
                       fontWeight: 700,
-                      fontFamily: "Outfit, sans-serif",
-                      background: "linear-gradient(135deg, #38bdf8, #818cf8)",
+                      fontFamily: "Cormorant Garamond, serif",
+                      background: "linear-gradient(135deg, #f59e0b, #ea580c)",
                       WebkitBackgroundClip: "text",
                       WebkitTextFillColor: "transparent",
                       backgroundClip: "text",
@@ -85,7 +85,7 @@ export default function CaseStudiesPage() {
               <GlassCard className="p-8 md:p-10" hoverEffect="border">
                 <div style={{ display: "flex", alignItems: "center", gap: "1rem", marginBottom: "2rem", flexWrap: "wrap" }}>
                   <Badge>{cs.industry}</Badge>
-                  <span style={{ color: "var(--text-primary)", fontFamily: "Outfit, sans-serif", fontSize: "1.3rem", fontWeight: 600 }}>
+                  <span style={{ color: "var(--text-primary)", fontFamily: "Cormorant Garamond, serif", fontSize: "1.3rem", fontWeight: 600 }}>
                     {cs.company}
                   </span>
                   <span style={{ color: "var(--text-tertiary)", fontSize: "0.85rem" }}>
@@ -141,8 +141,8 @@ export default function CaseStudiesPage() {
                       textAlign: "center",
                     }}
                   >
-                    <Clock size={18} style={{ color: "#38bdf8", marginBottom: "0.5rem" }} />
-                    <div style={{ fontSize: "1.8rem", fontWeight: 700, fontFamily: "Outfit, sans-serif", color: "#34d399" }}>
+                    <Clock size={18} style={{ color: "#f59e0b", marginBottom: "0.5rem" }} />
+                    <div style={{ fontSize: "1.8rem", fontWeight: 700, fontFamily: "Cormorant Garamond, serif", color: "#34d399" }}>
                       <CountUp end={cs.metrics.hoursSaved} />
                     </div>
                     <div style={{ fontSize: "0.75rem", color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.05em" }}>
@@ -159,7 +159,7 @@ export default function CaseStudiesPage() {
                       textAlign: "center",
                     }}
                   >
-                    <Timer size={18} style={{ color: "#38bdf8", marginBottom: "0.5rem" }} />
+                    <Timer size={18} style={{ color: "#f59e0b", marginBottom: "0.5rem" }} />
                     <div style={{ fontSize: "0.8rem", color: "var(--text-tertiary)", marginBottom: "0.25rem" }}>
                       Before: <span style={{ color: "#f87171" }}>{cs.metrics.responseTime.before}</span>
                     </div>
@@ -180,7 +180,7 @@ export default function CaseStudiesPage() {
                       textAlign: "center",
                     }}
                   >
-                    <SmilePlus size={18} style={{ color: "#38bdf8", marginBottom: "0.5rem" }} />
+                    <SmilePlus size={18} style={{ color: "#f59e0b", marginBottom: "0.5rem" }} />
                     <div style={{ fontSize: "0.8rem", color: "var(--text-tertiary)", marginBottom: "0.25rem" }}>
                       Before: <span style={{ color: "#f87171" }}>{cs.metrics.satisfaction.before}</span>
                     </div>
@@ -201,8 +201,8 @@ export default function CaseStudiesPage() {
                       textAlign: "center",
                     }}
                   >
-                    <DollarSign size={18} style={{ color: "#38bdf8", marginBottom: "0.5rem" }} />
-                    <div style={{ fontSize: "1.8rem", fontWeight: 700, fontFamily: "Outfit, sans-serif", color: "#34d399" }}>
+                    <DollarSign size={18} style={{ color: "#f59e0b", marginBottom: "0.5rem" }} />
+                    <div style={{ fontSize: "1.8rem", fontWeight: 700, fontFamily: "Cormorant Garamond, serif", color: "#34d399" }}>
                       $<CountUp end={cs.metrics.monthlySavings} />
                     </div>
                     <div style={{ fontSize: "0.75rem", color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.05em" }}>
@@ -214,8 +214,8 @@ export default function CaseStudiesPage() {
                 {/* Quote */}
                 <div
                   style={{
-                    background: "rgba(56,189,248,0.04)",
-                    border: "1px solid rgba(56,189,248,0.1)",
+                    background: "rgba(245,158,11,0.04)",
+                    border: "1px solid rgba(245,158,11,0.1)",
                     borderRadius: 14,
                     padding: "1.5rem 2rem",
                     display: "flex",
@@ -223,7 +223,7 @@ export default function CaseStudiesPage() {
                     alignItems: "flex-start",
                   }}
                 >
-                  <Quote size={24} style={{ color: "#38bdf8", flexShrink: 0, marginTop: 2 }} />
+                  <Quote size={24} style={{ color: "#f59e0b", flexShrink: 0, marginTop: 2 }} />
                   <p style={{ color: "var(--text-secondary)", fontStyle: "italic", lineHeight: 1.7, fontSize: "0.95rem" }}>
                     {cs.quote}
                   </p>
@@ -238,7 +238,7 @@ export default function CaseStudiesPage() {
         title="Ready to become the next"
         titleHighlight="success story?"
         subtitle="Lunch is on us. We'll show you the projected savings for your business — no pitch, no slides."
-        buttonText="Let's Do Lunch"
+        buttonText="Tell Us Your Problems"
         buttonHref="/schedule"
       />
     </PageLayout>

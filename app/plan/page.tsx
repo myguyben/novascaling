@@ -55,7 +55,7 @@ export default function BusinessPlan() {
                         onClick={() => setActiveTab(tab.id as any)}
                         className={`glass-panel plan-tab`}
                         style={{
-                            background: activeTab === tab.id ? 'rgba(56, 189, 248, 0.1)' : 'var(--glass-bg)',
+                            background: activeTab === tab.id ? 'rgba(245, 158, 11, 0.1)' : 'var(--glass-bg)',
                             border: activeTab === tab.id ? '1px solid var(--accent)' : '1px solid var(--glass-border)',
                             color: activeTab === tab.id ? 'var(--text-primary)' : 'var(--text-secondary)'
                         }}

@@ -14,7 +14,7 @@ export function ROICalculator() {
 
   return (
     <GlassCard className="p-8 md:p-10 max-w-[700px] mx-auto" hoverEffect="glow">
-      <h3 className="font-['Outfit'] text-2xl font-bold mb-2 text-center">
+      <h3 className="font-['Cormorant_Garamond'] text-2xl font-bold mb-2 text-center">
         Calculate Your Savings
       </h3>
       <p className="text-[var(--text-secondary)] text-sm text-center mb-8">
@@ -28,7 +28,7 @@ export function ROICalculator() {
             <label className="text-sm font-medium text-[var(--text-secondary)]">
               Hours spent on repetitive tasks / week
             </label>
-            <span className="font-['Outfit'] text-lg font-bold text-[var(--accent)]">
+            <span className="font-['Cormorant_Garamond'] text-lg font-bold text-[var(--accent)]">
               {hoursPerWeek}h
             </span>
           </div>
@@ -40,7 +40,7 @@ export function ROICalculator() {
             onChange={(e) => setHoursPerWeek(Number(e.target.value))}
             className="w-full h-2 rounded-full appearance-none cursor-pointer bg-[rgba(255,255,255,0.06)]"
             style={{
-              accentColor: "#38bdf8",
+              accentColor: "#f59e0b",
             }}
           />
           <div className="flex justify-between text-xs text-[var(--text-tertiary)] mt-1">
@@ -55,7 +55,7 @@ export function ROICalculator() {
             <label className="text-sm font-medium text-[var(--text-secondary)]">
               Your effective hourly rate
             </label>
-            <span className="font-['Outfit'] text-lg font-bold text-[var(--accent)]">
+            <span className="font-['Cormorant_Garamond'] text-lg font-bold text-[var(--accent)]">
               ${hourlyRate}
             </span>
           </div>
@@ -68,7 +68,7 @@ export function ROICalculator() {
             onChange={(e) => setHourlyRate(Number(e.target.value))}
             className="w-full h-2 rounded-full appearance-none cursor-pointer bg-[rgba(255,255,255,0.06)]"
             style={{
-              accentColor: "#38bdf8",
+              accentColor: "#f59e0b",
             }}
           />
           <div className="flex justify-between text-xs text-[var(--text-tertiary)] mt-1">
@@ -81,10 +81,10 @@ export function ROICalculator() {
       {/* Results */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="bg-[rgba(255,255,255,0.03)] border border-[rgba(255,255,255,0.06)] rounded-2xl p-5 text-center">
-          <div className="w-10 h-10 bg-[rgba(56,189,248,0.1)] rounded-xl flex items-center justify-center mx-auto mb-3 text-[var(--accent)]">
+          <div className="w-10 h-10 bg-[rgba(245,158,11,0.1)] rounded-xl flex items-center justify-center mx-auto mb-3 text-[var(--accent)]">
             <Clock size={20} />
           </div>
-          <div className="font-['Outfit'] text-2xl font-bold text-[var(--text-primary)]">
+          <div className="font-['Cormorant_Garamond'] text-2xl font-bold text-[var(--text-primary)]">
             {monthlySavingsHours}h
           </div>
           <div className="text-xs text-[var(--text-tertiary)] uppercase tracking-wide mt-1">
@@ -92,11 +92,11 @@ export function ROICalculator() {
           </div>
         </div>
 
-        <div className="bg-[rgba(255,255,255,0.03)] border border-[rgba(56,189,248,0.2)] rounded-2xl p-5 text-center">
-          <div className="w-10 h-10 bg-[rgba(56,189,248,0.1)] rounded-xl flex items-center justify-center mx-auto mb-3 text-[var(--accent)]">
+        <div className="bg-[rgba(255,255,255,0.03)] border border-[rgba(245,158,11,0.2)] rounded-2xl p-5 text-center">
+          <div className="w-10 h-10 bg-[rgba(245,158,11,0.1)] rounded-xl flex items-center justify-center mx-auto mb-3 text-[var(--accent)]">
             <DollarSign size={20} />
           </div>
-          <div className="font-['Outfit'] text-2xl font-bold text-[var(--success)]">
+          <div className="font-['Cormorant_Garamond'] text-2xl font-bold text-[var(--success)]">
             ${monthlySavingsDollars.toLocaleString()}
           </div>
           <div className="text-xs text-[var(--text-tertiary)] uppercase tracking-wide mt-1">
@@ -108,7 +108,7 @@ export function ROICalculator() {
           <div className="w-10 h-10 bg-[rgba(52,211,153,0.1)] rounded-xl flex items-center justify-center mx-auto mb-3 text-[var(--success)]">
             <TrendingUp size={20} />
           </div>
-          <div className="font-['Outfit'] text-2xl font-bold text-[var(--text-primary)]">
+          <div className="font-['Cormorant_Garamond'] text-2xl font-bold text-[var(--text-primary)]">
             ${annualSavings.toLocaleString()}
           </div>
           <div className="text-xs text-[var(--text-tertiary)] uppercase tracking-wide mt-1">

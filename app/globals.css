@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Inter:wght@400;500;600&display=swap');
 @import "tailwindcss";
 
 @source "../components";
@@ -11,10 +11,10 @@
   --glass-bg: rgba(255, 255, 255, 0.03);
   --glass-border: rgba(255, 255, 255, 0.06);
   --glass-highlight: rgba(255, 255, 255, 0.12);
-  --accent: #38bdf8;
-  --accent-glow: rgba(56, 189, 248, 0.4);
-  --accent-2: #818cf8;
-  --accent-2-glow: rgba(129, 140, 248, 0.4);
+  --accent: #f59e0b;
+  --accent-glow: rgba(245, 158, 11, 0.4);
+  --accent-2: #ea580c;
+  --accent-2-glow: rgba(234, 88, 12, 0.4);
   --success: #34d399;
   --text-primary: #f1f5f9;
   --text-secondary: #64748b;
@@ -47,7 +47,7 @@
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Outfit', sans-serif;
+    font-family: 'Cormorant Garamond', serif;
     letter-spacing: -0.03em;
     line-height: 1.1;
   }
@@ -58,7 +58,7 @@
   }
 
   ::selection {
-    background: rgba(56, 189, 248, 0.3);
+    background: rgba(245, 158, 11, 0.35);
     color: #fff;
   }
 }
@@ -111,7 +111,7 @@
 }
 
 .logo-text {
-  font-family: 'Outfit', sans-serif;
+  font-family: 'Cormorant Garamond', serif;
   font-weight: 700;
   font-size: 1.3rem;
   letter-spacing: -0.02em;
@@ -255,7 +255,7 @@
 .hero-orb-1 {
   width: 600px;
   height: 600px;
-  background: radial-gradient(circle, rgba(56, 189, 248, 0.25) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(245, 158, 11, 0.25) 0%, transparent 70%);
   top: -15%;
   left: 50%;
   transform: translateX(-50%);
@@ -265,7 +265,7 @@
 .hero-orb-2 {
   width: 400px;
   height: 400px;
-  background: radial-gradient(circle, rgba(129, 140, 248, 0.2) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(234, 88, 12, 0.2) 0%, transparent 70%);
   bottom: 10%;
   left: 10%;
   animation: float2 10s ease-in-out infinite;
@@ -319,8 +319,8 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.5rem 1.2rem;
-  background: rgba(56, 189, 248, 0.08);
-  border: 1px solid rgba(56, 189, 248, 0.2);
+  background: rgba(245, 158, 11, 0.08);
+  border: 1px solid rgba(245, 158, 11, 0.2);
   border-radius: 100px;
   font-size: 0.85rem;
   color: var(--accent);
@@ -336,7 +336,7 @@
 }
 
 .text-gradient-hero {
-  background: linear-gradient(135deg, #38bdf8 0%, #818cf8 50%, #34d399 100%);
+  background: linear-gradient(135deg, #f59e0b 0%, #ea580c 50%, #34d399 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -367,10 +367,10 @@
 }
 
 .hero-stat-value {
-  font-family: 'Outfit', sans-serif;
+  font-family: 'Cormorant Garamond', serif;
   font-size: 2rem;
   font-weight: 700;
-  background: linear-gradient(135deg, #38bdf8, #818cf8);
+  background: linear-gradient(135deg, #f59e0b, #ea580c);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -541,7 +541,7 @@
 }
 
 .ant-letter {
-  font-family: 'Outfit', sans-serif;
+  font-family: 'Cormorant Garamond', serif;
   font-size: 3.5rem;
   font-weight: 800;
   line-height: 1;
@@ -590,14 +590,14 @@
 
 .capability-pill:hover {
   border-color: var(--accent);
-  background: rgba(56, 189, 248, 0.05);
+  background: rgba(245, 158, 11, 0.05);
   transform: translateY(-2px);
 }
 
 .capability-icon {
   width: 44px;
   height: 44px;
-  background: rgba(56, 189, 248, 0.1);
+  background: rgba(245, 158, 11, 0.1);
   border-radius: 12px;
   display: flex;
   align-items: center;
@@ -631,8 +631,8 @@
 .process-step-icon {
   width: 56px;
   height: 56px;
-  background: linear-gradient(135deg, rgba(56, 189, 248, 0.15), rgba(129, 140, 248, 0.15));
-  border: 1px solid rgba(56, 189, 248, 0.3);
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(234, 88, 12, 0.15));
+  border: 1px solid rgba(245, 158, 11, 0.3);
   border-radius: 16px;
   display: flex;
   align-items: center;
@@ -643,7 +643,7 @@
 .process-step-line {
   width: 2px;
   height: 60px;
-  background: linear-gradient(to bottom, rgba(56, 189, 248, 0.3), rgba(129, 140, 248, 0.1));
+  background: linear-gradient(to bottom, rgba(245, 158, 11, 0.3), rgba(234, 88, 12, 0.1));
   margin: 0.5rem 0;
 }
 
@@ -703,10 +703,10 @@
 }
 
 .pricing-card-featured {
-  border-color: rgba(56, 189, 248, 0.3);
-  background: linear-gradient(180deg, rgba(56, 189, 248, 0.06) 0%, var(--glass-bg) 50%);
+  border-color: rgba(245, 158, 11, 0.3);
+  background: linear-gradient(180deg, rgba(245, 158, 11, 0.06) 0%, var(--glass-bg) 50%);
   transform: scale(1.03);
-  box-shadow: 0 0 40px rgba(56, 189, 248, 0.1);
+  box-shadow: 0 0 40px rgba(245, 158, 11, 0.1);
 }
 
 .pricing-card-featured:hover {
@@ -737,7 +737,7 @@
 }
 
 .pricing-price {
-  font-family: 'Outfit', sans-serif;
+  font-family: 'Cormorant Garamond', serif;
   font-size: 3rem;
   font-weight: 700;
   margin-bottom: 0.5rem;
@@ -812,8 +812,8 @@
 .trust-icon {
   width: 52px;
   height: 52px;
-  background: linear-gradient(135deg, rgba(56, 189, 248, 0.1), rgba(129, 140, 248, 0.1));
-  border: 1px solid rgba(56, 189, 248, 0.15);
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(234, 88, 12, 0.1));
+  border: 1px solid rgba(245, 158, 11, 0.15);
   border-radius: 14px;
   display: flex;
   align-items: center;
@@ -855,7 +855,7 @@
 .cta-orb-1 {
   width: 500px;
   height: 500px;
-  background: radial-gradient(circle, rgba(56, 189, 248, 0.2) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(245, 158, 11, 0.2) 0%, transparent 70%);
   top: -20%;
   right: -10%;
 }
@@ -863,7 +863,7 @@
 .cta-orb-2 {
   width: 400px;
   height: 400px;
-  background: radial-gradient(circle, rgba(129, 140, 248, 0.15) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(234, 88, 12, 0.15) 0%, transparent 70%);
   bottom: -20%;
   left: -10%;
 }
@@ -1019,7 +1019,7 @@
 
 /* ─── Legacy Dashboard Styles ─── */
 .text-gradient {
-  background: linear-gradient(to right, #38bdf8, #818cf8);
+  background: linear-gradient(to right, #f59e0b, #ea580c);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -1092,7 +1092,7 @@
 .metric-value {
   font-size: 3rem;
   font-weight: 700;
-  font-family: 'Outfit', sans-serif;
+  font-family: 'Cormorant Garamond', serif;
   color: var(--text-primary);
 }
 
@@ -1118,7 +1118,7 @@
   left: 0;
   width: 4px;
   height: 100%;
-  background: linear-gradient(to bottom, #38bdf8, #818cf8);
+  background: linear-gradient(to bottom, #f59e0b, #ea580c);
 }
 
 .win-list {
@@ -1277,7 +1277,7 @@
 .form-group select:focus,
 .form-group textarea:focus {
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.1);
+  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
 }
 
 .form-group select {
@@ -1373,12 +1373,12 @@
 }
 
 .calendar-day:hover:not(.calendar-day--disabled) {
-  background: rgba(56, 189, 248, 0.1);
-  border-color: rgba(56, 189, 248, 0.3);
+  background: rgba(245, 158, 11, 0.1);
+  border-color: rgba(245, 158, 11, 0.3);
 }
 
 .calendar-day--selected {
-  background: linear-gradient(135deg, #38bdf8, #818cf8) !important;
+  background: linear-gradient(135deg, #f59e0b, #ea580c) !important;
   color: black !important;
   font-weight: 600;
 }
@@ -1390,7 +1390,7 @@
 }
 
 .calendar-day--today {
-  border-color: rgba(56, 189, 248, 0.4);
+  border-color: rgba(245, 158, 11, 0.4);
 }
 
 .time-slot-grid {
@@ -1412,12 +1412,12 @@
 }
 
 .time-slot:hover {
-  border-color: rgba(56, 189, 248, 0.3);
-  background: rgba(56, 189, 248, 0.08);
+  border-color: rgba(245, 158, 11, 0.3);
+  background: rgba(245, 158, 11, 0.08);
 }
 
 .time-slot--selected {
-  background: linear-gradient(135deg, #38bdf8, #818cf8) !important;
+  background: linear-gradient(135deg, #f59e0b, #ea580c) !important;
   color: black !important;
   font-weight: 600;
   border-color: transparent !important;
@@ -1446,13 +1446,13 @@
 }
 
 .meeting-type-btn:hover {
-  border-color: rgba(56, 189, 248, 0.2);
+  border-color: rgba(245, 158, 11, 0.2);
 }
 
 .meeting-type-btn--selected {
-  background: rgba(56, 189, 248, 0.1);
-  border-color: rgba(56, 189, 248, 0.4);
-  color: #38bdf8;
+  background: rgba(245, 158, 11, 0.1);
+  border-color: rgba(245, 158, 11, 0.4);
+  color: #f59e0b;
   font-weight: 600;
 }
 

@@ -48,12 +48,12 @@ export default function BlogPage() {
                     borderRadius: "100px",
                     border: `1px solid ${
                       activeCategory === category
-                        ? "rgba(56, 189, 248, 0.5)"
+                        ? "rgba(245, 158, 11, 0.5)"
                         : "rgba(255, 255, 255, 0.06)"
                     }`,
                     background:
                       activeCategory === category
-                        ? "rgba(56, 189, 248, 0.12)"
+                        ? "rgba(245, 158, 11, 0.12)"
                         : "rgba(255, 255, 255, 0.03)",
                     color:
                       activeCategory === category
@@ -92,7 +92,7 @@ export default function BlogPage() {
                       <Badge
                         className={
                           post.category === "Operations Strategy"
-                            ? "!border-[rgba(129,140,248,0.3)] !bg-[rgba(129,140,248,0.08)] !text-[#818cf8]"
+                            ? "!border-[rgba(234,88,12,0.3)] !bg-[rgba(234,88,12,0.08)] !text-[#ea580c]"
                             : post.category === "Automation Playbooks"
                             ? "!border-[rgba(52,211,153,0.3)] !bg-[rgba(52,211,153,0.08)] !text-[#34d399]"
                             : undefined
@@ -105,7 +105,7 @@ export default function BlogPage() {
                     {/* Title */}
                     <h3
                       style={{
-                        fontFamily: "Outfit, sans-serif",
+                        fontFamily: "Cormorant Garamond, serif",
                         fontSize: "1.35rem",
                         fontWeight: 600,
                         lineHeight: 1.3,

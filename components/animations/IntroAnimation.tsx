@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { TrendingUp } from "lucide-react";
+import { OzioLogo } from "@/components/ui/OzioLogo";
 
 interface Particle {
   x: number;
@@ -37,7 +37,7 @@ export function IntroAnimation({ children }: { children: React.ReactNode }) {
         vx: Math.cos(angle) * speed,
         vy: Math.sin(angle) * speed,
         size: 1 + Math.random() * 3,
-        hue: 190 + Math.random() * 70,
+        hue: 20 + Math.random() * 25,
         life: 1,
         maxLife: 60 + Math.random() * 80,
         trail: [],
@@ -53,7 +53,7 @@ export function IntroAnimation({ children }: { children: React.ReactNode }) {
         vx: Math.cos(angle) * speed,
         vy: Math.sin(angle) * speed,
         size: 3 + Math.random() * 4,
-        hue: 190 + Math.random() * 30,
+        hue: 25 + Math.random() * 20,
         life: 1,
         maxLife: 100 + Math.random() * 60,
         trail: [],
@@ -107,8 +107,8 @@ export function IntroAnimation({ children }: { children: React.ReactNode }) {
           const grad = ctx.createLinearGradient(
             streak.x - 300, cy, streak.x, cy
           );
-          grad.addColorStop(0, "rgba(56, 189, 248, 0)");
-          grad.addColorStop(0.7, `rgba(56, 189, 248, ${streak.opacity * 0.6})`);
+          grad.addColorStop(0, "rgba(245, 158, 11, 0)");
+          grad.addColorStop(0.7, `rgba(245, 158, 11, ${streak.opacity * 0.6})`);
           grad.addColorStop(1, `rgba(255, 255, 255, ${streak.opacity})`);
 
           ctx.beginPath();
@@ -124,7 +124,7 @@ export function IntroAnimation({ children }: { children: React.ReactNode }) {
             streak.x, cy, 0, streak.x, cy, 30
           );
           tipGlow.addColorStop(0, `rgba(255, 255, 255, ${streak.opacity * 0.8})`);
-          tipGlow.addColorStop(0.3, `rgba(56, 189, 248, ${streak.opacity * 0.4})`);
+          tipGlow.addColorStop(0.3, `rgba(245, 158, 11, ${streak.opacity * 0.4})`);
           tipGlow.addColorStop(1, "transparent");
           ctx.fillStyle = tipGlow;
           ctx.fillRect(streak.x - 30, cy - 30, 60, 60);
@@ -141,14 +141,14 @@ export function IntroAnimation({ children }: { children: React.ReactNode }) {
         if (sw.opacity > 0) {
           ctx.beginPath();
           ctx.arc(cx, cy, sw.radius, 0, Math.PI * 2);
-          ctx.strokeStyle = `rgba(56, 189, 248, ${sw.opacity * 0.5})`;
+          ctx.strokeStyle = `rgba(245, 158, 11, ${sw.opacity * 0.5})`;
           ctx.lineWidth = 2 + sw.opacity * 4;
           ctx.stroke();
 
           // Second ring
           ctx.beginPath();
           ctx.arc(cx, cy, sw.radius * 0.85, 0, Math.PI * 2);
-          ctx.strokeStyle = `rgba(129, 140, 248, ${sw.opacity * 0.3})`;
+          ctx.strokeStyle = `rgba(234, 88, 12, ${sw.opacity * 0.3})`;
           ctx.lineWidth = 1;
           ctx.stroke();
         }
@@ -216,7 +216,7 @@ export function IntroAnimation({ children }: { children: React.ReactNode }) {
           const so = Math.random() * 0.3 * Math.max(0, 1 - elapsed * 0.3);
           ctx.beginPath();
           ctx.arc(sx, sy, 1, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(56, 189, 248, ${so})`;
+          ctx.fillStyle = `rgba(245, 158, 11, ${so})`;
           ctx.fill();
         }
       }
@@ -292,25 +292,23 @@ export function IntroAnimation({ children }: { children: React.ReactNode }) {
                   <motion.div
                     animate={{
                       boxShadow: [
-                        "0 0 60px rgba(56,189,248,0.4), 0 0 120px rgba(129,140,248,0.2)",
-                        "0 0 80px rgba(56,189,248,0.6), 0 0 160px rgba(129,140,248,0.3)",
-                        "0 0 60px rgba(56,189,248,0.4), 0 0 120px rgba(129,140,248,0.2)",
+                        "0 0 60px rgba(245,158,11,0.4), 0 0 120px rgba(234,88,12,0.2)",
+                        "0 0 80px rgba(245,158,11,0.6), 0 0 160px rgba(234,88,12,0.3)",
+                        "0 0 60px rgba(245,158,11,0.4), 0 0 120px rgba(234,88,12,0.2)",
                       ],
                     }}
                     transition={{ duration: 1.5, repeat: Infinity }}
                     style={{
-                      width: 72,
-                      height: 72,
-                      background: "linear-gradient(135deg, #38bdf8, #818cf8)",
-                      borderRadius: 20,
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
                       margin: "0 auto",
-                      color: "#000",
+                      width: 72,
+                      height: 72,
+                      borderRadius: "50%",
                     }}
                   >
-                    <TrendingUp size={36} />
+                    <OzioLogo size={72} />
                   </motion.div>
 
                   <motion.h1
@@ -318,7 +316,7 @@ export function IntroAnimation({ children }: { children: React.ReactNode }) {
                     animate={{ opacity: 1, y: 0, letterSpacing: "-0.03em" }}
                     transition={{ delay: 0.2, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
                     style={{
-                      fontFamily: "Outfit, sans-serif",
+                      fontFamily: "Cormorant Garamond, serif",
                       fontSize: "clamp(2rem, 5vw, 3.5rem)",
                       fontWeight: 800,
                       marginTop: "1.5rem",
@@ -328,7 +326,7 @@ export function IntroAnimation({ children }: { children: React.ReactNode }) {
                     Ozio
                     <span
                       style={{
-                        background: "linear-gradient(135deg, #38bdf8, #818cf8)",
+                        background: "linear-gradient(135deg, #f59e0b, #ea580c)",
                         WebkitBackgroundClip: "text",
                         WebkitTextFillColor: "transparent",
                         backgroundClip: "text",
@@ -344,7 +342,7 @@ export function IntroAnimation({ children }: { children: React.ReactNode }) {
                     transition={{ delay: 0.5, duration: 0.6 }}
                     style={{
                       height: 1,
-                      background: "linear-gradient(90deg, transparent, #38bdf8, #818cf8, transparent)",
+                      background: "linear-gradient(90deg, transparent, #f59e0b, #ea580c, transparent)",
                       margin: "1rem auto",
                     }}
                   />

@@ -11,7 +11,7 @@ interface GlassCardProps {
 
 const hoverStyles: Record<string, string> = {
   lift: "hover:translate-y-[-4px] hover:shadow-[0_20px_60px_rgba(0,0,0,0.3)]",
-  glow: "hover:shadow-[0_0_30px_rgba(56,189,248,0.15),0_20px_60px_rgba(0,0,0,0.3)]",
+  glow: "hover:shadow-[0_0_30px_rgba(245,158,11,0.15),0_20px_60px_rgba(0,0,0,0.3)]",
   border:
     "hover:border-[rgba(255,255,255,0.12)]",
 };

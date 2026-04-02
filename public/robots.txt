@@ -3,5 +3,7 @@ Allow: /
 Disallow: /dashboard
 Disallow: /deck
 Disallow: /plan
+Disallow: /leads
+Disallow: /scheduling
 
 Sitemap: https://ozioconsulting.com/sitemap.xml

@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Business Automation Services for SMBs",
+  title: "Automation Services for Trades & Home Services",
   description:
-    "Customer support triage, lead qualification, automated follow-ups, internal knowledge bases, and sales pipeline automation. Enterprise-grade automation at SMB prices.",
+    "Lead capture, estimate follow-ups, scheduling, review automation, and CRM pipeline management. Custom-built for plumbers, HVAC, electricians, landscapers, and contractors.",
   openGraph: {
-    title: "Business Automation Services for SMBs | Ozio Consulting",
+    title: "Automation Services for Trades & Home Services | Ozio Consulting",
     description:
-      "Customer support triage, lead qualification, automated follow-ups, internal knowledge bases, and sales pipeline automation. Enterprise-grade automation at SMB prices.",
+      "Lead capture, estimate follow-ups, scheduling, review automation, and CRM pipeline management. Custom-built for trades and home services businesses.",
   },
 };
 

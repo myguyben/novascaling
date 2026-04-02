@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import {
@@ -13,26 +13,19 @@ import {
   Loader2,
 } from "lucide-react";
 import PageLayout from "@/components/layout/PageLayout";
+import { supabase } from "@/lib/supabase";
 
 const BACKEND_URL = "https://websol-backend.onrender.com";
 
 const TIME_SLOTS = [
   "9:00 AM",
-  "9:30 AM",
   "10:00 AM",
-  "10:30 AM",
   "11:00 AM",
-  "11:30 AM",
   "12:00 PM",
-  "12:30 PM",
   "1:00 PM",
-  "1:30 PM",
   "2:00 PM",
-  "2:30 PM",
   "3:00 PM",
-  "3:30 PM",
   "4:00 PM",
-  "4:30 PM",
 ];
 
 export default function SchedulePage() {
@@ -51,6 +44,27 @@ export default function SchedulePage() {
     message: "",
   });
   const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
+  const [bookedSlots, setBookedSlots] = useState<Record<string, Set<string>>>({});
+
+  const fetchBookedSlots = useCallback(async () => {
+    const { data } = await supabase
+      .from("schedule_requests")
+      .select("preferred_date, preferred_time")
+      .in("status", ["pending", "confirmed"]);
+    if (data) {
+      const map: Record<string, Set<string>> = {};
+      for (const row of data) {
+        const key = row.preferred_date;
+        if (!map[key]) map[key] = new Set();
+        map[key].add(row.preferred_time);
+      }
+      setBookedSlots(map);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchBookedSlots();
+  }, [fetchBookedSlots]);
 
   function handleChange(
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -332,8 +346,12 @@ export default function SchedulePage() {
                             .filter(Boolean)
                             .join(" ")}
                           onClick={() => {
-                            setSelectedDate(new Date(year, month, day));
-                            setSelectedTime("");
+                            const newDate = new Date(year, month, day);
+                            setSelectedDate(newDate);
+                            const key = newDate.toISOString().split("T")[0];
+                            if (selectedTime && bookedSlots[key]?.has(selectedTime)) {
+                              setSelectedTime("");
+                            }
                           }}
                         >
                           {day}
@@ -358,18 +376,24 @@ export default function SchedulePage() {
                       Select a time
                     </label>
                     <div className="time-slot-grid">
-                      {TIME_SLOTS.map((slot) => (
-                        <button
-                          key={slot}
-                          type="button"
-                          className={`time-slot${
-                            selectedTime === slot ? " time-slot--selected" : ""
-                          }`}
-                          onClick={() => setSelectedTime(slot)}
-                        >
-                          {slot}
-                        </button>
-                      ))}
+                      {TIME_SLOTS.map((slot) => {
+                        const dateKey = selectedDate?.toISOString().split("T")[0] ?? "";
+                        const isBooked = bookedSlots[dateKey]?.has(slot) ?? false;
+                        return (
+                          <button
+                            key={slot}
+                            type="button"
+                            disabled={isBooked}
+                            className={`time-slot${
+                              selectedTime === slot ? " time-slot--selected" : ""
+                            }`}
+                            style={isBooked ? { opacity: 0.35, cursor: "not-allowed", textDecoration: "line-through" } : undefined}
+                            onClick={() => !isBooked && setSelectedTime(slot)}
+                          >
+                            {slot}
+                          </button>
+                        );
+                      })}
                     </div>
                   </div>
                 )}
@@ -404,22 +428,24 @@ export default function SchedulePage() {
 
                 <div className="form-row">
                   <div className="form-group">
-                    <label htmlFor="phone">Phone</label>
+                    <label htmlFor="phone">Phone *</label>
                     <input
                       id="phone"
                       name="phone"
                       type="tel"
+                      required
                       placeholder="(555) 123-4567"
                       value={form.phone}
                       onChange={handleChange}
                     />
                   </div>
                   <div className="form-group">
-                    <label htmlFor="company">Company</label>
+                    <label htmlFor="company">Company *</label>
                     <input
                       id="company"
                       name="company"
                       type="text"
+                      required
                       placeholder="Acme Inc."
                       value={form.company}
                       onChange={handleChange}

@@ -15,7 +15,7 @@ interface ButtonProps {
 
 const variantStyles: Record<string, string> = {
   primary:
-    "bg-gradient-to-br from-[#38bdf8] to-[#818cf8] text-black font-bold shadow-[0_0_20px_rgba(56,189,248,0.4),0_4px_15px_rgba(0,0,0,0.3)] hover:translate-y-[-2px] hover:shadow-[0_0_30px_rgba(56,189,248,0.4),0_8px_25px_rgba(0,0,0,0.4)]",
+    "bg-gradient-to-br from-[#f59e0b] to-[#ea580c] text-black font-bold shadow-[0_0_20px_rgba(245,158,11,0.4),0_4px_15px_rgba(0,0,0,0.3)] hover:translate-y-[-2px] hover:shadow-[0_0_30px_rgba(245,158,11,0.4),0_8px_25px_rgba(0,0,0,0.4)]",
   outline:
     "bg-transparent text-[var(--text-primary)] border border-[rgba(255,255,255,0.12)] justify-center hover:bg-[rgba(255,255,255,0.05)] hover:border-[var(--accent)] hover:translate-y-[-2px]",
   ghost:

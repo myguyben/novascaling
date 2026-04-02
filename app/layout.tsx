@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { CursorGlow } from "@/components/animations/CursorGlow";
-import { ScrollProgress } from "@/components/animations/ScrollProgress";
+
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://ozioconsulting.com"),
@@ -13,15 +13,18 @@ export const metadata: Metadata = {
     "Fractional Operations Partner & Margin Expansion as a Service. We build custom automated workflows that eliminate 40+ hours of manual labor per month for SMBs.",
   keywords: [
     "business automation",
-    "SMB automation",
+    "trades automation",
+    "home services automation",
+    "HVAC automation",
+    "plumbing business automation",
+    "lead capture automation",
+    "estimate follow up automation",
+    "review automation",
+    "scheduling automation",
+    "small business automation",
     "fractional operations partner",
     "workflow automation",
     "operations consulting",
-    "operational efficiency",
-    "small business automation",
-    "business process automation",
-    "automated workflows",
-    "operations outsourcing",
   ],
   authors: [{ name: "Ozio Consulting" }],
   openGraph: {
@@ -50,11 +53,15 @@ const jsonLd = {
   url: "https://ozioconsulting.com",
   description:
     "Fractional Operations Partner & Margin Expansion as a Service for SMBs",
-  sameAs: [],
+  sameAs: [
+    "https://www.instagram.com/ozioconsulting",
+    "https://www.facebook.com/ozioconsulting",
+    "https://www.youtube.com/@ozioconsulting",
+  ],
   offers: {
     "@type": "AggregateOffer",
-    lowPrice: "850",
-    highPrice: "5000",
+    lowPrice: "497",
+    highPrice: "2997",
     priceCurrency: "USD",
   },
 };
@@ -72,7 +79,7 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
         <CursorGlow />
-        <ScrollProgress />
+
         {children}
       </body>
     </html>

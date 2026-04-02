@@ -3,7 +3,8 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { TrendingUp, ArrowRight, Menu, X } from "lucide-react";
+import { ArrowRight, Menu, X } from "lucide-react";
+import { OzioLogo } from "@/components/ui/OzioLogo";
 import { NAV_LINKS } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 
@@ -28,12 +29,15 @@ export default function Navbar() {
       <div className="max-w-[1200px] mx-auto flex items-center justify-between gap-8">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2.5">
-          <div className="w-9 h-9 bg-gradient-to-br from-[#38bdf8] to-[#818cf8] rounded-[10px] flex items-center justify-center text-black">
-            <TrendingUp size={20} />
+          <OzioLogo size={36} />
+          <div className="flex items-baseline gap-1.5">
+            <span className="font-['Cormorant_Garamond'] font-semibold text-[1.4rem] tracking-[0.04em] text-[var(--text-primary)]">
+              Ozio
+            </span>
+            <span className="text-[0.65rem] font-light tracking-[0.3em] uppercase text-[var(--text-secondary)]">
+              Consulting
+            </span>
           </div>
-          <span className="font-['Outfit'] font-bold text-[1.3rem] tracking-tight text-[var(--text-primary)]">
-            Ozio Consulting
-          </span>
         </Link>
 
         {/* Desktop Links */}
@@ -52,9 +56,9 @@ export default function Navbar() {
         {/* Desktop CTA */}
         <Link
           href="/schedule"
-          className="hidden md:inline-flex items-center gap-2 px-5 py-2.5 text-sm font-bold rounded-xl bg-gradient-to-br from-[#38bdf8] to-[#818cf8] text-black shadow-[0_0_20px_rgba(56,189,248,0.4),0_4px_15px_rgba(0,0,0,0.3)] transition-all duration-300 hover:translate-y-[-2px] hover:shadow-[0_0_30px_rgba(56,189,248,0.4),0_8px_25px_rgba(0,0,0,0.4)]"
+          className="hidden md:inline-flex items-center gap-2 px-5 py-2.5 text-sm font-bold rounded-xl bg-gradient-to-br from-[#f59e0b] to-[#ea580c] text-black shadow-[0_0_20px_rgba(245,158,11,0.4),0_4px_15px_rgba(0,0,0,0.3)] transition-all duration-300 hover:translate-y-[-2px] hover:shadow-[0_0_30px_rgba(245,158,11,0.4),0_8px_25px_rgba(0,0,0,0.4)]"
         >
-          Let&apos;s Do Lunch <ArrowRight size={16} />
+          Tell Us Your Problems <ArrowRight size={16} />
         </Link>
 
         {/* Mobile Hamburger */}
@@ -89,9 +93,9 @@ export default function Navbar() {
             ))}
             <Link
               href="/schedule"
-              className="inline-flex items-center justify-center gap-2 w-full px-5 py-3 text-base font-bold rounded-xl bg-gradient-to-br from-[#38bdf8] to-[#818cf8] text-black"
+              className="inline-flex items-center justify-center gap-2 w-full px-5 py-3 text-base font-bold rounded-xl bg-gradient-to-br from-[#f59e0b] to-[#ea580c] text-black"
             >
-              Let&apos;s Do Lunch
+              Tell Us Your Problems
             </Link>
           </motion.div>
         )}

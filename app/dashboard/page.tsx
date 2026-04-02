@@ -37,7 +37,7 @@ export default function Dashboard() {
   if (loading) {
     return (
       <div className="container" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-        <div className="text-gradient" style={{ fontSize: '2rem', fontFamily: 'Outfit' }}>Initializing A.N.T. Interface...</div>
+        <div className="text-gradient" style={{ fontSize: '2rem', fontFamily: 'Cormorant Garamond, serif' }}>Initializing A.N.T. Interface...</div>
       </div>
     );
   }

@@ -11,10 +11,8 @@ import {
   DollarSign,
   Gift,
   HardHat,
-  Headset,
   Layers,
   LineChart,
-  Lock,
   Paintbrush,
   Rocket,
   Search,
@@ -124,7 +122,7 @@ export default function Home() {
           >
             <MagneticButton>
               <Button variant="primary" size="lg" href="/schedule">
-                Let&apos;s Do Lunch <ArrowRight size={18} />
+                Tell Us Your Problems <ArrowRight size={18} />
               </Button>
             </MagneticButton>
             <Button variant="ghost" size="lg" href="/services">
@@ -247,19 +245,19 @@ export default function Home() {
               {
                 icon: <Search size={28} />,
                 title: "Find the leaks",
-                desc: "We audit your operations top to bottom — quoting, scheduling, follow-ups, invoicing. You get a report showing exactly what's costing you money.",
-                color: "#38bdf8",
+                desc: "We audit your operations top to bottom — lead response, quoting, scheduling, follow-ups, reviews. You get a report showing exactly where you're losing money.",
+                color: "#f59e0b",
               },
               {
                 icon: <Zap size={28} />,
                 title: "Build the fix",
-                desc: "Custom automations built for your business. Not off-the-shelf tools. Real systems that handle the work your team shouldn't be doing manually.",
-                color: "#818cf8",
+                desc: "Custom automations built for your business. Instant lead response, estimate follow-ups, scheduling, review requests — real systems, live in weeks.",
+                color: "#ea580c",
               },
               {
                 icon: <LineChart size={28} />,
                 title: "Prove the ROI",
-                desc: "Every month you get a report with exact hours saved and dollars returned. If we don't hit the numbers, you don't pay. Simple.",
+                desc: "Every month you get a Performance Report with exact hours saved and dollars returned. If we don't save you 40+ hours, next month is free.",
                 color: "#34d399",
               },
             ].map((item, i) => (
@@ -269,7 +267,7 @@ export default function Home() {
                     <div style={{ width: 56, height: 56, borderRadius: 16, background: `${item.color}15`, border: `1px solid ${item.color}30`, display: "flex", alignItems: "center", justifyContent: "center", color: item.color, marginBottom: "1.25rem" }}>
                       {item.icon}
                     </div>
-                    <h3 style={{ fontSize: "1.25rem", fontWeight: 700, fontFamily: "Outfit, sans-serif", marginBottom: "0.5rem" }}>{item.title}</h3>
+                    <h3 style={{ fontSize: "1.25rem", fontWeight: 700, fontFamily: "Cormorant Garamond, serif", marginBottom: "0.5rem" }}>{item.title}</h3>
                     <p style={{ color: "var(--text-secondary)", lineHeight: 1.7, fontSize: "0.95rem" }}>{item.desc}</p>
                   </GlassCard>
                 </TiltCard>
@@ -326,12 +324,12 @@ export default function Home() {
 
           <StaggerGrid className="capabilities-grid">
             {[
-              { icon: <Headset size={24} />, label: "Customer Support Triage" },
-              { icon: <LineChart size={24} />, label: "Lead Qualification & Routing" },
-              { icon: <Zap size={24} />, label: "Automated Follow-ups" },
-              { icon: <Search size={24} />, label: "Internal Knowledge Bases" },
-              { icon: <Rocket size={24} />, label: "Sales Pipeline Automation" },
-              { icon: <Lock size={24} />, label: "Vendor & Email Drafting" },
+              { icon: <Zap size={24} />, label: "Lead Capture & Instant Response" },
+              { icon: <Target size={24} />, label: "Estimate Follow-Up Engine" },
+              { icon: <Clock size={24} />, label: "Smart Scheduling & Dispatch" },
+              { icon: <Sparkles size={24} />, label: "Review & Reputation Autopilot" },
+              { icon: <LineChart size={24} />, label: "CRM & Pipeline Automation" },
+              { icon: <Wrench size={24} />, label: "Custom Workflow Builder" },
             ].map((item, i) => (
               <AnimatedSection key={i} delay={i * 0.08}>
                 <div className="capability-pill">
@@ -408,7 +406,7 @@ export default function Home() {
               label="Pricing"
               title="Less than a part-time hire."
               titleHighlight="10x the output."
-              subtitle="No setup fees. No long-term contracts. If we don't save you 40+ hours in the first month, the next month is free."
+              subtitle="Starts at $497/mo. No setup fees. No long-term contracts. If we don't save you 40+ hours, the next month is free."
             />
           </AnimatedSection>
 
@@ -443,19 +441,19 @@ export default function Home() {
 
           <div style={{ maxWidth: 700, margin: "0 auto", display: "flex", flexDirection: "column", gap: "1.5rem" }}>
             {[
-              { num: "01", title: "We don't sell software.", desc: "We build systems. Custom. For you. Not a SaaS login you'll never use." },
-              { num: "02", title: "We prove ROI or you don't pay.", desc: "Every month you get a report showing exact hours saved and dollars returned. If we don't hit 40+ hours, next month is free." },
-              { num: "03", title: "We do the work.", desc: "No training manuals. No onboarding. No 'here's your login, good luck.' We build it, run it, maintain it." },
-              { num: "04", title: "We know trades.", desc: "Plumbers, electricians, HVAC, landscapers, GCs. We understand dispatch, quoting, follow-ups, and seasonal demand." },
-              { num: "05", title: "Free website when you onboard.", desc: "Every client gets a professionally built, mobile-optimized website at no extra cost. No templates." },
+              { num: "01", title: "We don't sell software.", desc: "We build systems. Custom. For your business. Not a SaaS login you'll never use. We integrate with ServiceTitan, Jobber, Housecall Pro — whatever you already run." },
+              { num: "02", title: "We prove ROI or you don't pay.", desc: "Every month you get a Performance Report showing exact hours saved and dollars returned. If we don't hit 40+ hours, next month is free." },
+              { num: "03", title: "We do the work.", desc: "No training manuals. No onboarding. No 'here's your login, good luck.' We build it, run it, maintain it, and optimize it every month." },
+              { num: "04", title: "We know trades.", desc: "Plumbers, electricians, HVAC, landscapers, GCs. We understand dispatch, quoting, follow-ups, seasonal demand, and what actually moves the needle." },
+              { num: "05", title: "Free website when you onboard.", desc: "Every client gets a professionally built, mobile-optimized website at no extra cost — optimized for local SEO and lead capture. No templates." },
             ].map((item, i) => (
               <AnimatedSection key={i} delay={i * 0.1}>
                 <GlassCard className="p-6" hoverEffect="border" style={{ display: "flex", gap: "1.5rem", alignItems: "flex-start" }}>
-                  <div style={{ fontSize: "2rem", fontWeight: 800, fontFamily: "Outfit, sans-serif", color: "#38bdf8", flexShrink: 0, lineHeight: 1 }}>
+                  <div style={{ fontSize: "2rem", fontWeight: 800, fontFamily: "Cormorant Garamond, serif", color: "#f59e0b", flexShrink: 0, lineHeight: 1 }}>
                     {item.num}
                   </div>
                   <div>
-                    <h3 style={{ fontSize: "1.1rem", fontWeight: 600, fontFamily: "Outfit, sans-serif", marginBottom: "0.25rem" }}>{item.title}</h3>
+                    <h3 style={{ fontSize: "1.1rem", fontWeight: 600, fontFamily: "Cormorant Garamond, serif", marginBottom: "0.25rem" }}>{item.title}</h3>
                     <p style={{ color: "var(--text-secondary)", lineHeight: 1.6, fontSize: "0.95rem" }}>{item.desc}</p>
                   </div>
                 </GlassCard>
@@ -465,77 +463,14 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── Testimonials ── */}
-      <section className="section">
-        <div className="section-container">
-          <AnimatedSection>
-            <SectionHeader
-              label="What Clients Say"
-              title="Don't take our word"
-              titleHighlight="for it."
-            />
-          </AnimatedSection>
-
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "1.5rem" }}>
-            {[
-              {
-                quote: "I got my evenings back. The system handles 80% of tickets without me ever seeing them.",
-                name: "D2C Brand Founder",
-                industry: "E-Commerce",
-                metric: "62 hours saved/month",
-              },
-              {
-                quote: "We went from losing leads overnight to booking jobs before our competitors even check their email.",
-                name: "Regional HVAC Dispatcher",
-                industry: "HVAC Services",
-                metric: "90-second lead response",
-              },
-              {
-                quote: "My agents close more deals because they spend their time with clients instead of typing emails.",
-                name: "Boutique Brokerage Owner",
-                industry: "Real Estate",
-                metric: "$5,800 saved/month",
-              },
-            ].map((t, i) => (
-              <AnimatedSection key={i} delay={i * 0.1}>
-                <GlassCard className="p-8" hoverEffect="border" style={{ height: "100%" }}>
-                  <div style={{ display: "flex", flexDirection: "column", height: "100%", gap: "1.25rem" }}>
-                    <p style={{ color: "var(--text-secondary)", fontStyle: "italic", lineHeight: 1.7, fontSize: "0.95rem", flex: 1 }}>
-                      &ldquo;{t.quote}&rdquo;
-                    </p>
-                    <div>
-                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "0.5rem" }}>
-                        <div>
-                          <p style={{ fontWeight: 600, fontSize: "0.9rem" }}>{t.name}</p>
-                          <p style={{ color: "var(--text-tertiary)", fontSize: "0.8rem" }}>{t.industry}</p>
-                        </div>
-                        <span style={{
-                          fontSize: "0.75rem",
-                          fontWeight: 600,
-                          color: "var(--success)",
-                          background: "rgba(52,211,153,0.1)",
-                          border: "1px solid rgba(52,211,153,0.2)",
-                          padding: "0.3rem 0.75rem",
-                          borderRadius: "100px",
-                        }}>
-                          {t.metric}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </GlassCard>
-              </AnimatedSection>
-            ))}
-          </div>
-        </div>
-      </section>
+      {/* ── Testimonials (hidden for now) ── */}
 
       {/* ── CTA ── */}
       <CTABanner
         title="Ready to stop"
         titleHighlight="leaving money on the table?"
         subtitle="They say there's no such thing as a free lunch. We're here to prove that wrong. No bullshit, no slides — just a real conversation about your business. We pick up the check."
-        buttonText="Let's Do Lunch"
+        buttonText="Tell Us Your Problems"
         buttonHref="/schedule"
       />
     </PageLayout>

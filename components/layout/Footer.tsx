@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { TrendingUp } from "lucide-react";
+import { OzioLogo } from "@/components/ui/OzioLogo";
 
 export default function Footer() {
   return (
@@ -10,12 +10,15 @@ export default function Footer() {
         {/* Brand */}
         <div>
           <Link href="/" className="flex items-center gap-2.5">
-            <div className="w-9 h-9 bg-gradient-to-br from-[#38bdf8] to-[#818cf8] rounded-[10px] flex items-center justify-center text-black">
-              <TrendingUp size={18} />
+            <OzioLogo size={36} />
+            <div className="flex items-baseline gap-1.5">
+              <span className="font-['Cormorant_Garamond'] font-semibold text-[1.4rem] tracking-[0.04em] text-[var(--text-primary)]">
+                Ozio
+              </span>
+              <span className="text-[0.65rem] font-light tracking-[0.3em] uppercase text-[var(--text-secondary)]">
+                Consulting
+              </span>
             </div>
-            <span className="font-['Outfit'] font-bold text-[1.3rem] tracking-tight text-[var(--text-primary)]">
-              Ozio Consulting
-            </span>
           </Link>
           <p className="text-[var(--text-tertiary)] text-sm mt-3">
             We fix the operations that cost you money.
@@ -56,7 +59,7 @@ export default function Footer() {
               href="/schedule"
               className="text-sm text-[var(--text-secondary)] transition-colors duration-200 hover:text-[var(--text-primary)]"
             >
-              Let&apos;s Do Lunch
+              Tell Us Your Problems
             </Link>
             <Link
               href="/dashboard"

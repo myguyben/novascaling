@@ -14,17 +14,19 @@ import { PRICING_TIERS, FAQ_ITEMS } from "@/lib/constants";
 
 const COMPARISON_FEATURES = [
   { name: "Workflow Automations", tiers: ["2", "5", "Unlimited"] },
-  { name: "Internal Knowledge Assistant", tiers: ["\u2713", "\u2713", "\u2713"] },
-  { name: "Monthly Growth Report", tiers: ["\u2713", "\u2713", "\u2713"] },
-  { name: "Custom Support Automation", tiers: ["\u2014", "\u2713", "\u2713"] },
-  { name: "CRM & Ecosystem Integration", tiers: ["\u2014", "\u2713", "\u2713"] },
-  { name: "Strategy Sessions", tiers: ["\u2014", "Bi-weekly", "Weekly"] },
-  { name: "Dynamic ROI Dashboard", tiers: ["\u2014", "\u2713", "\u2713"] },
+  { name: "Free Custom Website", tiers: ["\u2713", "\u2713", "\u2713"] },
+  { name: "Lead Capture & Instant Response", tiers: ["\u2713", "\u2713", "\u2713"] },
+  { name: "Estimate Follow-Up Engine", tiers: ["\u2713", "\u2713", "\u2713"] },
+  { name: "Monthly Performance Report", tiers: ["\u2713", "\u2713", "\u2713"] },
+  { name: "Smart Scheduling & Dispatch", tiers: ["\u2014", "\u2713", "\u2713"] },
+  { name: "Review & Reputation Autopilot", tiers: ["\u2014", "\u2713", "\u2713"] },
+  { name: "CRM & Pipeline Setup", tiers: ["\u2014", "\u2713", "\u2713"] },
+  { name: "Strategy Calls", tiers: ["\u2014", "Bi-weekly", "Weekly"] },
   { name: "40-Hour Guarantee", tiers: ["\u2014", "\u2713", "\u2713"] },
-  { name: "Custom System Configuration", tiers: ["\u2014", "\u2014", "\u2713"] },
-  { name: "Multi-System Orchestration", tiers: ["\u2014", "\u2014", "\u2713"] },
-  { name: "SLA Guarantees", tiers: ["\u2014", "\u2014", "\u2713"] },
+  { name: "Multi-Location Support", tiers: ["\u2014", "\u2014", "\u2713"] },
+  { name: "Custom Integrations", tiers: ["\u2014", "\u2014", "\u2713"] },
   { name: "Dedicated Slack Channel", tiers: ["\u2014", "\u2014", "\u2713"] },
+  { name: "SLA Guarantees", tiers: ["\u2014", "\u2014", "\u2713"] },
 ];
 
 export default function PricingPage() {
@@ -72,7 +74,7 @@ export default function PricingPage() {
             <GlassCard className="p-8" hoverEffect="glow" style={{ maxWidth: 600, margin: "0 auto 2rem" }}>
               <div style={{ textAlign: "center" }}>
                 <Gift size={28} style={{ color: "#34d399", marginBottom: "1rem", display: "inline-block" }} />
-                <h3 style={{ fontSize: "1.3rem", fontWeight: 700, fontFamily: "Outfit, sans-serif", marginBottom: "0.5rem" }}>
+                <h3 style={{ fontSize: "1.3rem", fontWeight: 700, fontFamily: "Cormorant Garamond, serif", marginBottom: "0.5rem" }}>
                   Free Website Design With Every Plan
                 </h3>
                 <p style={{ color: "var(--text-secondary)", lineHeight: 1.7, fontSize: "0.95rem" }}>
@@ -123,17 +125,17 @@ export default function PricingPage() {
                       >
                         Feature
                       </th>
-                      {["Core ($850)", "Growth ($2,500)", "Enterprise ($5,000+)"].map(
+                      {["Starter ($497)", "Growth ($1,497)", "Partner ($2,997+)"].map(
                         (label, i) => (
                           <th
                             key={i}
                             style={{
                               textAlign: "center",
                               padding: "1.25rem 1rem",
-                              color: i === 1 ? "#38bdf8" : "var(--text-primary)",
+                              color: i === 1 ? "#f59e0b" : "var(--text-primary)",
                               fontWeight: 600,
                               borderBottom: "1px solid var(--glass-border)",
-                              fontFamily: "Outfit, sans-serif",
+                              fontFamily: "Cormorant Garamond, serif",
                               fontSize: "0.95rem",
                             }}
                           >
@@ -198,7 +200,7 @@ export default function PricingPage() {
                 style={{
                   fontSize: "clamp(1.5rem, 3vw, 2.2rem)",
                   fontWeight: 700,
-                  fontFamily: "Outfit, sans-serif",
+                  fontFamily: "Cormorant Garamond, serif",
                   marginBottom: "1rem",
                 }}
               >
@@ -213,7 +215,7 @@ export default function PricingPage() {
                   margin: "0 auto 2rem",
                 }}
               >
-                On our Growth Engine and Enterprise tiers: if we don&apos;t mathematically
+                On our Growth and Partner tiers: if we don&apos;t mathematically
                 prove we saved you at least <strong style={{ color: "#34d399" }}>40 hours of manual labor</strong> in
                 our Monthly Growth Payload report, your next month is{" "}
                 <strong style={{ color: "#34d399" }}>completely free</strong>.
@@ -262,7 +264,7 @@ export default function PricingPage() {
         title="Ready to see the"
         titleHighlight="math for yourself?"
         subtitle="Grab lunch with us — we'll walk you through the exact savings for your business. We pick up the check."
-        buttonText="Let's Do Lunch"
+        buttonText="Tell Us Your Problems"
         buttonHref="/schedule"
       />
     </PageLayout>

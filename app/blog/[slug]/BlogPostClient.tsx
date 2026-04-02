@@ -20,7 +20,7 @@ function renderContent(content: string) {
         <h2
           key={i}
           style={{
-            fontFamily: "Outfit, sans-serif",
+            fontFamily: "Cormorant Garamond, serif",
             fontSize: "1.6rem",
             fontWeight: 700,
             color: "var(--text-primary)",
@@ -40,7 +40,7 @@ function renderContent(content: string) {
         <h3
           key={i}
           style={{
-            fontFamily: "Outfit, sans-serif",
+            fontFamily: "Cormorant Garamond, serif",
             fontSize: "1.25rem",
             fontWeight: 600,
             color: "var(--text-primary)",
@@ -83,7 +83,7 @@ export default function BlogPostClient({ post }: BlogPostClientProps) {
           <div className="section-container" style={{ textAlign: "center" }}>
             <h1
               style={{
-                fontFamily: "Outfit, sans-serif",
+                fontFamily: "Cormorant Garamond, serif",
                 fontSize: "2rem",
                 fontWeight: 700,
                 marginBottom: "1rem",
@@ -154,7 +154,7 @@ export default function BlogPostClient({ post }: BlogPostClientProps) {
               <Badge
                 className={
                   post.category === "Operations Strategy"
-                    ? "!border-[rgba(129,140,248,0.3)] !bg-[rgba(129,140,248,0.08)] !text-[#818cf8]"
+                    ? "!border-[rgba(234,88,12,0.3)] !bg-[rgba(234,88,12,0.08)] !text-[#ea580c]"
                     : post.category === "Automation Playbooks"
                     ? "!border-[rgba(52,211,153,0.3)] !bg-[rgba(52,211,153,0.08)] !text-[#34d399]"
                     : undefined
@@ -195,7 +195,7 @@ export default function BlogPostClient({ post }: BlogPostClientProps) {
             {/* Title */}
             <h1
               style={{
-                fontFamily: "Outfit, sans-serif",
+                fontFamily: "Cormorant Garamond, serif",
                 fontSize: "clamp(2rem, 5vw, 3rem)",
                 fontWeight: 800,
                 lineHeight: 1.1,
@@ -257,7 +257,7 @@ export default function BlogPostClient({ post }: BlogPostClientProps) {
         title="Ready to eliminate"
         titleHighlight="manual work?"
         subtitle="Lunch is on us. No pitch, no slides — just a real conversation about your business."
-        buttonText="Let's Do Lunch"
+        buttonText="Tell Us Your Problems"
         buttonHref="/schedule"
       />
     </PageLayout>

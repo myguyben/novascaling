@@ -2,73 +2,73 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://ozioconsulting.com/</loc>
-    <lastmod>2026-03-19</lastmod>
+    <lastmod>2026-04-02</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://ozioconsulting.com/schedule</loc>
-    <lastmod>2026-03-19</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
     <loc>https://ozioconsulting.com/services</loc>
-    <lastmod>2026-03-19</lastmod>
+    <lastmod>2026-04-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://ozioconsulting.com/pricing</loc>
-    <lastmod>2026-03-19</lastmod>
+    <lastmod>2026-04-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://ozioconsulting.com/case-studies</loc>
-    <lastmod>2026-03-19</lastmod>
+    <loc>https://ozioconsulting.com/schedule</loc>
+    <lastmod>2026-04-02</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.9</priority>
   </url>
   <url>
     <loc>https://ozioconsulting.com/audit</loc>
-    <lastmod>2026-03-19</lastmod>
+    <lastmod>2026-04-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://ozioconsulting.com/links</loc>
+    <lastmod>2026-04-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://ozioconsulting.com/blog</loc>
-    <lastmod>2026-03-19</lastmod>
+    <lastmod>2026-04-02</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://ozioconsulting.com/blog/5-signs-your-business-is-drowning-in-manual-work</loc>
-    <lastmod>2026-03-19</lastmod>
+    <lastmod>2026-03-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://ozioconsulting.com/blog/what-is-fractional-operations-officer</loc>
-    <lastmod>2026-03-19</lastmod>
+    <lastmod>2026-03-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://ozioconsulting.com/blog/roi-of-business-automation-for-smbs</loc>
-    <lastmod>2026-03-19</lastmod>
+    <lastmod>2026-03-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://ozioconsulting.com/blog/how-we-built-support-system-80-percent-tickets</loc>
-    <lastmod>2026-03-19</lastmod>
+    <lastmod>2026-03-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://ozioconsulting.com/blog/ant-system-why-automation-projects-fail</loc>
-    <lastmod>2026-03-19</lastmod>
+    <lastmod>2026-03-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>

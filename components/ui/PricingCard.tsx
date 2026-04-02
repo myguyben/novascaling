@@ -32,7 +32,7 @@ export function PricingCard({
     <div className={cn("relative", featured && "scale-[1.03]")}>
       {/* Badge */}
       {badge && (
-        <div className="absolute top-[-14px] left-1/2 -translate-x-1/2 z-10 bg-gradient-to-r from-[#38bdf8] to-[#818cf8] text-black px-5 py-1.5 rounded-full font-bold text-xs tracking-wide">
+        <div className="absolute top-[-14px] left-1/2 -translate-x-1/2 z-10 bg-gradient-to-r from-[#f59e0b] to-[#ea580c] text-black px-5 py-1.5 rounded-full font-bold text-xs tracking-wide">
           {badge}
         </div>
       )}
@@ -41,7 +41,7 @@ export function PricingCard({
         className={cn(
           "p-10",
           featured &&
-            "border-[rgba(56,189,248,0.3)] bg-gradient-to-b from-[rgba(56,189,248,0.06)] to-[rgba(255,255,255,0.03)] shadow-[0_0_40px_rgba(56,189,248,0.1)]"
+            "border-[rgba(245,158,11,0.3)] bg-gradient-to-b from-[rgba(245,158,11,0.06)] to-[rgba(255,255,255,0.03)] shadow-[0_0_40px_rgba(245,158,11,0.1)]"
         )}
         hoverEffect="lift"
       >
@@ -56,7 +56,7 @@ export function PricingCard({
         </p>
 
         {/* Price */}
-        <div className="font-['Outfit'] text-5xl font-bold mb-2">
+        <div className="font-['Cormorant_Garamond'] text-5xl font-bold mb-2">
           ${price.toLocaleString()}
           <span className="text-base text-[var(--text-tertiary)] font-normal">
             {period}

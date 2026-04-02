@@ -4,12 +4,14 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   ArrowRight,
-  Bot,
+  Calendar,
   CheckCircle,
   LineChart,
-  Lock,
+  Phone,
   Rocket,
   Search,
+  Star,
+  Wrench,
   X as XIcon,
   Zap,
 } from "lucide-react";
@@ -24,21 +26,21 @@ import LogoMarquee from "@/components/ui/LogoMarquee";
 import { SERVICES, INTEGRATIONS } from "@/lib/constants";
 
 const ICON_MAP: Record<string, React.ReactNode> = {
-  Bot: <Bot size={24} />,
-  LineChart: <LineChart size={24} />,
+  Phone: <Phone size={24} />,
   Zap: <Zap size={24} />,
-  Search: <Search size={24} />,
-  Rocket: <Rocket size={24} />,
-  Lock: <Lock size={24} />,
+  Calendar: <Calendar size={24} />,
+  Star: <Star size={24} />,
+  LineChart: <LineChart size={24} />,
+  Wrench: <Wrench size={24} />,
 };
 
 const ICON_MAP_LG: Record<string, React.ReactNode> = {
-  Bot: <Bot size={32} />,
-  LineChart: <LineChart size={32} />,
+  Phone: <Phone size={32} />,
   Zap: <Zap size={32} />,
-  Search: <Search size={32} />,
-  Rocket: <Rocket size={32} />,
-  Lock: <Lock size={32} />,
+  Calendar: <Calendar size={32} />,
+  Star: <Star size={32} />,
+  LineChart: <LineChart size={32} />,
+  Wrench: <Wrench size={32} />,
 };
 
 export default function ServicesPage() {
@@ -54,7 +56,7 @@ export default function ServicesPage() {
               label="Our Services"
               title="Enterprise-grade automation,"
               titleHighlight="built for your budget."
-              subtitle="We don't sell chatbots. We build fully managed automation systems that eliminate manual work and prove their ROI every month."
+              subtitle="We don't sell chatbots. We build fully managed automation systems that eliminate manual work for trades and home services businesses — and prove their ROI every month."
             />
           </AnimatedSection>
         </div>
@@ -84,10 +86,10 @@ export default function ServicesPage() {
                       alignItems: "center",
                       gap: "0.75rem",
                       padding: "1rem 1.25rem",
-                      background: selected === i ? "rgba(56,189,248,0.08)" : "transparent",
-                      border: `1px solid ${selected === i ? "rgba(56,189,248,0.3)" : "rgba(255,255,255,0.06)"}`,
+                      background: selected === i ? "rgba(245,158,11,0.08)" : "transparent",
+                      border: `1px solid ${selected === i ? "rgba(245,158,11,0.3)" : "rgba(255,255,255,0.06)"}`,
                       borderRadius: 14,
-                      color: selected === i ? "#38bdf8" : "var(--text-secondary)",
+                      color: selected === i ? "#f59e0b" : "var(--text-secondary)",
                       cursor: "pointer",
                       textAlign: "left",
                       fontFamily: "Inter, sans-serif",
@@ -118,18 +120,18 @@ export default function ServicesPage() {
                           width: 56,
                           height: 56,
                           borderRadius: 16,
-                          background: "linear-gradient(135deg, rgba(56,189,248,0.15), rgba(129,140,248,0.15))",
-                          border: "1px solid rgba(56,189,248,0.3)",
+                          background: "linear-gradient(135deg, rgba(245,158,11,0.15), rgba(234,88,12,0.15))",
+                          border: "1px solid rgba(245,158,11,0.3)",
                           display: "flex",
                           alignItems: "center",
                           justifyContent: "center",
-                          color: "#38bdf8",
+                          color: "#f59e0b",
                         }}
                       >
                         {ICON_MAP_LG[SERVICES[selected].icon]}
                       </div>
                       <div>
-                        <h3 style={{ fontSize: "1.4rem", fontWeight: 600, fontFamily: "Outfit, sans-serif" }}>
+                        <h3 style={{ fontSize: "1.4rem", fontWeight: 600, fontFamily: "Cormorant Garamond, serif" }}>
                           {SERVICES[selected].title}
                         </h3>
                         <p style={{ color: "var(--accent)", fontSize: "0.85rem", fontWeight: 600 }}>
@@ -197,9 +199,9 @@ export default function ServicesPage() {
                 label: "Generic SaaS",
                 color: "#f87171",
                 items: [
-                  "You learn the software",
-                  "You integrate it yourself",
-                  "You change your process to fit",
+                  "You learn the software yourself",
+                  "Doesn't respond to leads at 2am",
+                  "No follow-up automation",
                   "Low adoption, high churn",
                 ],
                 verdict: "Doesn\u2019t work",
@@ -208,10 +210,10 @@ export default function ServicesPage() {
                 label: "Budget Agencies",
                 color: "#fbbf24",
                 items: [
-                  "Cookie-cutter templates",
-                  "Simple Zapier templates",
+                  "Cookie-cutter Zapier templates",
+                  "Simple chatbot, not real automation",
                   "No ongoing maintenance",
-                  "Breaks when APIs update",
+                  "Breaks when your tools update",
                 ],
                 verdict: "Breaks fast",
               },
@@ -219,10 +221,10 @@ export default function ServicesPage() {
                 label: "Ozio Consulting",
                 color: "#34d399",
                 items: [
-                  "Custom-built for your workflows",
-                  "Fully managed & maintained",
-                  "Monthly ROI reports",
-                  "Strategic operations partnership",
+                  "Custom-built for your business",
+                  "Fully managed & maintained monthly",
+                  "Provable ROI every month",
+                  "Integrates with ServiceTitan, Jobber, etc.",
                 ],
                 verdict: "Built to last",
               },
@@ -290,7 +292,7 @@ export default function ServicesPage() {
         title="Ready to automate your"
         titleHighlight="biggest bottleneck?"
         subtitle="No slides, no pitch. Just lunch, a real conversation, and we pick up the check."
-        buttonText="Let's Do Lunch"
+        buttonText="Tell Us Your Problems"
         buttonHref="/schedule"
       />
     </PageLayout>

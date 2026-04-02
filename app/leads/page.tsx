@@ -66,8 +66,8 @@ const AREA_OPTIONS = [
 ];
 
 const AREA_COLORS: Record<string, { bg: string; text: string }> = {
-  nv: { bg: "rgba(56,189,248,0.15)", text: "#38bdf8" },
-  van: { bg: "rgba(129,140,248,0.15)", text: "#818cf8" },
+  nv: { bg: "rgba(245,158,11,0.15)", text: "#f59e0b" },
+  van: { bg: "rgba(234,88,12,0.15)", text: "#ea580c" },
   sa: { bg: "rgba(251,191,36,0.12)", text: "#f59e0b" },
   other: { bg: "rgba(148,163,184,0.12)", text: "#94a3b8" },
 };
@@ -142,13 +142,13 @@ function CSVUploadModal({ onClose, onUpload }: { onClose: () => void; onUpload: 
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: "rgba(0,0,0,0.7)", backdropFilter: "blur(8px)" }}>
       <div className="w-full max-w-lg max-h-[90vh] overflow-y-auto p-6 rounded-3xl" style={{ background: "#0a0f1e", border: "1px solid rgba(255,255,255,0.06)" }}>
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-lg font-bold" style={{ fontFamily: "Outfit, sans-serif", color: "var(--text-primary)" }}>
+          <h2 className="text-lg font-bold" style={{ fontFamily: "Cormorant Garamond, serif", color: "var(--text-primary)" }}>
             <FileSpreadsheet size={20} className="inline mr-2" style={{ color: "var(--accent)" }} />Upload Leads CSV
           </h2>
           <button onClick={onClose} className="cursor-pointer bg-transparent border-none" style={{ color: "var(--text-secondary)" }}><X size={20} /></button>
         </div>
         {parsed.length === 0 ? (
-          <div onDrop={(e) => { e.preventDefault(); e.dataTransfer.files[0] && handleFile(e.dataTransfer.files[0]); }} onDragOver={(e) => e.preventDefault()} onClick={() => fileRef.current?.click()} className="flex flex-col items-center justify-center gap-3 p-12 rounded-2xl cursor-pointer" style={{ border: "2px dashed rgba(56,189,248,0.3)", background: "rgba(56,189,248,0.03)" }}>
+          <div onDrop={(e) => { e.preventDefault(); e.dataTransfer.files[0] && handleFile(e.dataTransfer.files[0]); }} onDragOver={(e) => e.preventDefault()} onClick={() => fileRef.current?.click()} className="flex flex-col items-center justify-center gap-3 p-12 rounded-2xl cursor-pointer" style={{ border: "2px dashed rgba(245,158,11,0.3)", background: "rgba(245,158,11,0.03)" }}>
             <Upload size={32} style={{ color: "var(--accent)" }} />
             <p className="text-sm font-medium" style={{ color: "var(--text-primary)" }}>Drop CSV here or click to browse</p>
             <input ref={fileRef} type="file" accept=".csv" className="hidden" onChange={(e) => e.target.files?.[0] && handleFile(e.target.files[0])} />
@@ -173,7 +173,7 @@ function CSVUploadModal({ onClose, onUpload }: { onClose: () => void; onUpload: 
             </div>
             <div className="flex gap-3">
               <button onClick={() => { setParsed([]); setMapping({}); setFileName(""); }} className="flex-1 py-3 rounded-xl text-sm font-semibold cursor-pointer" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)", color: "var(--text-secondary)" }}>Reset</button>
-              <button onClick={doUpload} disabled={!mapping.company_name} className="flex-1 py-3 rounded-xl text-sm font-bold cursor-pointer" style={{ background: mapping.company_name ? "linear-gradient(135deg, #38bdf8, #818cf8)" : "rgba(255,255,255,0.05)", color: mapping.company_name ? "#000" : "var(--text-tertiary)" }}>Import {parsed.length} Leads</button>
+              <button onClick={doUpload} disabled={!mapping.company_name} className="flex-1 py-3 rounded-xl text-sm font-bold cursor-pointer" style={{ background: mapping.company_name ? "linear-gradient(135deg, #f59e0b, #ea580c)" : "rgba(255,255,255,0.05)", color: mapping.company_name ? "#000" : "var(--text-tertiary)" }}>Import {parsed.length} Leads</button>
             </div>
           </>
         )}
@@ -211,7 +211,7 @@ function AddLeadModal({ onClose, onAdd }: { onClose: () => void; onAdd: (lead: P
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: "rgba(0,0,0,0.7)", backdropFilter: "blur(8px)" }}>
       <div className="w-full max-w-md p-6 rounded-3xl" style={{ background: "#0a0f1e", border: "1px solid rgba(255,255,255,0.06)" }}>
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-lg font-bold" style={{ fontFamily: "Outfit, sans-serif", color: "var(--text-primary)" }}>Add Lead</h2>
+          <h2 className="text-lg font-bold" style={{ fontFamily: "Cormorant Garamond, serif", color: "var(--text-primary)" }}>Add Lead</h2>
           <button onClick={onClose} className="cursor-pointer bg-transparent border-none" style={{ color: "var(--text-secondary)" }}><X size={20} /></button>
         </div>
         <form onSubmit={handleSubmit} className="flex flex-col gap-3">
@@ -231,7 +231,7 @@ function AddLeadModal({ onClose, onAdd }: { onClose: () => void; onAdd: (lead: P
           <input type="email" placeholder="Lead's Email (for outreach)" value={form.client_email} onChange={(e) => setForm((f) => ({ ...f, client_email: e.target.value }))} className="px-4 py-3 rounded-xl text-sm outline-none" style={inputStyle} />
           <input placeholder="Industry" value={form.industry} onChange={(e) => setForm((f) => ({ ...f, industry: e.target.value }))} className="px-4 py-3 rounded-xl text-sm outline-none" style={inputStyle} />
           <input placeholder="Notes" value={form.notes} onChange={(e) => setForm((f) => ({ ...f, notes: e.target.value }))} className="px-4 py-3 rounded-xl text-sm outline-none" style={inputStyle} />
-          <button type="submit" className="mt-2 py-3 rounded-xl font-bold text-sm cursor-pointer" style={{ background: "linear-gradient(135deg, #38bdf8, #818cf8)", color: "#000" }}>Add Lead</button>
+          <button type="submit" className="mt-2 py-3 rounded-xl font-bold text-sm cursor-pointer" style={{ background: "linear-gradient(135deg, #f59e0b, #ea580c)", color: "#000" }}>Add Lead</button>
         </form>
       </div>
     </div>
@@ -244,7 +244,7 @@ function AddLeadModal({ onClose, onAdd }: { onClose: () => void; onAdd: (lead: P
 function Toast({ message, onClose }: { message: string; onClose: () => void }) {
   useEffect(() => { const t = setTimeout(onClose, 4000); return () => clearTimeout(t); }, [onClose]);
   return (
-    <div className="fixed top-6 right-6 z-50 px-5 py-3 rounded-2xl text-sm font-semibold flex items-center gap-2 animate-[slideIn_0.3s_ease-out]" style={{ background: "linear-gradient(135deg, #34d399, #38bdf8)", color: "#000", boxShadow: "0 8px 30px rgba(52,211,153,0.3)" }}>
+    <div className="fixed top-6 right-6 z-50 px-5 py-3 rounded-2xl text-sm font-semibold flex items-center gap-2 animate-[slideIn_0.3s_ease-out]" style={{ background: "linear-gradient(135deg, #34d399, #f59e0b)", color: "#000", boxShadow: "0 8px 30px rgba(52,211,153,0.3)" }}>
       <Trophy size={16} />{message}
     </div>
   );
@@ -261,7 +261,7 @@ function ReplyModal({ lead, onClose }: { lead: SalesLead; onClose: () => void })
       <div className="w-full max-w-lg max-h-[80vh] overflow-y-auto rounded-3xl p-6" style={{ background: "#0a0f1e", border: "1px solid rgba(255,255,255,0.06)" }} onClick={(e) => e.stopPropagation()}>
         <div className="flex items-center justify-between mb-5">
           <div>
-            <h2 className="text-lg font-bold" style={{ fontFamily: "Outfit, sans-serif", color: "var(--text-primary)" }}>
+            <h2 className="text-lg font-bold" style={{ fontFamily: "Cormorant Garamond, serif", color: "var(--text-primary)" }}>
               Reply from {lead.company_name}
             </h2>
             {repliedDate && <p className="text-xs mt-0.5" style={{ color: "var(--text-tertiary)" }}>{repliedDate}</p>}
@@ -358,7 +358,7 @@ function LeadRow({
           onClick={() => onUpdate(lead.id, { contacted: !contacted })}
           className="shrink-0 w-6 h-6 rounded-md flex items-center justify-center cursor-pointer border-none self-start md:self-center"
           style={{
-            background: contacted ? "linear-gradient(135deg, #38bdf8, #818cf8)" : "rgba(255,255,255,0.06)",
+            background: contacted ? "linear-gradient(135deg, #f59e0b, #ea580c)" : "rgba(255,255,255,0.06)",
             border: contacted ? "none" : "2px solid rgba(255,255,255,0.15)",
           }}
           title={contacted ? "Mark as not contacted" : "Mark as contacted"}
@@ -373,7 +373,7 @@ function LeadRow({
               className="text-[15px] font-bold leading-tight truncate"
               style={{
                 color: contacted ? "var(--text-secondary)" : "var(--text-primary)",
-                fontFamily: "Outfit, sans-serif",
+                fontFamily: "Cormorant Garamond, serif",
                 textDecoration: contacted ? "line-through" : "none",
                 opacity: contacted && !hot ? 0.6 : 1,
               }}
@@ -478,7 +478,7 @@ function LeadRow({
 
           {/* Follow-up indicator */}
           {hot && lead.hot_email_sent_at && !lead.responded && (
-            <span className="flex items-center gap-1 px-2 py-1.5 rounded-lg text-[10px] font-semibold" style={{ background: "rgba(56,189,248,0.08)", color: "var(--accent)" }}>
+            <span className="flex items-center gap-1 px-2 py-1.5 rounded-lg text-[10px] font-semibold" style={{ background: "rgba(245,158,11,0.08)", color: "var(--accent)" }}>
               <Send size={10} />
               {lead.follow_up_count + 1}/5 emails
             </span>
@@ -577,7 +577,7 @@ function NotificationsPanel() {
       >
         <div className="flex items-center gap-2">
           <Bell size={14} style={{ color: "var(--accent)" }} />
-          <span className="text-sm font-semibold" style={{ color: "var(--text-primary)", fontFamily: "Outfit, sans-serif" }}>
+          <span className="text-sm font-semibold" style={{ color: "var(--text-primary)", fontFamily: "Cormorant Garamond, serif" }}>
             Notification Recipients
           </span>
           <span className="text-xs" style={{ color: "var(--text-tertiary)" }}>
@@ -597,7 +597,7 @@ function NotificationsPanel() {
             {recipients.map((r) => (
               <div key={r.id} className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-4 p-3 rounded-xl" style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.03)" }}>
                 {/* Name */}
-                <span className="text-sm font-bold shrink-0 w-20" style={{ color: "var(--text-primary)", fontFamily: "Outfit, sans-serif" }}>{r.name}</span>
+                <span className="text-sm font-bold shrink-0 w-20" style={{ color: "var(--text-primary)", fontFamily: "Cormorant Garamond, serif" }}>{r.name}</span>
 
                 {/* Email + checkbox */}
                 <div className="flex items-center gap-2 flex-1 min-w-0">
@@ -605,7 +605,7 @@ function NotificationsPanel() {
                     onClick={() => toggleField(r.id, "notify_email", r.notify_email)}
                     className="shrink-0 w-5 h-5 rounded flex items-center justify-center cursor-pointer border-none"
                     style={{
-                      background: r.notify_email ? "linear-gradient(135deg, #38bdf8, #818cf8)" : "rgba(255,255,255,0.06)",
+                      background: r.notify_email ? "linear-gradient(135deg, #f59e0b, #ea580c)" : "rgba(255,255,255,0.06)",
                       border: r.notify_email ? "none" : "2px solid rgba(255,255,255,0.15)",
                     }}
                     title={r.notify_email ? "Disable email notifications" : "Enable email notifications"}
@@ -629,7 +629,7 @@ function NotificationsPanel() {
                     onClick={() => toggleField(r.id, "notify_sms", r.notify_sms)}
                     className="shrink-0 w-5 h-5 rounded flex items-center justify-center cursor-pointer border-none"
                     style={{
-                      background: r.notify_sms ? "linear-gradient(135deg, #38bdf8, #818cf8)" : "rgba(255,255,255,0.06)",
+                      background: r.notify_sms ? "linear-gradient(135deg, #f59e0b, #ea580c)" : "rgba(255,255,255,0.06)",
                       border: r.notify_sms ? "none" : "2px solid rgba(255,255,255,0.15)",
                     }}
                     title={r.notify_sms ? "Disable SMS notifications" : "Enable SMS notifications"}
@@ -662,12 +662,12 @@ function NotificationsPanel() {
 
           {/* Add new */}
           {adding ? (
-            <div className="mt-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3 p-3 rounded-xl" style={{ background: "rgba(56,189,248,0.03)", border: "1px solid rgba(56,189,248,0.1)" }}>
+            <div className="mt-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3 p-3 rounded-xl" style={{ background: "rgba(245,158,11,0.03)", border: "1px solid rgba(245,158,11,0.1)" }}>
               <input placeholder="Name *" value={newR.name} onChange={(e) => setNewR((n) => ({ ...n, name: e.target.value }))} className="px-3 py-2 rounded-lg text-xs outline-none sm:w-28" style={inputStyle} />
               <input type="email" placeholder="Email" value={newR.email} onChange={(e) => setNewR((n) => ({ ...n, email: e.target.value }))} className="px-3 py-2 rounded-lg text-xs outline-none flex-1" style={inputStyle} />
               <input type="tel" placeholder="+16041234567" value={newR.phone} onChange={(e) => setNewR((n) => ({ ...n, phone: e.target.value }))} className="px-3 py-2 rounded-lg text-xs outline-none flex-1" style={inputStyle} />
               <div className="flex gap-2">
-                <button onClick={addRecipient} className="px-4 py-2 rounded-lg text-xs font-bold cursor-pointer border-none" style={{ background: "linear-gradient(135deg, #38bdf8, #818cf8)", color: "#000" }}>Add</button>
+                <button onClick={addRecipient} className="px-4 py-2 rounded-lg text-xs font-bold cursor-pointer border-none" style={{ background: "linear-gradient(135deg, #f59e0b, #ea580c)", color: "#000" }}>Add</button>
                 <button onClick={() => { setAdding(false); setNewR({ name: "", email: "", phone: "" }); }} className="px-3 py-2 rounded-lg text-xs cursor-pointer border-none" style={{ background: "rgba(255,255,255,0.05)", color: "var(--text-secondary)" }}>Cancel</button>
               </div>
             </div>
@@ -796,13 +796,13 @@ function LeadsContent() {
         <div className="max-w-full mx-auto">
           <div className="flex items-center justify-between mb-1">
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: "linear-gradient(135deg, #38bdf8, #818cf8)" }}>
+              <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: "linear-gradient(135deg, #f59e0b, #ea580c)" }}>
                 <Users size={16} color="#000" />
               </div>
-              <h1 style={{ fontFamily: "Outfit, sans-serif", fontWeight: 800, fontSize: "clamp(1.1rem, 2.5vw, 1.4rem)", color: "var(--text-primary)" }}>Sales Leads</h1>
+              <h1 style={{ fontFamily: "Cormorant Garamond, serif", fontWeight: 800, fontSize: "clamp(1.1rem, 2.5vw, 1.4rem)", color: "var(--text-primary)" }}>Sales Leads</h1>
             </div>
             <div className="flex items-center gap-2">
-              <button onClick={() => setShowUpload(true)} className="flex items-center gap-1.5 px-3 sm:px-4 py-2 rounded-xl text-xs font-semibold cursor-pointer transition-all hover:translate-y-[-1px]" style={{ background: "linear-gradient(135deg, #38bdf8, #818cf8)", color: "#000", boxShadow: "0 0 15px rgba(56,189,248,0.3)" }}>
+              <button onClick={() => setShowUpload(true)} className="flex items-center gap-1.5 px-3 sm:px-4 py-2 rounded-xl text-xs font-semibold cursor-pointer transition-all hover:translate-y-[-1px]" style={{ background: "linear-gradient(135deg, #f59e0b, #ea580c)", color: "#000", boxShadow: "0 0 15px rgba(245,158,11,0.3)" }}>
                 <Upload size={13} /><span className="hidden sm:inline">Upload CSV</span>
               </button>
               <button onClick={() => setShowAdd(true)} className="flex items-center gap-1.5 px-3 sm:px-4 py-2 rounded-xl text-xs font-semibold cursor-pointer" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)", color: "var(--text-primary)" }}>
@@ -824,7 +824,7 @@ function LeadsContent() {
               { icon: <Trophy size={13} />, num: stats.client, label: "Won" },
             ].map((s) => (
               <div key={s.label} className="text-center">
-                <div className="text-xl font-bold" style={{ fontFamily: "Outfit, sans-serif", color: "var(--accent)", lineHeight: 1 }}>{s.num}</div>
+                <div className="text-xl font-bold" style={{ fontFamily: "Cormorant Garamond, serif", color: "var(--accent)", lineHeight: 1 }}>{s.num}</div>
                 <div className="text-[9px] uppercase tracking-widest mt-1" style={{ color: "var(--text-tertiary)" }}>{s.label}</div>
               </div>
             ))}
@@ -847,7 +847,7 @@ function LeadsContent() {
             key={p.key}
             onClick={() => setFilter(p.key)}
             className="shrink-0 px-3 sm:px-4 py-1.5 rounded-full text-[11px] font-bold tracking-wide cursor-pointer transition-all border whitespace-nowrap"
-            style={filter === p.key ? { background: "linear-gradient(135deg, #38bdf8, #818cf8)", color: "#000", border: "1px solid transparent" } : { background: "rgba(255,255,255,0.04)", color: "var(--text-tertiary)", border: "1px solid rgba(255,255,255,0.06)" }}
+            style={filter === p.key ? { background: "linear-gradient(135deg, #f59e0b, #ea580c)", color: "#000", border: "1px solid transparent" } : { background: "rgba(255,255,255,0.04)", color: "var(--text-tertiary)", border: "1px solid rgba(255,255,255,0.06)" }}
           >
             {p.label}
           </button>

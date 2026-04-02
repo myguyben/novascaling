@@ -9,10 +9,10 @@ import {
   Instagram,
   Youtube,
   Facebook,
-  TrendingUp,
   Mail,
   Sparkles,
 } from "lucide-react";
+import { OzioLogo } from "@/components/ui/OzioLogo";
 
 const SOCIAL_LINKS = [
   {
@@ -35,10 +35,10 @@ const SOCIAL_LINKS = [
 const LINKS = [
   {
     icon: <Calendar size={20} />,
-    title: "Let's Do Lunch",
+    title: "Tell Us Your Problems",
     desc: "On us. No pitch, no slides.",
     href: "/schedule",
-    accent: "#38bdf8",
+    accent: "#f59e0b",
     featured: true,
   },
   {
@@ -46,7 +46,7 @@ const LINKS = [
     title: "Visit Our Website",
     desc: "See what we do and how we do it.",
     href: "https://ozioconsulting.ai",
-    accent: "#818cf8",
+    accent: "#ea580c",
   },
   {
     icon: <FileText size={20} />,
@@ -107,7 +107,7 @@ export default function LinksPage() {
           width: "600px",
           height: "600px",
           background:
-            "radial-gradient(circle, rgba(56,189,248,0.12) 0%, rgba(129,140,248,0.08) 40%, transparent 70%)",
+            "radial-gradient(circle, rgba(245,158,11,0.12) 0%, rgba(234,88,12,0.08) 40%, transparent 70%)",
           borderRadius: "50%",
           pointerEvents: "none",
         }}
@@ -145,19 +145,11 @@ export default function LinksPage() {
         <motion.div variants={item}>
           <div
             style={{
-              width: 88,
-              height: 88,
-              borderRadius: "50%",
-              background: "linear-gradient(135deg, #38bdf8, #818cf8)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
               marginBottom: "1rem",
-              boxShadow:
-                "0 0 40px rgba(56,189,248,0.3), 0 0 80px rgba(129,140,248,0.15)",
+              filter: "drop-shadow(0 0 20px rgba(245,158,11,0.3))",
             }}
           >
-            <TrendingUp size={36} color="#030712" strokeWidth={2.5} />
+            <OzioLogo size={80} />
           </div>
         </motion.div>
 
@@ -165,7 +157,7 @@ export default function LinksPage() {
         <motion.h1
           variants={item}
           style={{
-            fontFamily: "Outfit, sans-serif",
+            fontFamily: "Cormorant Garamond, serif",
             fontSize: "1.6rem",
             fontWeight: 700,
             letterSpacing: "-0.03em",
@@ -261,10 +253,10 @@ export default function LinksPage() {
                 padding: link.featured ? "1.1rem 1.25rem" : "1rem 1.25rem",
                 borderRadius: "16px",
                 background: link.featured
-                  ? "linear-gradient(135deg, rgba(56,189,248,0.12), rgba(129,140,248,0.08))"
+                  ? "linear-gradient(135deg, rgba(245,158,11,0.12), rgba(234,88,12,0.08))"
                   : "rgba(255,255,255,0.03)",
                 border: link.featured
-                  ? "1px solid rgba(56,189,248,0.25)"
+                  ? "1px solid rgba(245,158,11,0.25)"
                   : "1px solid rgba(255,255,255,0.06)",
                 cursor: "pointer",
                 transition: "all 0.3s cubic-bezier(0.22, 1, 0.36, 1)",
@@ -281,20 +273,20 @@ export default function LinksPage() {
               onMouseEnter={(e) => {
                 const target = e.currentTarget;
                 target.style.background = link.featured
-                  ? "linear-gradient(135deg, rgba(56,189,248,0.18), rgba(129,140,248,0.14))"
+                  ? "linear-gradient(135deg, rgba(245,158,11,0.18), rgba(234,88,12,0.14))"
                   : "rgba(255,255,255,0.06)";
                 target.style.borderColor = link.featured
-                  ? "rgba(56,189,248,0.4)"
+                  ? "rgba(245,158,11,0.4)"
                   : `${link.accent}40`;
                 target.style.boxShadow = `0 4px 20px ${link.accent}15`;
               }}
               onMouseLeave={(e) => {
                 const target = e.currentTarget;
                 target.style.background = link.featured
-                  ? "linear-gradient(135deg, rgba(56,189,248,0.12), rgba(129,140,248,0.08))"
+                  ? "linear-gradient(135deg, rgba(245,158,11,0.12), rgba(234,88,12,0.08))"
                   : "rgba(255,255,255,0.03)";
                 target.style.borderColor = link.featured
-                  ? "rgba(56,189,248,0.25)"
+                  ? "rgba(245,158,11,0.25)"
                   : "rgba(255,255,255,0.06)";
                 target.style.boxShadow = "none";
               }}
@@ -321,7 +313,7 @@ export default function LinksPage() {
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div
                   style={{
-                    fontFamily: "Outfit, sans-serif",
+                    fontFamily: "Cormorant Garamond, serif",
                     fontWeight: 600,
                     fontSize: "0.95rem",
                     color: "var(--text-primary)",

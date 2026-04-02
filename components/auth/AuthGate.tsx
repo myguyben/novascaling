@@ -107,7 +107,7 @@ export function AuthGate({ children, title = "Ozio Consulting" }: AuthGateProps)
                 width: 36,
                 height: 36,
                 borderRadius: 10,
-                background: "linear-gradient(135deg, #38bdf8, #818cf8)",
+                background: "linear-gradient(135deg, #f59e0b, #ea580c)",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -181,7 +181,7 @@ const cardStyle: React.CSSProperties = {
 };
 
 const headingStyle: React.CSSProperties = {
-  fontFamily: "Outfit, sans-serif",
+  fontFamily: "Cormorant Garamond, serif",
   fontWeight: 700,
   fontSize: "1.3rem",
   color: "var(--text-primary)",
@@ -211,7 +211,7 @@ const btnPrimaryStyle: React.CSSProperties = {
   padding: "0.75rem",
   borderRadius: 12,
   border: "none",
-  background: "linear-gradient(135deg, #38bdf8, #818cf8)",
+  background: "linear-gradient(135deg, #f59e0b, #ea580c)",
   color: "#030712",
   fontWeight: 700,
   fontSize: "0.85rem",
