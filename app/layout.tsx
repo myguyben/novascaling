@@ -32,15 +32,17 @@ export const metadata: Metadata = {
     locale: "en_US",
     url: "https://ozioconsulting.com",
     siteName: "Ozio Consulting",
-    title: "Ozio Consulting — Business Automation for SMBs",
+    title: "Ozio Consulting — Business Automation for Trades & Home Services",
     description:
-      "Enterprise-grade workflow automation at SMB pricing. Eliminate 40+ hours of manual work per month with your Fractional Operations Partner.",
+      "Custom automation for trades businesses. Lead capture, estimate follow-ups, scheduling, reviews, and CRM — starting at $497/mo.",
+    images: [{ url: "https://ozioconsulting.com/og-image.png", width: 1200, height: 630, alt: "Ozio Consulting" }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Ozio Consulting — Business Automation for SMBs",
+    title: "Ozio Consulting — Business Automation for Trades & Home Services",
     description:
-      "Enterprise-grade workflow automation at SMB pricing. Eliminate 40+ hours of manual work per month.",
+      "Custom automation for trades businesses. Lead capture, estimate follow-ups, scheduling, reviews — starting at $497/mo.",
+    images: ["https://ozioconsulting.com/og-image.png"],
   },
   robots: { index: true, follow: true },
   alternates: { canonical: "https://ozioconsulting.com" },
