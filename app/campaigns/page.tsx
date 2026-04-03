@@ -5,13 +5,16 @@ import { supabase } from "@/lib/supabase";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   ArrowLeft,
+  Check,
   ChevronRight,
+  Edit3,
   Loader2,
   Mail,
   Pause,
   Play,
   Plus,
   RefreshCw,
+  Save,
   Send,
   Trash2,
   Users,
@@ -144,7 +147,34 @@ export default function CampaignsPage() {
     setLoading(false);
   }, []);
 
+  // Editing state for steps
+  const [editingStep, setEditingStep] = useState<string | null>(null);
+  const [editSubject, setEditSubject] = useState("");
+  const [editBody, setEditBody] = useState("");
+  const [editDelay, setEditDelay] = useState(0);
+  const [saving, setSaving] = useState(false);
+
   useEffect(() => { fetchCampaigns(); }, [fetchCampaigns]);
+
+  // Realtime subscriptions
+  useEffect(() => {
+    const channels = [
+      supabase.channel("campaigns-rt")
+        .on("postgres_changes", { event: "*", schema: "public", table: "campaigns" }, () => { fetchCampaigns(); }),
+      supabase.channel("enrollments-rt")
+        .on("postgres_changes", { event: "*", schema: "public", table: "campaign_enrollments" }, () => {
+          if (selectedId) fetchDetail(selectedId);
+          fetchCampaigns();
+        }),
+      supabase.channel("sends-rt")
+        .on("postgres_changes", { event: "*", schema: "public", table: "campaign_sends" }, () => {
+          if (selectedId) fetchDetail(selectedId);
+        }),
+    ];
+    channels.forEach((c) => c.subscribe());
+    return () => { channels.forEach((c) => supabase.removeChannel(c)); };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedId]);
 
   async function fetchDetail(id: string) {
     setDetailLoading(true);
@@ -220,6 +250,25 @@ export default function CampaignsPage() {
     setShowEnroll(false);
     setSelectedLeads(new Set());
     fetchDetail(selectedId);
+  }
+
+  function startEditStep(step: any) {
+    setEditingStep(step.id);
+    setEditSubject(step.subject);
+    setEditBody(step.body_html);
+    setEditDelay(step.delay_days);
+  }
+
+  async function saveStep(campaignId: string, stepId: string) {
+    setSaving(true);
+    await supabase.from("campaign_steps").update({
+      subject: editSubject,
+      body_html: editBody,
+      delay_days: editDelay,
+    }).eq("id", stepId).eq("campaign_id", campaignId);
+    setSaving(false);
+    setEditingStep(null);
+    if (selectedId) fetchDetail(selectedId);
   }
 
   async function processNow() {
@@ -443,35 +492,68 @@ export default function CampaignsPage() {
                   </div>
                 </div>
 
-                {/* Steps with delivery stats */}
+                {/* Steps with delivery stats — editable */}
                 <div style={{ ...cardStyle }}>
                   <h3 style={cardTitle}>Sequence Steps — Delivery Stats</h3>
                   <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
-                    {(detail.steps || []).map((step: any, i: number) => (
-                      <div key={step.id} style={{ padding: "1rem", borderRadius: 12, background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.04)" }}>
-                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.5rem" }}>
-                          <span style={{ fontSize: "0.8rem", fontWeight: 600, color: "#f59e0b" }}>Step {step.step_number} — {step.delay_days === 0 ? "Immediate" : `Day ${step.delay_days}`}</span>
-                        </div>
-                        <p style={{ fontSize: "0.9rem", fontWeight: 500, color: "var(--text-primary)", marginBottom: "0.5rem" }}>{step.subject}</p>
-                        {step.stats && step.stats.total > 0 && (
-                          <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
-                            {[
-                              { label: "Sent", value: step.stats.total, color: "#64748b" },
-                              { label: "Delivered", value: step.stats.delivered, color: "#d4a853" },
-                              { label: "Opened", value: step.stats.opened, color: "#f59e0b" },
-                              { label: "Clicked", value: step.stats.clicked, color: "#f59e0b" },
-                              { label: "Bounced", value: step.stats.bounced, color: "#ef4444" },
-                              { label: "Spam", value: step.stats.spam, color: "#ef4444" },
-                              { label: "Dropped", value: step.stats.dropped, color: "#ef4444" },
-                            ].filter((s) => s.value > 0).map((s, j) => (
-                              <span key={j} style={{ padding: "0.15rem 0.5rem", borderRadius: 6, fontSize: "0.65rem", fontWeight: 600, color: s.color, background: `${s.color}15`, border: `1px solid ${s.color}25` }}>
-                                {s.value} {s.label}
-                              </span>
-                            ))}
+                    {(detail.steps || []).map((step: any) => {
+                      const isEditing = editingStep === step.id;
+                      return (
+                        <div key={step.id} style={{ padding: "1rem", borderRadius: 12, background: isEditing ? "rgba(245,158,11,0.04)" : "rgba(255,255,255,0.02)", border: `1px solid ${isEditing ? "rgba(245,158,11,0.2)" : "rgba(255,255,255,0.04)"}` }}>
+                          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.5rem" }}>
+                            <span style={{ fontSize: "0.8rem", fontWeight: 600, color: "#f59e0b" }}>
+                              Step {step.step_number} — {isEditing ? (
+                                <input type="number" min={0} value={editDelay} onChange={(e) => setEditDelay(Number(e.target.value))} style={{ ...inputStyle, width: 60, display: "inline-block", padding: "0.2rem 0.4rem", fontSize: "0.75rem" }} />
+                              ) : (
+                                step.delay_days === 0 ? "Immediate" : `Day ${step.delay_days}`
+                              )}
+                            </span>
+                            {isEditing ? (
+                              <div style={{ display: "flex", gap: "0.4rem" }}>
+                                <button onClick={() => saveStep(detail.id, step.id)} disabled={saving} style={{ ...btnGhost, padding: "0.25rem 0.6rem", fontSize: "0.7rem", background: "rgba(245,158,11,0.1)", borderColor: "rgba(245,158,11,0.3)", color: "#f59e0b" }}>
+                                  {saving ? <Loader2 size={12} className="spin" /> : <><Save size={12} /> Save</>}
+                                </button>
+                                <button onClick={() => setEditingStep(null)} style={{ ...btnGhost, padding: "0.25rem 0.6rem", fontSize: "0.7rem" }}>
+                                  <X size={12} /> Cancel
+                                </button>
+                              </div>
+                            ) : (
+                              <button onClick={() => startEditStep(step)} style={{ background: "none", border: "none", color: "var(--text-tertiary)", cursor: "pointer", padding: "0.2rem" }}>
+                                <Edit3 size={14} />
+                              </button>
+                            )}
                           </div>
-                        )}
-                      </div>
-                    ))}
+
+                          {isEditing ? (
+                            <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+                              <input value={editSubject} onChange={(e) => setEditSubject(e.target.value)} placeholder="Subject line" style={{ ...inputStyle, fontSize: "0.85rem" }} />
+                              <textarea value={editBody} onChange={(e) => setEditBody(e.target.value)} rows={6} style={{ ...inputStyle, fontSize: "0.8rem", fontFamily: "monospace", minHeight: 120 }} />
+                              <p style={{ fontSize: "0.65rem", color: "var(--text-tertiary)" }}>Merge fields: {"{{company_name}}"}, {"{{industry}}"}</p>
+                            </div>
+                          ) : (
+                            <p style={{ fontSize: "0.9rem", fontWeight: 500, color: "var(--text-primary)", marginBottom: "0.5rem" }}>{step.subject}</p>
+                          )}
+
+                          {!isEditing && step.stats && step.stats.total > 0 && (
+                            <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
+                              {[
+                                { label: "Sent", value: step.stats.total, color: "#64748b" },
+                                { label: "Delivered", value: step.stats.delivered, color: "#d4a853" },
+                                { label: "Opened", value: step.stats.opened, color: "#f59e0b" },
+                                { label: "Clicked", value: step.stats.clicked, color: "#f59e0b" },
+                                { label: "Bounced", value: step.stats.bounced, color: "#ef4444" },
+                                { label: "Spam", value: step.stats.spam, color: "#ef4444" },
+                                { label: "Dropped", value: step.stats.dropped, color: "#ef4444" },
+                              ].filter((s) => s.value > 0).map((s, j) => (
+                                <span key={j} style={{ padding: "0.15rem 0.5rem", borderRadius: 6, fontSize: "0.65rem", fontWeight: 600, color: s.color, background: `${s.color}15`, border: `1px solid ${s.color}25` }}>
+                                  {s.value} {s.label}
+                                </span>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
 
