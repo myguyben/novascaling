@@ -155,7 +155,7 @@ export default function CampaignsPage() {
     const { data: steps } = await supabase.from("campaign_steps").select("*").eq("campaign_id", id).order("step_number");
     const { data: enrollments } = await supabase
       .from("campaign_enrollments")
-      .select("*, sales_leads(company_name, client_email)")
+      .select("*, sales_leads(company_name, client_email), campaign_sends(id, step_id, status, sent_at)")
       .eq("campaign_id", id)
       .order("enrolled_at", { ascending: false });
 
@@ -484,20 +484,43 @@ export default function CampaignsPage() {
                     <p style={{ color: "var(--text-tertiary)", fontSize: "0.9rem" }}>No leads enrolled yet. Click "Enroll Leads" to add contacts.</p>
                   ) : (
                     <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-                      {(detail.enrollments || []).map((e: any) => (
-                        <div key={e.id} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "0.6rem 0.75rem", borderRadius: 10, background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.04)", fontSize: "0.85rem" }}>
-                          <div>
-                            <span style={{ fontWeight: 500, color: "var(--text-primary)" }}>{e.sales_leads?.company_name || "Unknown"}</span>
-                            <span style={{ color: "var(--text-secondary)", marginLeft: "0.75rem" }}>{e.sales_leads?.client_email}</span>
+                      {(detail.enrollments || []).map((e: any) => {
+                        const sends = (e.campaign_sends || []).sort((a: any, b: any) => new Date(a.sent_at).getTime() - new Date(b.sent_at).getTime());
+                        const deliveryColors: Record<string, string> = {
+                          sent: "#64748b", delivered: "#d4a853", opened: "#f59e0b", clicked: "#f59e0b",
+                          bounced: "#ef4444", spam: "#ef4444", dropped: "#ef4444", deferred: "#64748b",
+                          unsubscribed: "#ef4444", group_unsubscribe: "#ef4444",
+                        };
+                        return (
+                          <div key={e.id} style={{ padding: "0.75rem", borderRadius: 12, background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.04)" }}>
+                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: sends.length > 0 ? "0.5rem" : 0 }}>
+                              <div style={{ fontSize: "0.85rem" }}>
+                                <span style={{ fontWeight: 500, color: "var(--text-primary)" }}>{e.sales_leads?.company_name || "Unknown"}</span>
+                                <span style={{ color: "var(--text-secondary)", marginLeft: "0.75rem" }}>{e.sales_leads?.client_email}</span>
+                              </div>
+                              <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                                <span style={{ fontSize: "0.65rem", color: "var(--text-tertiary)" }}>Step {e.current_step}/{detail.steps?.length || 0}</span>
+                                <span style={{ padding: "0.15rem 0.5rem", borderRadius: 100, fontSize: "0.6rem", fontWeight: 600, textTransform: "uppercase", color: statusColor[e.status] || "#64748b", background: `${statusColor[e.status] || "#64748b"}15`, border: `1px solid ${statusColor[e.status] || "#64748b"}30` }}>
+                                  {e.status}
+                                </span>
+                              </div>
+                            </div>
+                            {sends.length > 0 && (
+                              <div style={{ display: "flex", gap: "0.4rem", flexWrap: "wrap" }}>
+                                {sends.map((s: any, si: number) => {
+                                  const stepNum = detail.steps?.findIndex((st: any) => st.id === s.step_id) + 1 || "?";
+                                  const color = deliveryColors[s.status] || "#64748b";
+                                  return (
+                                    <span key={s.id} style={{ display: "inline-flex", alignItems: "center", gap: "0.3rem", padding: "0.15rem 0.45rem", borderRadius: 6, fontSize: "0.6rem", fontWeight: 600, color, background: `${color}12`, border: `1px solid ${color}25` }}>
+                                      S{stepNum}: {s.status}
+                                    </span>
+                                  );
+                                })}
+                              </div>
+                            )}
                           </div>
-                          <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
-                            <span style={{ fontSize: "0.7rem", color: "var(--text-tertiary)" }}>Step {e.current_step}/{detail.steps?.length || 0}</span>
-                            <span style={{ padding: "0.15rem 0.5rem", borderRadius: 100, fontSize: "0.6rem", fontWeight: 600, textTransform: "uppercase", color: statusColor[e.status] || "#64748b", background: `${statusColor[e.status] || "#64748b"}15`, border: `1px solid ${statusColor[e.status] || "#64748b"}30` }}>
-                              {e.status}
-                            </span>
-                          </div>
-                        </div>
-                      ))}
+                        );
+                      })}
                     </div>
                   )}
                 </div>
