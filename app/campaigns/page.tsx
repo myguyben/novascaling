@@ -185,7 +185,7 @@ export default function CampaignsPage() {
     const { data: steps } = await supabase.from("campaign_steps").select("*").eq("campaign_id", id).order("step_number");
     const { data: enrollments } = await supabase
       .from("campaign_enrollments")
-      .select("*, sales_leads(company_name, client_email), campaign_sends(id, step_id, status, sent_at)")
+      .select("*, sales_leads(company_name, client_email, responded, reply_text, reply_from, reply_subject, replied_at), campaign_sends(id, step_id, status, sent_at)")
       .eq("campaign_id", id)
       .order("enrolled_at", { ascending: false });
 
@@ -568,17 +568,19 @@ export default function CampaignsPage() {
                     <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
                       {(detail.enrollments || []).map((e: any) => {
                         const sends = (e.campaign_sends || []).sort((a: any, b: any) => new Date(a.sent_at).getTime() - new Date(b.sent_at).getTime());
+                        const lead = e.sales_leads;
+                        const hasReply = lead?.responded && lead?.reply_text;
                         const deliveryColors: Record<string, string> = {
                           sent: "#64748b", delivered: "#d4a853", opened: "#f59e0b", clicked: "#f59e0b",
                           bounced: "#ef4444", spam: "#ef4444", dropped: "#ef4444", deferred: "#64748b",
                           unsubscribed: "#ef4444", group_unsubscribe: "#ef4444",
                         };
                         return (
-                          <div key={e.id} style={{ padding: "0.75rem", borderRadius: 12, background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.04)" }}>
-                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: sends.length > 0 ? "0.5rem" : 0 }}>
+                          <div key={e.id} style={{ padding: "0.75rem", borderRadius: 12, background: hasReply ? "rgba(245,158,11,0.04)" : "rgba(255,255,255,0.02)", border: `1px solid ${hasReply ? "rgba(245,158,11,0.15)" : "rgba(255,255,255,0.04)"}` }}>
+                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.5rem" }}>
                               <div style={{ fontSize: "0.85rem" }}>
-                                <span style={{ fontWeight: 500, color: "var(--text-primary)" }}>{e.sales_leads?.company_name || "Unknown"}</span>
-                                <span style={{ color: "var(--text-secondary)", marginLeft: "0.75rem" }}>{e.sales_leads?.client_email}</span>
+                                <span style={{ fontWeight: 500, color: "var(--text-primary)" }}>{lead?.company_name || "Unknown"}</span>
+                                <span style={{ color: "var(--text-secondary)", marginLeft: "0.75rem" }}>{lead?.client_email}</span>
                               </div>
                               <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
                                 <span style={{ fontSize: "0.65rem", color: "var(--text-tertiary)" }}>Step {e.current_step}/{detail.steps?.length || 0}</span>
@@ -588,8 +590,8 @@ export default function CampaignsPage() {
                               </div>
                             </div>
                             {sends.length > 0 && (
-                              <div style={{ display: "flex", gap: "0.4rem", flexWrap: "wrap" }}>
-                                {sends.map((s: any, si: number) => {
+                              <div style={{ display: "flex", gap: "0.4rem", flexWrap: "wrap", marginBottom: hasReply ? "0.5rem" : 0 }}>
+                                {sends.map((s: any) => {
                                   const stepNum = detail.steps?.findIndex((st: any) => st.id === s.step_id) + 1 || "?";
                                   const color = deliveryColors[s.status] || "#64748b";
                                   return (
@@ -598,6 +600,31 @@ export default function CampaignsPage() {
                                     </span>
                                   );
                                 })}
+                              </div>
+                            )}
+                            {hasReply && (
+                              <div style={{ padding: "0.6rem 0.75rem", borderRadius: 8, background: "rgba(245,158,11,0.06)", border: "1px solid rgba(245,158,11,0.12)" }}>
+                                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.25rem" }}>
+                                  <span style={{ fontSize: "0.65rem", fontWeight: 600, color: "#f59e0b", textTransform: "uppercase", letterSpacing: "0.05em" }}>Reply received</span>
+                                  {lead.replied_at && (
+                                    <span style={{ fontSize: "0.6rem", color: "var(--text-tertiary)" }}>
+                                      {new Date(lead.replied_at).toLocaleDateString("en-US", { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" })}
+                                    </span>
+                                  )}
+                                </div>
+                                {lead.reply_subject && (
+                                  <p style={{ fontSize: "0.75rem", fontWeight: 500, color: "var(--text-primary)", marginBottom: "0.2rem" }}>
+                                    {lead.reply_subject}
+                                  </p>
+                                )}
+                                <p style={{ fontSize: "0.8rem", color: "var(--text-secondary)", lineHeight: 1.5, whiteSpace: "pre-wrap" }}>
+                                  {lead.reply_text}
+                                </p>
+                                {lead.reply_from && (
+                                  <p style={{ fontSize: "0.65rem", color: "var(--text-tertiary)", marginTop: "0.25rem" }}>
+                                    From: {lead.reply_from}
+                                  </p>
+                                )}
                               </div>
                             )}
                           </div>
