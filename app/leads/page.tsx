@@ -409,6 +409,11 @@ function LeadRow({
                 <Star size={10} fill="#f59e0b" color="#f59e0b" />{lead.rating} ({lead.review_count})
               </span>
             )}
+            {lead.updated_at && lead.updated_at !== lead.created_at && (
+              <span className="text-[10px]" style={{ color: "var(--text-tertiary)" }}>
+                Updated {new Date(lead.updated_at).toLocaleDateString("en-US", { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" })}
+              </span>
+            )}
           </div>
         </div>
 
@@ -734,7 +739,7 @@ function LeadsContent() {
   }, []);
 
   async function updateLead(id: string, data: Partial<SalesLead>) {
-    await supabase.from("sales_leads").update(data).eq("id", id);
+    await supabase.from("sales_leads").update({ ...data, updated_at: new Date().toISOString() }).eq("id", id);
   }
   async function deleteLead(id: string) {
     await supabase.from("sales_leads").delete().eq("id", id);
