@@ -26,6 +26,8 @@ import {
   ChevronDown,
   ChevronUp,
   UserPlus,
+  MessageSquare,
+  Loader2,
 } from "lucide-react";
 
 /* ── Types ── */
@@ -54,6 +56,9 @@ interface SalesLead {
   reply_from: string | null;
   reply_subject: string | null;
   replied_at: string | null;
+  sms_sent_at: string | null;
+  sms_follow_up_count: number;
+  last_sms_at: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -301,10 +306,12 @@ function LeadRow({
   lead,
   onUpdate,
   onDelete,
+  onSmsClick,
 }: {
   lead: SalesLead;
   onUpdate: (id: string, data: Partial<SalesLead>) => void;
   onDelete: (id: string) => void;
+  onSmsClick: (lead: SalesLead) => void;
 }) {
   const [notes, setNotes] = useState(lead.notes || "");
   const [email, setEmail] = useState(lead.client_email || "");
@@ -486,6 +493,33 @@ function LeadRow({
             <span className="flex items-center gap-1 px-2 py-1.5 rounded-lg text-[10px] font-semibold" style={{ background: "rgba(245,158,11,0.08)", color: "var(--accent)" }}>
               <Send size={10} />
               {lead.follow_up_count + 1}/5 emails
+            </span>
+          )}
+
+          {/* SMS button */}
+          {lead.phone && (
+            <button
+              onClick={() => onSmsClick(lead)}
+              className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-bold cursor-pointer border-none transition-all"
+              style={{
+                background: lead.sms_follow_up_count > 0 ? "rgba(245,158,11,0.12)" : "rgba(255,255,255,0.04)",
+                color: lead.sms_follow_up_count > 0 ? "#f59e0b" : "var(--text-tertiary)",
+              }}
+              title="Send SMS"
+            >
+              <MessageSquare size={14} />
+              {lead.sms_follow_up_count > 0 ? (
+                <span className="hidden sm:inline">{lead.sms_follow_up_count}/3</span>
+              ) : (
+                <span className="hidden sm:inline">SMS</span>
+              )}
+            </button>
+          )}
+
+          {/* SMS timestamp */}
+          {lead.last_sms_at && (
+            <span className="text-[10px]" style={{ color: "var(--text-tertiary)" }}>
+              SMS {new Date(lead.last_sms_at).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
             </span>
           )}
 
@@ -710,6 +744,10 @@ function LeadsContent() {
   const [showAdd, setShowAdd] = useState(false);
   const [toast, setToast] = useState("");
   const [loading, setLoading] = useState(true);
+  const [showSms, setShowSms] = useState(false);
+  const [smsLead, setSmsLead] = useState<SalesLead | null>(null);
+  const [smsMessage, setSmsMessage] = useState("");
+  const [smsSending, setSmsSending] = useState(false);
 
   const fetchLeads = useCallback(async () => {
     const { data } = await supabase.from("sales_leads").select("*").order("created_at", { ascending: true });
@@ -743,6 +781,40 @@ function LeadsContent() {
   }
   async function deleteLead(id: string) {
     await supabase.from("sales_leads").delete().eq("id", id);
+  }
+
+  function openSmsModal(lead: SalesLead) {
+    const templates = [
+      `Hey, this is Luke from Ozio Consulting. Joel mentioned he chatted with you recently. Would you be open to grabbing a quick coffee this week? We pick up the tab. Book here: ozioconsulting.com/schedule`,
+      `Hey, just following up. We help trades businesses automate lead follow-ups, scheduling, and reviews. Happy to show you how over coffee -- no strings attached. ozioconsulting.com/schedule`,
+      `Last text from me. If you ever want to chat about automating the stuff that eats your week, the offer stands. ozioconsulting.com/schedule -- Luke, Ozio Consulting`,
+    ];
+    const step = Math.min(lead.sms_follow_up_count || 0, 2);
+    setSmsLead(lead);
+    setSmsMessage(templates[step]);
+    setShowSms(true);
+  }
+
+  async function sendSms() {
+    if (!smsLead) return;
+    setSmsSending(true);
+    try {
+      const res = await fetch("https://api.ozioconsulting.com/api/sms/send", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}` },
+        body: JSON.stringify({ lead_id: smsLead.id, message: smsMessage }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setToast(`SMS sent to ${smsLead.company_name}`);
+        setShowSms(false);
+      } else {
+        setToast(`Failed: ${data.error}`);
+      }
+    } catch {
+      setToast("Failed to send SMS");
+    }
+    setSmsSending(false);
   }
   async function addLead(lead: Partial<SalesLead>) {
     await supabase.from("sales_leads").insert(lead);
@@ -793,6 +865,39 @@ function LeadsContent() {
   return (
     <div className="min-h-screen" style={{ background: "var(--bg-deep)" }}>
       {toast && <Toast message={toast} onClose={() => setToast("")} />}
+
+      {/* SMS Modal */}
+      {showSms && smsLead && (
+        <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.6)", backdropFilter: "blur(4px)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 100, padding: "2rem" }} onClick={() => setShowSms(false)}>
+          <div onClick={(e) => e.stopPropagation()} style={{ width: "100%", maxWidth: 480, background: "var(--bg-surface)", border: "1px solid rgba(255,255,255,0.06)", borderRadius: 20, padding: "2rem" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem" }}>
+              <h2 style={{ fontFamily: "Cormorant Garamond, serif", fontSize: "1.2rem", fontWeight: 700 }}>Send SMS</h2>
+              <button onClick={() => setShowSms(false)} style={{ background: "none", border: "none", color: "var(--text-secondary)", cursor: "pointer" }}><X size={20} /></button>
+            </div>
+            <div style={{ marginBottom: "1rem", padding: "0.6rem 0.8rem", borderRadius: 10, background: "rgba(245,158,11,0.06)", border: "1px solid rgba(245,158,11,0.12)", fontSize: "0.8rem" }}>
+              <span style={{ color: "var(--text-primary)", fontWeight: 500 }}>{smsLead.company_name}</span>
+              <span style={{ color: "#f59e0b", marginLeft: "0.75rem" }}>{smsLead.phone}</span>
+              {smsLead.sms_follow_up_count > 0 && (
+                <span style={{ color: "var(--text-tertiary)", marginLeft: "0.75rem" }}>SMS {smsLead.sms_follow_up_count}/3 sent</span>
+              )}
+            </div>
+            <textarea
+              value={smsMessage}
+              onChange={(e) => setSmsMessage(e.target.value)}
+              rows={5}
+              style={{ width: "100%", padding: "0.75rem", borderRadius: 10, border: "1px solid rgba(255,255,255,0.08)", background: "rgba(255,255,255,0.04)", color: "var(--text-primary)", fontSize: "0.85rem", fontFamily: "Inter, sans-serif", outline: "none", marginBottom: "0.5rem", resize: "vertical" }}
+            />
+            <p style={{ fontSize: "0.65rem", color: "var(--text-tertiary)", marginBottom: "1rem" }}>{smsMessage.length}/160 characters {smsMessage.length > 160 ? `(${Math.ceil(smsMessage.length / 160)} segments)` : ""}</p>
+            <button
+              onClick={sendSms}
+              disabled={smsSending || !smsMessage.trim()}
+              style={{ width: "100%", padding: "0.75rem", borderRadius: 10, border: "none", background: "linear-gradient(135deg, #f59e0b, #ea580c)", color: "#000", fontWeight: 700, fontSize: "0.85rem", cursor: smsSending ? "wait" : "pointer", opacity: smsSending ? 0.6 : 1, display: "flex", alignItems: "center", justifyContent: "center", gap: "0.5rem" }}
+            >
+              {smsSending ? <><Loader2 size={14} className="spin" /> Sending...</> : <><MessageSquare size={14} /> Send SMS</>}
+            </button>
+          </div>
+        </div>
+      )}
       {showUpload && <CSVUploadModal onClose={() => setShowUpload(false)} onUpload={uploadLeads} />}
       {showAdd && <AddLeadModal onClose={() => setShowAdd(false)} onAdd={addLead} />}
 
@@ -872,7 +977,7 @@ function LeadsContent() {
         ) : (
           <div className="flex flex-col gap-2">
             {filtered.map((lead) => (
-              <LeadRow key={lead.id} lead={lead} onUpdate={updateLead} onDelete={deleteLead} />
+              <LeadRow key={lead.id} lead={lead} onUpdate={updateLead} onDelete={deleteLead} onSmsClick={(l) => openSmsModal(l)} />
             ))}
             <p className="text-center text-[11px] mt-4 pb-4" style={{ color: "var(--text-tertiary)" }}>Showing {filtered.length} of {leads.length} leads</p>
           </div>
