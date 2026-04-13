@@ -305,6 +305,7 @@ function ReplyModal({ lead, onClose }: { lead: SalesLead; onClose: () => void })
    ══════════════════════════════════════════════ */
 interface EmailSend {
   id: string;
+  lead_id: string;
   to_email: string;
   subject: string | null;
   body_text: string | null;
@@ -313,6 +314,7 @@ interface EmailSend {
 }
 interface SmsSend {
   id: string;
+  lead_id: string;
   phone: string;
   message: string;
   status: string;
@@ -320,26 +322,58 @@ interface SmsSend {
 }
 
 function OutreachModal({ lead, onClose }: { lead: SalesLead; onClose: () => void }) {
-  const [emails, setEmails] = useState<EmailSend[]>([]);
+  const [emails, setEmails] = useState<(EmailSend & { source?: string })[]>([]);
   const [sms, setSms] = useState<SmsSend[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     (async () => {
       try {
-        const token = (await supabase.auth.getSession()).data.session?.access_token;
-        const res = await fetch(`https://api.ozioconsulting.com/api/leads/${lead.id}/outreach`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        const data = await res.json();
-        setEmails(data.emails || []);
-        setSms(data.sms || []);
+        // Fetch direct emails + SMS from Supabase
+        const [{ data: directEmails }, { data: smsData }, { data: enrollments }] = await Promise.all([
+          supabase.from("email_sends").select("*").eq("lead_id", lead.id).order("sent_at", { ascending: false }),
+          supabase.from("sms_sends").select("*").eq("lead_id", lead.id).order("sent_at", { ascending: false }),
+          supabase.from("campaign_enrollments").select("id, campaign_id").eq("lead_id", lead.id),
+        ]);
+
+        // Fetch campaign sends for this lead
+        let campaignEmails: (EmailSend & { source: string })[] = [];
+        if (enrollments && enrollments.length > 0) {
+          const enrollmentIds = enrollments.map((e) => e.id);
+          const { data: cSends } = await supabase.from("campaign_sends").select("id, enrollment_id, step_id, status, sent_at").in("enrollment_id", enrollmentIds).order("sent_at", { ascending: false });
+          if (cSends && cSends.length > 0) {
+            const stepIds = [...new Set(cSends.map((s) => s.step_id))];
+            const { data: steps } = await supabase.from("campaign_steps").select("id, subject, body_html").in("id", stepIds);
+            const stepsMap = new Map((steps || []).map((s) => [s.id, s]));
+            campaignEmails = cSends.map((s) => {
+              const step = stepsMap.get(s.step_id);
+              return {
+                id: s.id,
+                lead_id: lead.id,
+                to_email: lead.client_email || "",
+                subject: step?.subject || "Campaign Email",
+                body_text: step?.body_html ? step.body_html.replace(/<[^>]*>/g, "") : null,
+                status: s.status,
+                sent_at: s.sent_at,
+                source: "campaign",
+              };
+            });
+          }
+        }
+
+        const allEmails = [
+          ...(directEmails || []).map((e) => ({ ...e, source: "direct" })),
+          ...campaignEmails,
+        ].sort((a, b) => new Date(b.sent_at).getTime() - new Date(a.sent_at).getTime());
+
+        setEmails(allEmails);
+        setSms(smsData || []);
       } catch {
         /* ignore */
       }
       setLoading(false);
     })();
-  }, [lead.id]);
+  }, [lead.id, lead.client_email]);
 
   const allItems = [
     ...emails.map((e) => ({ type: "email" as const, date: e.sent_at, ...e })),
@@ -392,6 +426,7 @@ function OutreachModal({ lead, onClose }: { lead: SalesLead; onClose: () => void
                   <span className="text-[10px] font-bold uppercase tracking-wider" style={{ color: item.type === "email" ? "#f59e0b" : "#22c55e" }}>
                     {item.type === "email" ? "Email" : "SMS"}
                   </span>
+                  {"source" in item && item.source === "campaign" && <span className="text-[10px] px-1.5 py-0.5 rounded-full" style={{ background: "rgba(139,92,246,0.1)", color: "#a78bfa" }}>campaign</span>}
                   <span className="text-[10px]" style={{ color: "var(--text-tertiary)" }}>
                     {new Date(item.date).toLocaleDateString("en-US", { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" })}
                   </span>
@@ -414,6 +449,192 @@ function OutreachModal({ lead, onClose }: { lead: SalesLead; onClose: () => void
                 )}
               </div>
             ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/* ══════════════════════════════════════════════
+   ALL EMAILS MODAL
+   ══════════════════════════════════════════════ */
+function AllEmailsModal({ leads, onClose }: { leads: SalesLead[]; onClose: () => void }) {
+  const [emails, setEmails] = useState<(EmailSend & { source?: string })[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [searchQ, setSearchQ] = useState("");
+
+  useEffect(() => {
+    (async () => {
+      // Fetch direct emails
+      const { data: directEmails } = await supabase.from("email_sends").select("*").order("sent_at", { ascending: false });
+
+      // Fetch campaign emails: enrollments → sends → steps
+      let campaignEmails: (EmailSend & { source: string })[] = [];
+      const { data: enrollments } = await supabase.from("campaign_enrollments").select("id, lead_id, campaign_id");
+      if (enrollments && enrollments.length > 0) {
+        const enrollmentIds = enrollments.map((e) => e.id);
+        const { data: cSends } = await supabase.from("campaign_sends").select("id, enrollment_id, step_id, status, sent_at").in("enrollment_id", enrollmentIds).order("sent_at", { ascending: false });
+        if (cSends && cSends.length > 0) {
+          const stepIds = [...new Set(cSends.map((s) => s.step_id))];
+          const { data: steps } = await supabase.from("campaign_steps").select("id, subject, body_html").in("id", stepIds);
+          const stepsMap = new Map((steps || []).map((s) => [s.id, s]));
+          const enrollMap = new Map(enrollments.map((e) => [e.id, e]));
+
+          campaignEmails = cSends.map((s) => {
+            const step = stepsMap.get(s.step_id);
+            const enrollment = enrollMap.get(s.enrollment_id);
+            const lead = leads.find((l) => l.id === enrollment?.lead_id);
+            return {
+              id: s.id,
+              lead_id: enrollment?.lead_id || "",
+              to_email: lead?.client_email || "",
+              subject: step?.subject || "Campaign Email",
+              body_text: step?.body_html ? step.body_html.replace(/<[^>]*>/g, "") : null,
+              status: s.status,
+              sent_at: s.sent_at,
+              source: "campaign",
+            };
+          });
+        }
+      }
+
+      const all = [
+        ...(directEmails || []).map((e) => ({ ...e, source: "direct" })),
+        ...campaignEmails,
+      ].sort((a, b) => new Date(b.sent_at).getTime() - new Date(a.sent_at).getTime());
+      setEmails(all);
+      setLoading(false);
+    })();
+  }, [leads]);
+
+  const leadsMap = new Map(leads.map((l) => [l.id, l.company_name]));
+  const q = searchQ.toLowerCase();
+  const filtered = emails.filter((e) => {
+    if (!q) return true;
+    const company = leadsMap.get(e.lead_id) || "";
+    return company.toLowerCase().includes(q) || (e.to_email || "").toLowerCase().includes(q) || (e.subject || "").toLowerCase().includes(q);
+  });
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: "rgba(0,0,0,0.7)", backdropFilter: "blur(8px)" }} onClick={onClose}>
+      <div className="w-full max-w-2xl max-h-[85vh] overflow-y-auto rounded-3xl p-6" style={{ background: "#0a0f1e", border: "1px solid rgba(255,255,255,0.06)" }} onClick={(e) => e.stopPropagation()}>
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h2 className="text-lg font-bold" style={{ fontFamily: "Cormorant Garamond, serif", color: "var(--text-primary)" }}>
+              <Mail size={18} className="inline mr-2" style={{ color: "#f59e0b" }} />All Emails Sent
+            </h2>
+            <p className="text-xs mt-0.5" style={{ color: "var(--text-tertiary)" }}>{emails.length} total emails</p>
+          </div>
+          <button onClick={onClose} className="cursor-pointer bg-transparent border-none" style={{ color: "var(--text-secondary)" }}><X size={20} /></button>
+        </div>
+
+        <div className="relative mb-4">
+          <Search size={13} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: "var(--text-tertiary)" }} />
+          <input type="text" value={searchQ} onChange={(e) => setSearchQ(e.target.value)} placeholder="Search by company, email, subject..." className="w-full pl-8 pr-4 py-2 rounded-xl text-xs outline-none" style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.06)", color: "var(--text-primary)", fontFamily: "Inter, sans-serif" }} />
+        </div>
+
+        {loading ? (
+          <div className="flex items-center justify-center py-10">
+            <Loader2 size={20} className="animate-spin" style={{ color: "var(--accent)" }} />
+          </div>
+        ) : filtered.length === 0 ? (
+          <p className="text-center text-sm py-10" style={{ color: "var(--text-tertiary)" }}>No emails found.</p>
+        ) : (
+          <div className="flex flex-col gap-3">
+            {filtered.map((email) => (
+              <div key={email.id} className="p-4 rounded-2xl" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.04)" }}>
+                <div className="flex items-center gap-2 mb-2 flex-wrap">
+                  <Mail size={13} style={{ color: "#f59e0b" }} />
+                  <span className="text-xs font-bold" style={{ color: "var(--text-primary)", fontFamily: "Cormorant Garamond, serif" }}>
+                    {leadsMap.get(email.lead_id) || "Unknown Lead"}
+                  </span>
+                  <span className="text-[10px]" style={{ color: "var(--text-tertiary)" }}>
+                    {new Date(email.sent_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric", hour: "numeric", minute: "2-digit" })}
+                  </span>
+                  {email.source === "campaign" && <span className="text-[10px] px-1.5 py-0.5 rounded-full" style={{ background: "rgba(139,92,246,0.1)", color: "#a78bfa" }}>campaign</span>}
+                  <span className="ml-auto text-[10px] px-1.5 py-0.5 rounded-full" style={{ background: "rgba(34,197,94,0.1)", color: "#22c55e" }}>{email.status}</span>
+                </div>
+                <p className="text-[10px] mb-1" style={{ color: "var(--text-tertiary)" }}>To: {email.to_email}</p>
+                {email.subject && <p className="text-xs font-semibold mb-1" style={{ color: "var(--text-primary)" }}>{email.subject}</p>}
+                {email.body_text && <p className="text-xs whitespace-pre-wrap" style={{ color: "var(--text-secondary)", display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical", overflow: "hidden" }}>{email.body_text}</p>}
+              </div>
+            ))}
+            <p className="text-center text-[10px] mt-2" style={{ color: "var(--text-tertiary)" }}>Showing {filtered.length} of {emails.length} emails</p>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/* ══════════════════════════════════════════════
+   ALL SMS MODAL
+   ══════════════════════════════════════════════ */
+function AllSmsModal({ leads, onClose }: { leads: SalesLead[]; onClose: () => void }) {
+  const [messages, setMessages] = useState<SmsSend[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [searchQ, setSearchQ] = useState("");
+
+  useEffect(() => {
+    (async () => {
+      const { data } = await supabase.from("sms_sends").select("*").order("sent_at", { ascending: false });
+      if (data) setMessages(data);
+      setLoading(false);
+    })();
+  }, []);
+
+  const leadsMap = new Map(leads.map((l) => [l.id, l.company_name]));
+  const q = searchQ.toLowerCase();
+  const filtered = messages.filter((m) => {
+    if (!q) return true;
+    const company = leadsMap.get(m.lead_id) || "";
+    return company.toLowerCase().includes(q) || (m.phone || "").includes(q) || (m.message || "").toLowerCase().includes(q);
+  });
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: "rgba(0,0,0,0.7)", backdropFilter: "blur(8px)" }} onClick={onClose}>
+      <div className="w-full max-w-2xl max-h-[85vh] overflow-y-auto rounded-3xl p-6" style={{ background: "#0a0f1e", border: "1px solid rgba(255,255,255,0.06)" }} onClick={(e) => e.stopPropagation()}>
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h2 className="text-lg font-bold" style={{ fontFamily: "Cormorant Garamond, serif", color: "var(--text-primary)" }}>
+              <MessageSquare size={18} className="inline mr-2" style={{ color: "#22c55e" }} />All SMS Sent
+            </h2>
+            <p className="text-xs mt-0.5" style={{ color: "var(--text-tertiary)" }}>{messages.length} total messages</p>
+          </div>
+          <button onClick={onClose} className="cursor-pointer bg-transparent border-none" style={{ color: "var(--text-secondary)" }}><X size={20} /></button>
+        </div>
+
+        <div className="relative mb-4">
+          <Search size={13} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: "var(--text-tertiary)" }} />
+          <input type="text" value={searchQ} onChange={(e) => setSearchQ(e.target.value)} placeholder="Search by company, phone, message..." className="w-full pl-8 pr-4 py-2 rounded-xl text-xs outline-none" style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.06)", color: "var(--text-primary)", fontFamily: "Inter, sans-serif" }} />
+        </div>
+
+        {loading ? (
+          <div className="flex items-center justify-center py-10">
+            <Loader2 size={20} className="animate-spin" style={{ color: "var(--accent)" }} />
+          </div>
+        ) : filtered.length === 0 ? (
+          <p className="text-center text-sm py-10" style={{ color: "var(--text-tertiary)" }}>No SMS messages found.</p>
+        ) : (
+          <div className="flex flex-col gap-3">
+            {filtered.map((msg) => (
+              <div key={msg.id} className="p-4 rounded-2xl" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.04)" }}>
+                <div className="flex items-center gap-2 mb-2 flex-wrap">
+                  <MessageSquare size={13} style={{ color: "#22c55e" }} />
+                  <span className="text-xs font-bold" style={{ color: "var(--text-primary)", fontFamily: "Cormorant Garamond, serif" }}>
+                    {leadsMap.get(msg.lead_id) || "Unknown Lead"}
+                  </span>
+                  <span className="text-[10px]" style={{ color: "var(--text-tertiary)" }}>
+                    {new Date(msg.sent_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric", hour: "numeric", minute: "2-digit" })}
+                  </span>
+                  <span className="ml-auto text-[10px] px-1.5 py-0.5 rounded-full" style={{ background: "rgba(34,197,94,0.1)", color: "#22c55e" }}>{msg.status}</span>
+                </div>
+                <p className="text-[10px] mb-1" style={{ color: "var(--text-tertiary)" }}>To: {msg.phone}</p>
+                <p className="text-xs whitespace-pre-wrap" style={{ color: "var(--text-secondary)" }}>{msg.message}</p>
+              </div>
+            ))}
+            <p className="text-center text-[10px] mt-2" style={{ color: "var(--text-tertiary)" }}>Showing {filtered.length} of {messages.length} messages</p>
           </div>
         )}
       </div>
@@ -590,17 +811,15 @@ function LeadRow({
           </button>
 
           {/* Outreach history */}
-          {hot && lead.hot_email_sent_at && (
-            <button
-              onClick={() => setShowOutreach(true)}
-              className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-bold cursor-pointer border-none transition-all"
-              style={{ background: "rgba(245,158,11,0.08)", color: "var(--accent)" }}
-              title="View outreach history (emails + texts sent)"
-            >
-              <History size={14} />
-              <span className="hidden sm:inline">Sent</span>
-            </button>
-          )}
+          <button
+            onClick={() => setShowOutreach(true)}
+            className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-bold cursor-pointer border-none transition-all"
+            style={{ background: "rgba(245,158,11,0.08)", color: "var(--accent)" }}
+            title="View outreach history (emails + texts sent)"
+          >
+            <History size={14} />
+            <span className="hidden sm:inline">History</span>
+          </button>
 
           {/* Responded toggle / view reply */}
           {hot && lead.hot_email_sent_at && (
@@ -887,6 +1106,8 @@ function LeadsContent() {
   const [smsLead, setSmsLead] = useState<SalesLead | null>(null);
   const [smsMessage, setSmsMessage] = useState("");
   const [smsSending, setSmsSending] = useState(false);
+  const [showAllEmails, setShowAllEmails] = useState(false);
+  const [showAllSms, setShowAllSms] = useState(false);
 
   const fetchLeads = useCallback(async () => {
     const { data } = await supabase.from("sales_leads").select("*").order("created_at", { ascending: true });
@@ -1002,6 +1223,7 @@ function LeadsContent() {
       (filter === "hot" && l.hot) ||
       (filter === "new" && !l.contacted && !l.hot) ||
       (filter === "client" && l.status === "client") ||
+      (filter === "has_notes" && l.notes && l.notes.trim() !== "") ||
       filter === l.area;
     const q = search.toLowerCase();
     const matchesSearch = !q || l.company_name.toLowerCase().includes(q) || (l.phone || "").includes(q) || (l.address || "").toLowerCase().includes(q) || (l.notes || "").toLowerCase().includes(q);
@@ -1013,8 +1235,8 @@ function LeadsContent() {
     contacted: leads.filter((l) => l.contacted).length,
     hot: leads.filter((l) => l.hot).length,
     client: leads.filter((l) => l.status === "client").length,
+    notes: leads.filter((l) => l.notes && l.notes.trim() !== "").length,
   };
-
 
   const FILTER_PILLS = [
     { key: "all", label: `All ${stats.total}` },
@@ -1022,6 +1244,7 @@ function LeadsContent() {
     { key: "contacted", label: `Contacted ${stats.contacted}` },
     { key: "hot", label: `Hot ${stats.hot}` },
     { key: "client", label: `Won ${stats.client}` },
+    { key: "has_notes", label: `Has Notes ${stats.notes}` },
     { key: "nv", label: "North Van" },
     { key: "van", label: "Vancouver" },
     { key: "sa", label: "Service Area" },
@@ -1065,6 +1288,8 @@ function LeadsContent() {
       )}
       {showUpload && <CSVUploadModal onClose={() => setShowUpload(false)} onUpload={uploadLeads} />}
       {showAdd && <AddLeadModal onClose={() => setShowAdd(false)} onAdd={addLead} />}
+      {showAllEmails && <AllEmailsModal leads={leads} onClose={() => setShowAllEmails(false)} />}
+      {showAllSms && <AllSmsModal leads={leads} onClose={() => setShowAllSms(false)} />}
 
       {/* Header */}
       <header className="px-4 pt-5 pb-4 sm:px-6 md:px-8" style={{ background: "var(--bg-surface)", borderBottom: "1px solid rgba(255,255,255,0.04)" }}>
@@ -1082,6 +1307,12 @@ function LeadsContent() {
               </button>
               <button onClick={() => setShowAdd(true)} className="flex items-center gap-1.5 px-3 sm:px-4 py-2 rounded-xl text-xs font-semibold cursor-pointer" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)", color: "var(--text-primary)" }}>
                 <Plus size={13} /><span className="hidden sm:inline">Add</span>
+              </button>
+              <button onClick={() => setShowAllEmails(true)} className="flex items-center gap-1.5 px-3 sm:px-4 py-2 rounded-xl text-xs font-semibold cursor-pointer" style={{ background: "rgba(245,158,11,0.08)", border: "1px solid rgba(245,158,11,0.15)", color: "#f59e0b" }} title="View all emails sent">
+                <Mail size={13} /><span className="hidden sm:inline">Emails</span>
+              </button>
+              <button onClick={() => setShowAllSms(true)} className="flex items-center gap-1.5 px-3 sm:px-4 py-2 rounded-xl text-xs font-semibold cursor-pointer" style={{ background: "rgba(34,197,94,0.08)", border: "1px solid rgba(34,197,94,0.15)", color: "#22c55e" }} title="View all SMS sent">
+                <MessageSquare size={13} /><span className="hidden sm:inline">SMS</span>
               </button>
               <button onClick={() => supabase.auth.signOut()} className="p-2 rounded-xl cursor-pointer bg-transparent border-none" style={{ color: "var(--text-tertiary)" }} title="Sign out">
                 <LogOut size={16} />
