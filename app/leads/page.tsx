@@ -1129,6 +1129,7 @@ function LeadsContent() {
   const [showAdd, setShowAdd] = useState(false);
   const [toast, setToast] = useState("");
   const [loading, setLoading] = useState(true);
+  const [hotSending, setHotSending] = useState<string | null>(null);
   const [showSms, setShowSms] = useState(false);
   const [smsLead, setSmsLead] = useState<SalesLead | null>(null);
   const [smsMessage, setSmsMessage] = useState("");
@@ -1171,10 +1172,12 @@ function LeadsContent() {
   }
 
   async function hotOutreach(lead: SalesLead) {
+    if (hotSending) return;
     if (!lead.client_email && !lead.phone) {
       setToast("Add an email or phone number first");
       return;
     }
+    setHotSending(lead.id);
     try {
       const token = (await supabase.auth.getSession()).data.session?.access_token;
       const res = await fetch("https://api.ozioconsulting.com/api/leads/hot-outreach", {
@@ -1184,16 +1187,21 @@ function LeadsContent() {
       });
       const data = await res.json();
       if (data.success) {
-        const parts: string[] = [];
-        if (data.email_sent) parts.push("email");
-        if (data.sms_sent) parts.push("SMS");
-        setToast(`${lead.company_name} marked hot — ${parts.join(" + ")} sent`);
+        if (data.already_sent) {
+          setToast(`${lead.company_name} — outreach already sent`);
+        } else {
+          const parts: string[] = [];
+          if (data.email_sent) parts.push("email");
+          if (data.sms_sent) parts.push("SMS");
+          setToast(`${lead.company_name} marked hot — ${parts.join(" + ")} sent`);
+        }
       } else {
         setToast(`Error: ${data.error}`);
       }
     } catch {
       setToast("Failed to send outreach");
     }
+    setHotSending(null);
   }
 
   function openSmsModal(lead: SalesLead) {
