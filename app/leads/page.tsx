@@ -28,6 +28,7 @@ import {
   UserPlus,
   MessageSquare,
   Loader2,
+  History,
 } from "lucide-react";
 
 /* ── Types ── */
@@ -300,6 +301,127 @@ function ReplyModal({ lead, onClose }: { lead: SalesLead; onClose: () => void })
 }
 
 /* ══════════════════════════════════════════════
+   OUTREACH HISTORY MODAL
+   ══════════════════════════════════════════════ */
+interface EmailSend {
+  id: string;
+  to_email: string;
+  subject: string | null;
+  body_text: string | null;
+  status: string;
+  sent_at: string;
+}
+interface SmsSend {
+  id: string;
+  phone: string;
+  message: string;
+  status: string;
+  sent_at: string;
+}
+
+function OutreachModal({ lead, onClose }: { lead: SalesLead; onClose: () => void }) {
+  const [emails, setEmails] = useState<EmailSend[]>([]);
+  const [sms, setSms] = useState<SmsSend[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const token = (await supabase.auth.getSession()).data.session?.access_token;
+        const res = await fetch(`https://api.ozioconsulting.com/api/leads/${lead.id}/outreach`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const data = await res.json();
+        setEmails(data.emails || []);
+        setSms(data.sms || []);
+      } catch {
+        /* ignore */
+      }
+      setLoading(false);
+    })();
+  }, [lead.id]);
+
+  const allItems = [
+    ...emails.map((e) => ({ type: "email" as const, date: e.sent_at, ...e })),
+    ...sms.map((s) => ({ type: "sms" as const, date: s.sent_at, ...s })),
+  ].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: "rgba(0,0,0,0.7)", backdropFilter: "blur(8px)" }} onClick={onClose}>
+      <div className="w-full max-w-lg max-h-[80vh] overflow-y-auto rounded-3xl p-6" style={{ background: "#0a0f1e", border: "1px solid rgba(255,255,255,0.06)" }} onClick={(e) => e.stopPropagation()}>
+        <div className="flex items-center justify-between mb-5">
+          <div>
+            <h2 className="text-lg font-bold" style={{ fontFamily: "Cormorant Garamond, serif", color: "var(--text-primary)" }}>
+              Outreach History — {lead.company_name}
+            </h2>
+            <p className="text-xs mt-0.5" style={{ color: "var(--text-tertiary)" }}>{allItems.length} messages sent</p>
+          </div>
+          <button onClick={onClose} className="cursor-pointer bg-transparent border-none" style={{ color: "var(--text-secondary)" }}><X size={20} /></button>
+        </div>
+
+        {/* Reply section */}
+        {lead.responded && lead.reply_text && (
+          <div className="mb-4 p-4 rounded-2xl" style={{ background: "rgba(212,168,83,0.06)", border: "1px solid rgba(212,168,83,0.15)" }}>
+            <div className="flex items-center gap-2 mb-2">
+              <MessageSquareReply size={13} style={{ color: "#d4a853" }} />
+              <span className="text-[10px] font-bold uppercase tracking-wider" style={{ color: "#d4a853" }}>Reply Received</span>
+              {lead.replied_at && <span className="text-[10px]" style={{ color: "var(--text-tertiary)" }}>{new Date(lead.replied_at).toLocaleDateString("en-US", { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" })}</span>}
+            </div>
+            {lead.reply_from && <p className="text-xs mb-1" style={{ color: "var(--accent)" }}>{lead.reply_from}</p>}
+            {lead.reply_subject && <p className="text-xs font-semibold mb-1" style={{ color: "var(--text-primary)" }}>{lead.reply_subject}</p>}
+            <p className="text-sm whitespace-pre-wrap" style={{ color: "var(--text-secondary)" }}>{lead.reply_text}</p>
+          </div>
+        )}
+
+        {loading ? (
+          <div className="flex items-center justify-center py-10">
+            <Loader2 size={20} className="animate-spin" style={{ color: "var(--accent)" }} />
+          </div>
+        ) : allItems.length === 0 ? (
+          <p className="text-center text-sm py-10" style={{ color: "var(--text-tertiary)" }}>No outreach sent yet.</p>
+        ) : (
+          <div className="flex flex-col gap-3">
+            {allItems.map((item) => (
+              <div key={item.id} className="p-4 rounded-2xl" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.04)" }}>
+                <div className="flex items-center gap-2 mb-2">
+                  {item.type === "email" ? (
+                    <Mail size={13} style={{ color: "#f59e0b" }} />
+                  ) : (
+                    <MessageSquare size={13} style={{ color: "#22c55e" }} />
+                  )}
+                  <span className="text-[10px] font-bold uppercase tracking-wider" style={{ color: item.type === "email" ? "#f59e0b" : "#22c55e" }}>
+                    {item.type === "email" ? "Email" : "SMS"}
+                  </span>
+                  <span className="text-[10px]" style={{ color: "var(--text-tertiary)" }}>
+                    {new Date(item.date).toLocaleDateString("en-US", { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" })}
+                  </span>
+                  <span className="ml-auto text-[10px] px-1.5 py-0.5 rounded-full" style={{ background: "rgba(34,197,94,0.1)", color: "#22c55e" }}>{item.status}</span>
+                </div>
+                {item.type === "email" && (
+                  <>
+                    <p className="text-[10px] mb-1" style={{ color: "var(--text-tertiary)" }}>To: {(item as EmailSend & { type: "email" }).to_email}</p>
+                    {(item as EmailSend & { type: "email" }).subject && (
+                      <p className="text-xs font-semibold mb-1" style={{ color: "var(--text-primary)" }}>{(item as EmailSend & { type: "email" }).subject}</p>
+                    )}
+                    <p className="text-xs whitespace-pre-wrap" style={{ color: "var(--text-secondary)" }}>{(item as EmailSend & { type: "email" }).body_text}</p>
+                  </>
+                )}
+                {item.type === "sms" && (
+                  <>
+                    <p className="text-[10px] mb-1" style={{ color: "var(--text-tertiary)" }}>To: {(item as SmsSend & { type: "sms" }).phone}</p>
+                    <p className="text-xs whitespace-pre-wrap" style={{ color: "var(--text-secondary)" }}>{(item as SmsSend & { type: "sms" }).message}</p>
+                  </>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/* ══════════════════════════════════════════════
    LEAD ROW — Full width, checkbox-driven
    ══════════════════════════════════════════════ */
 function LeadRow({
@@ -307,15 +429,18 @@ function LeadRow({
   onUpdate,
   onDelete,
   onSmsClick,
+  onHotOutreach,
 }: {
   lead: SalesLead;
   onUpdate: (id: string, data: Partial<SalesLead>) => void;
   onDelete: (id: string) => void;
   onSmsClick: (lead: SalesLead) => void;
+  onHotOutreach: (lead: SalesLead) => void;
 }) {
   const [notes, setNotes] = useState(lead.notes || "");
   const [email, setEmail] = useState(lead.client_email || "");
   const [showReply, setShowReply] = useState(false);
+  const [showOutreach, setShowOutreach] = useState(false);
   const notesTimeout = useRef<ReturnType<typeof setTimeout>>(undefined);
   const emailTimeout = useRef<ReturnType<typeof setTimeout>>(undefined);
   const areaColor = AREA_COLORS[lead.area] || AREA_COLORS.other;
@@ -356,6 +481,7 @@ function LeadRow({
       }}
     >
       {showReply && <ReplyModal lead={lead} onClose={() => setShowReply(false)} />}
+      {showOutreach && <OutreachModal lead={lead} onClose={() => setShowOutreach(false)} />}
 
       {/* Mobile: stacked. Desktop: single row */}
       <div className="flex flex-col gap-3 md:flex-row md:items-center md:gap-4">
@@ -451,17 +577,30 @@ function LeadRow({
         <div className="flex items-center gap-2 shrink-0 flex-wrap">
           {/* Hot lead toggle */}
           <button
-            onClick={() => onUpdate(lead.id, { hot: !hot })}
+            onClick={() => hot ? onUpdate(lead.id, { hot: false }) : onHotOutreach(lead)}
             className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-bold cursor-pointer border-none transition-all"
             style={{
               background: hot ? "rgba(239,68,68,0.15)" : "rgba(255,255,255,0.04)",
               color: hot ? "#ef4444" : "var(--text-tertiary)",
             }}
-            title={hot ? "Unmark as hot lead" : "Mark as hot lead (sends outreach email)"}
+            title={hot ? "Unmark as hot lead" : "Mark as hot lead (sends email + SMS)"}
           >
             <Flame size={14} fill={hot ? "#ef4444" : "none"} />
             <span className="hidden sm:inline">Hot</span>
           </button>
+
+          {/* Outreach history */}
+          {hot && lead.hot_email_sent_at && (
+            <button
+              onClick={() => setShowOutreach(true)}
+              className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-bold cursor-pointer border-none transition-all"
+              style={{ background: "rgba(245,158,11,0.08)", color: "var(--accent)" }}
+              title="View outreach history (emails + texts sent)"
+            >
+              <History size={14} />
+              <span className="hidden sm:inline">Sent</span>
+            </button>
+          )}
 
           {/* Responded toggle / view reply */}
           {hot && lead.hot_email_sent_at && (
@@ -783,6 +922,32 @@ function LeadsContent() {
     await supabase.from("sales_leads").delete().eq("id", id);
   }
 
+  async function hotOutreach(lead: SalesLead) {
+    if (!lead.client_email && !lead.phone) {
+      setToast("Add an email or phone number first");
+      return;
+    }
+    try {
+      const token = (await supabase.auth.getSession()).data.session?.access_token;
+      const res = await fetch("https://api.ozioconsulting.com/api/leads/hot-outreach", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ lead_id: lead.id }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        const parts: string[] = [];
+        if (data.email_sent) parts.push("email");
+        if (data.sms_sent) parts.push("SMS");
+        setToast(`${lead.company_name} marked hot — ${parts.join(" + ")} sent`);
+      } else {
+        setToast(`Error: ${data.error}`);
+      }
+    } catch {
+      setToast("Failed to send outreach");
+    }
+  }
+
   function openSmsModal(lead: SalesLead) {
     const templates = [
       `Hey, this is Luke from Ozio Consulting. Joel mentioned he chatted with you recently. Would you be open to grabbing a quick coffee this week? We pick up the tab. Book here: ozioconsulting.com/schedule`,
@@ -977,7 +1142,7 @@ function LeadsContent() {
         ) : (
           <div className="flex flex-col gap-2">
             {filtered.map((lead) => (
-              <LeadRow key={lead.id} lead={lead} onUpdate={updateLead} onDelete={deleteLead} onSmsClick={(l) => openSmsModal(l)} />
+              <LeadRow key={lead.id} lead={lead} onUpdate={updateLead} onDelete={deleteLead} onSmsClick={(l) => openSmsModal(l)} onHotOutreach={(l) => hotOutreach(l)} />
             ))}
             <p className="text-center text-[11px] mt-4 pb-4" style={{ color: "var(--text-tertiary)" }}>Showing {filtered.length} of {leads.length} leads</p>
           </div>
