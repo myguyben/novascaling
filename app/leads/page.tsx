@@ -670,17 +670,26 @@ function LeadRow({
   onDelete,
   onSmsClick,
   onHotOutreach,
+  hotSending,
 }: {
   lead: SalesLead;
   onUpdate: (id: string, data: Partial<SalesLead>) => void;
   onDelete: (id: string) => void;
   onSmsClick: (lead: SalesLead) => void;
   onHotOutreach: (lead: SalesLead) => void;
+  hotSending: string | null;
 }) {
   const [notes, setNotes] = useState(lead.notes || "");
   const [email, setEmail] = useState(lead.client_email || "");
   const [showReply, setShowReply] = useState(false);
   const [showOutreach, setShowOutreach] = useState(false);
+  const [actionLoading, setActionLoading] = useState<string | null>(null);
+
+  async function handleAction(key: string, fn: () => Promise<void> | void) {
+    if (actionLoading) return;
+    setActionLoading(key);
+    try { await fn(); } finally { setActionLoading(null); }
+  }
   const notesTimeout = useRef<ReturnType<typeof setTimeout>>(undefined);
   const emailTimeout = useRef<ReturnType<typeof setTimeout>>(undefined);
   const areaColor = AREA_COLORS[lead.area] || AREA_COLORS.other;
@@ -728,15 +737,17 @@ function LeadRow({
 
         {/* Contacted checkbox */}
         <button
-          onClick={() => onUpdate(lead.id, { contacted: !contacted })}
+          onClick={() => handleAction("contacted", () => onUpdate(lead.id, { contacted: !contacted }))}
+          disabled={!!actionLoading}
           className="shrink-0 w-6 h-6 rounded-md flex items-center justify-center cursor-pointer border-none self-start md:self-center"
           style={{
             background: contacted ? "linear-gradient(135deg, #f59e0b, #ea580c)" : "rgba(255,255,255,0.06)",
             border: contacted ? "none" : "2px solid rgba(255,255,255,0.15)",
+            opacity: actionLoading === "contacted" ? 0.5 : 1,
           }}
           title={contacted ? "Mark as not contacted" : "Mark as contacted"}
         >
-          {contacted && <span style={{ color: "#000", fontSize: "14px", fontWeight: 800, lineHeight: 1 }}>&#10003;</span>}
+          {actionLoading === "contacted" ? <Loader2 size={12} className="animate-spin" style={{ color: "var(--text-tertiary)" }} /> : contacted && <span style={{ color: "#000", fontSize: "14px", fontWeight: 800, lineHeight: 1 }}>&#10003;</span>}
         </button>
 
         {/* Company name + area badge */}
@@ -818,23 +829,26 @@ function LeadRow({
           {/* Hot lead toggle */}
           <button
             onClick={() => {
+              if (hotSending) return;
               if (hot) {
                 if (window.confirm("Are you sure you want to un-hot this lead? Re-hotting will send a duplicate email + SMS.")) {
-                  onUpdate(lead.id, { hot: false });
+                  handleAction("hot", () => onUpdate(lead.id, { hot: false }));
                 }
               } else {
                 onHotOutreach(lead);
               }
             }}
+            disabled={!!hotSending || !!actionLoading}
             className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-bold cursor-pointer border-none transition-all"
             style={{
               background: hot ? "rgba(239,68,68,0.15)" : "rgba(255,255,255,0.04)",
               color: hot ? "#ef4444" : "var(--text-tertiary)",
+              opacity: hotSending === lead.id ? 0.5 : 1,
             }}
             title={hot ? "Unmark as hot lead" : "Mark as hot lead (sends email + SMS)"}
           >
-            <Flame size={14} fill={hot ? "#ef4444" : "none"} />
-            <span className="hidden sm:inline">Hot</span>
+            {hotSending === lead.id ? <Loader2 size={14} className="animate-spin" /> : <Flame size={14} fill={hot ? "#ef4444" : "none"} />}
+            <span className="hidden sm:inline">{hotSending === lead.id ? "Sending..." : "Hot"}</span>
           </button>
 
           {/* Outreach history */}
@@ -862,12 +876,13 @@ function LeadRow({
               </button>
             ) : (
               <button
-                onClick={() => onUpdate(lead.id, { responded: true })}
+                onClick={() => handleAction("responded", () => onUpdate(lead.id, { responded: true }))}
+                disabled={!!actionLoading}
                 className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-bold cursor-pointer border-none transition-all"
-                style={{ background: "rgba(255,255,255,0.04)", color: "var(--text-tertiary)" }}
+                style={{ background: "rgba(255,255,255,0.04)", color: "var(--text-tertiary)", opacity: actionLoading === "responded" ? 0.5 : 1 }}
                 title="Mark as responded (stops follow-ups)"
               >
-                <MessageSquareReply size={14} />
+                {actionLoading === "responded" ? <Loader2 size={14} className="animate-spin" /> : <MessageSquareReply size={14} />}
                 <span className="hidden sm:inline">No Reply</span>
               </button>
             )
@@ -910,26 +925,29 @@ function LeadRow({
 
           {/* Mark as client */}
           <button
-            onClick={() => onUpdate(lead.id, { status: isClient ? "new" : "client" })}
+            onClick={() => handleAction("client", () => onUpdate(lead.id, { status: isClient ? "new" : "client" }))}
+            disabled={!!actionLoading}
             className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-bold cursor-pointer border-none transition-all"
             style={{
               background: isClient ? "rgba(212,168,83,0.15)" : "rgba(255,255,255,0.04)",
               color: isClient ? "#d4a853" : "var(--text-tertiary)",
+              opacity: actionLoading === "client" ? 0.5 : 1,
             }}
             title={isClient ? "Remove client status" : "Mark as client (sends notification)"}
           >
-            <Trophy size={14} />
+            {actionLoading === "client" ? <Loader2 size={14} className="animate-spin" /> : <Trophy size={14} />}
             <span className="hidden sm:inline">Won</span>
           </button>
 
           {/* Delete */}
           <button
-            onClick={() => onDelete(lead.id)}
+            onClick={() => handleAction("delete", () => onDelete(lead.id))}
+            disabled={!!actionLoading}
             className="p-2 rounded-lg cursor-pointer bg-transparent border-none transition-colors"
-            style={{ color: "var(--text-tertiary)" }}
+            style={{ color: "var(--text-tertiary)", opacity: actionLoading === "delete" ? 0.5 : 1 }}
             title="Delete lead"
           >
-            <Trash2 size={14} />
+            {actionLoading === "delete" ? <Loader2 size={14} className="animate-spin" /> : <Trash2 size={14} />}
           </button>
         </div>
       </div>
@@ -1408,7 +1426,7 @@ function LeadsContent() {
         ) : (
           <div className="flex flex-col gap-2">
             {filtered.map((lead) => (
-              <LeadRow key={lead.id} lead={lead} onUpdate={updateLead} onDelete={deleteLead} onSmsClick={(l) => openSmsModal(l)} onHotOutreach={(l) => hotOutreach(l)} />
+              <LeadRow key={lead.id} lead={lead} onUpdate={updateLead} onDelete={deleteLead} onSmsClick={(l) => openSmsModal(l)} onHotOutreach={(l) => hotOutreach(l)} hotSending={hotSending} />
             ))}
             <p className="text-center text-[11px] mt-4 pb-4" style={{ color: "var(--text-tertiary)" }}>Showing {filtered.length} of {leads.length} leads</p>
           </div>
