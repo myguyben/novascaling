@@ -798,7 +798,15 @@ function LeadRow({
         <div className="flex items-center gap-2 shrink-0 flex-wrap">
           {/* Hot lead toggle */}
           <button
-            onClick={() => hot ? onUpdate(lead.id, { hot: false }) : onHotOutreach(lead)}
+            onClick={() => {
+              if (hot) {
+                if (window.confirm("Are you sure you want to un-hot this lead? Re-hotting will send a duplicate email + SMS.")) {
+                  onUpdate(lead.id, { hot: false });
+                }
+              } else {
+                onHotOutreach(lead);
+              }
+            }}
             className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-bold cursor-pointer border-none transition-all"
             style={{
               background: hot ? "rgba(239,68,68,0.15)" : "rgba(255,255,255,0.04)",
