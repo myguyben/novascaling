@@ -64,6 +64,25 @@ interface SalesLead {
   updated_at: string;
 }
 
+const STATUS_COLORS: Record<string, { bg: string; text: string }> = {
+  sent:        { bg: "rgba(59,130,246,0.1)",  text: "#3b82f6" },
+  queued:      { bg: "rgba(148,163,184,0.1)", text: "#94a3b8" },
+  deferred:    { bg: "rgba(245,158,11,0.1)",  text: "#f59e0b" },
+  delivered:   { bg: "rgba(34,197,94,0.1)",   text: "#22c55e" },
+  opened:      { bg: "rgba(168,85,247,0.1)",  text: "#a855f7" },
+  clicked:     { bg: "rgba(236,72,153,0.1)",  text: "#ec4899" },
+  bounced:     { bg: "rgba(239,68,68,0.1)",   text: "#ef4444" },
+  failed:      { bg: "rgba(239,68,68,0.1)",   text: "#ef4444" },
+  undelivered: { bg: "rgba(239,68,68,0.1)",   text: "#ef4444" },
+  dropped:     { bg: "rgba(239,68,68,0.1)",   text: "#ef4444" },
+  spam:        { bg: "rgba(239,68,68,0.1)",   text: "#ef4444" },
+  unsubscribed:{ bg: "rgba(251,146,60,0.1)",  text: "#fb923c" },
+};
+
+function statusColor(status: string) {
+  return STATUS_COLORS[status] || { bg: "rgba(148,163,184,0.1)", text: "#94a3b8" };
+}
+
 const AREA_OPTIONS = [
   { value: "nv", label: "North Van" },
   { value: "van", label: "Vancouver" },
@@ -430,7 +449,7 @@ function OutreachModal({ lead, onClose }: { lead: SalesLead; onClose: () => void
                   <span className="text-[10px]" style={{ color: "var(--text-tertiary)" }}>
                     {new Date(item.date).toLocaleDateString("en-US", { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" })}
                   </span>
-                  <span className="ml-auto text-[10px] px-1.5 py-0.5 rounded-full" style={{ background: "rgba(34,197,94,0.1)", color: "#22c55e" }}>{item.status}</span>
+                  <span className="ml-auto text-[10px] px-1.5 py-0.5 rounded-full" style={{ background: statusColor(item.status).bg, color: statusColor(item.status).text }}>{item.status}</span>
                 </div>
                 {item.type === "email" && (
                   <>
@@ -553,7 +572,7 @@ function AllEmailsModal({ leads, onClose }: { leads: SalesLead[]; onClose: () =>
                     {new Date(email.sent_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric", hour: "numeric", minute: "2-digit" })}
                   </span>
                   {email.source === "campaign" && <span className="text-[10px] px-1.5 py-0.5 rounded-full" style={{ background: "rgba(139,92,246,0.1)", color: "#a78bfa" }}>campaign</span>}
-                  <span className="ml-auto text-[10px] px-1.5 py-0.5 rounded-full" style={{ background: "rgba(34,197,94,0.1)", color: "#22c55e" }}>{email.status}</span>
+                  <span className="ml-auto text-[10px] px-1.5 py-0.5 rounded-full" style={{ background: statusColor(email.status).bg, color: statusColor(email.status).text }}>{email.status}</span>
                 </div>
                 <p className="text-[10px] mb-1" style={{ color: "var(--text-tertiary)" }}>To: {email.to_email}</p>
                 {email.subject && <p className="text-xs font-semibold mb-1" style={{ color: "var(--text-primary)" }}>{email.subject}</p>}
@@ -628,7 +647,7 @@ function AllSmsModal({ leads, onClose }: { leads: SalesLead[]; onClose: () => vo
                   <span className="text-[10px]" style={{ color: "var(--text-tertiary)" }}>
                     {new Date(msg.sent_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric", hour: "numeric", minute: "2-digit" })}
                   </span>
-                  <span className="ml-auto text-[10px] px-1.5 py-0.5 rounded-full" style={{ background: "rgba(34,197,94,0.1)", color: "#22c55e" }}>{msg.status}</span>
+                  <span className="ml-auto text-[10px] px-1.5 py-0.5 rounded-full" style={{ background: statusColor(msg.status).bg, color: statusColor(msg.status).text }}>{msg.status}</span>
                 </div>
                 <p className="text-[10px] mb-1" style={{ color: "var(--text-tertiary)" }}>To: {msg.phone}</p>
                 <p className="text-xs whitespace-pre-wrap" style={{ color: "var(--text-secondary)" }}>{msg.message}</p>
