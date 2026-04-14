@@ -29,6 +29,7 @@ import {
   MessageSquare,
   Loader2,
   History,
+  AlertTriangle,
 } from "lucide-react";
 
 /* ── Types ── */
@@ -76,11 +77,19 @@ const STATUS_COLORS: Record<string, { bg: string; text: string }> = {
   undelivered: { bg: "rgba(239,68,68,0.1)",   text: "#ef4444" },
   dropped:     { bg: "rgba(239,68,68,0.1)",   text: "#ef4444" },
   spam:        { bg: "rgba(239,68,68,0.1)",   text: "#ef4444" },
-  unsubscribed:{ bg: "rgba(251,146,60,0.1)",  text: "#fb923c" },
+  unsubscribed:       { bg: "rgba(251,146,60,0.1)",  text: "#fb923c" },
+  group_unsubscribe:  { bg: "rgba(251,146,60,0.1)",  text: "#fb923c" },
 };
 
 function statusColor(status: string) {
   return STATUS_COLORS[status] || { bg: "rgba(148,163,184,0.1)", text: "#94a3b8" };
+}
+
+const FAILED_STATUSES = ["bounced", "failed", "undelivered", "dropped", "spam", "group_unsubscribe"];
+
+interface FailedSends {
+  emails: number;
+  sms: number;
 }
 
 const AREA_OPTIONS = [
@@ -671,6 +680,7 @@ function LeadRow({
   onSmsClick,
   onHotOutreach,
   hotSending,
+  failedSends,
 }: {
   lead: SalesLead;
   onUpdate: (id: string, data: Partial<SalesLead>) => void;
@@ -678,6 +688,7 @@ function LeadRow({
   onSmsClick: (lead: SalesLead) => void;
   onHotOutreach: (lead: SalesLead) => void;
   hotSending: string | null;
+  failedSends?: FailedSends;
 }) {
   const [notes, setNotes] = useState(lead.notes || "");
   const [email, setEmail] = useState(lead.client_email || "");
@@ -770,6 +781,22 @@ function LeadRow({
             {isClient && (
               <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full whitespace-nowrap shrink-0" style={{ background: "rgba(212,168,83,0.15)", color: "#d4a853" }}>
                 Client
+              </span>
+            )}
+            {failedSends && (failedSends.emails > 0 || failedSends.sms > 0) && (
+              <span
+                className="flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full whitespace-nowrap shrink-0"
+                style={{ background: "rgba(239,68,68,0.12)", color: "#ef4444" }}
+                title={[
+                  failedSends.emails > 0 ? `${failedSends.emails} email${failedSends.emails > 1 ? "s" : ""} failed` : "",
+                  failedSends.sms > 0 ? `${failedSends.sms} SMS failed` : "",
+                ].filter(Boolean).join(", ")}
+              >
+                <AlertTriangle size={10} />
+                {[
+                  failedSends.emails > 0 ? `${failedSends.emails} email${failedSends.emails > 1 ? "s" : ""}` : "",
+                  failedSends.sms > 0 ? `${failedSends.sms} SMS` : "",
+                ].filter(Boolean).join(" + ")} failed
               </span>
             )}
           </div>
@@ -1154,6 +1181,7 @@ function LeadsContent() {
   const [smsSending, setSmsSending] = useState(false);
   const [showAllEmails, setShowAllEmails] = useState(false);
   const [showAllSms, setShowAllSms] = useState(false);
+  const [failedByLead, setFailedByLead] = useState<Record<string, FailedSends>>({});
 
   const fetchLeads = useCallback(async () => {
     const { data } = await supabase.from("sales_leads").select("*").order("created_at", { ascending: true });
@@ -1161,7 +1189,30 @@ function LeadsContent() {
     setLoading(false);
   }, []);
 
-  useEffect(() => { fetchLeads(); }, [fetchLeads]);
+  const fetchFailedSends = useCallback(async () => {
+    const [{ data: failedEmails }, { data: failedSms }, { data: failedCampaign }] = await Promise.all([
+      supabase.from("email_sends").select("lead_id, status").in("status", FAILED_STATUSES),
+      supabase.from("sms_sends").select("lead_id, status").in("status", FAILED_STATUSES),
+      supabase.from("campaign_sends").select("status, enrollment:campaign_enrollments!inner(lead_id)").in("status", FAILED_STATUSES),
+    ]);
+    const map: Record<string, FailedSends> = {};
+    for (const e of failedEmails || []) {
+      if (!map[e.lead_id]) map[e.lead_id] = { emails: 0, sms: 0 };
+      map[e.lead_id].emails++;
+    }
+    for (const c of (failedCampaign || []) as { status: string; enrollment: { lead_id: string } }[]) {
+      const lid = c.enrollment.lead_id;
+      if (!map[lid]) map[lid] = { emails: 0, sms: 0 };
+      map[lid].emails++;
+    }
+    for (const s of failedSms || []) {
+      if (!map[s.lead_id]) map[s.lead_id] = { emails: 0, sms: 0 };
+      map[s.lead_id].sms++;
+    }
+    setFailedByLead(map);
+  }, []);
+
+  useEffect(() => { fetchLeads(); fetchFailedSends(); }, [fetchLeads, fetchFailedSends]);
 
   // Realtime
   useEffect(() => {
@@ -1178,9 +1229,12 @@ function LeadsContent() {
           setLeads((prev) => prev.filter((l) => l.id !== (payload.old as { id: string }).id));
         }
       })
+      .on("postgres_changes", { event: "*", schema: "public", table: "email_sends" }, () => { fetchFailedSends(); })
+      .on("postgres_changes", { event: "*", schema: "public", table: "sms_sends" }, () => { fetchFailedSends(); })
+      .on("postgres_changes", { event: "*", schema: "public", table: "campaign_sends" }, () => { fetchFailedSends(); })
       .subscribe();
     return () => { supabase.removeChannel(channel); };
-  }, []);
+  }, [fetchFailedSends]);
 
   async function updateLead(id: string, data: Partial<SalesLead>) {
     await supabase.from("sales_leads").update({ ...data, updated_at: new Date().toISOString() }).eq("id", id);
@@ -1426,7 +1480,7 @@ function LeadsContent() {
         ) : (
           <div className="flex flex-col gap-2">
             {filtered.map((lead) => (
-              <LeadRow key={lead.id} lead={lead} onUpdate={updateLead} onDelete={deleteLead} onSmsClick={(l) => openSmsModal(l)} onHotOutreach={(l) => hotOutreach(l)} hotSending={hotSending} />
+              <LeadRow key={lead.id} lead={lead} onUpdate={updateLead} onDelete={deleteLead} onSmsClick={(l) => openSmsModal(l)} onHotOutreach={(l) => hotOutreach(l)} hotSending={hotSending} failedSends={failedByLead[lead.id]} />
             ))}
             <p className="text-center text-[11px] mt-4 pb-4" style={{ color: "var(--text-tertiary)" }}>Showing {filtered.length} of {leads.length} leads</p>
           </div>
