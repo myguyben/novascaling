@@ -1076,11 +1076,17 @@ function LeadRow({
         <div className="flex items-center gap-2 shrink-0 flex-wrap">
           {/* Hot lead toggle */}
           <button
-            onClick={() => {
+            onClick={async () => {
               if (hotSending) return;
               if (hot) {
-                if (window.confirm("Are you sure you want to un-hot this lead? Re-hotting will send a duplicate email + SMS.")) {
-                  handleAction("hot", () => onUpdate(lead.id, { hot: false }));
+                if (window.confirm("Un-hot this lead? This cancels any scheduled follow-ups. Re-hotting will restart the sequence.")) {
+                  handleAction("hot", async () => {
+                    const token = (await supabase.auth.getSession()).data.session?.access_token;
+                    await fetch(`https://api.ozioconsulting.com/api/leads/${lead.id}/unhot`, {
+                      method: "POST",
+                      headers: { Authorization: `Bearer ${token}` },
+                    });
+                  });
                 }
               } else {
                 onHotOutreach(lead);
