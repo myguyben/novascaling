@@ -1200,8 +1200,9 @@ function LeadsContent() {
       if (!map[e.lead_id]) map[e.lead_id] = { emails: 0, sms: 0 };
       map[e.lead_id].emails++;
     }
-    for (const c of (failedCampaign || []) as { status: string; enrollment: { lead_id: string } }[]) {
-      const lid = c.enrollment.lead_id;
+    for (const c of (failedCampaign || []) as unknown as { status: string; enrollment: { lead_id: string }[] }[]) {
+      const lid = c.enrollment?.[0]?.lead_id;
+      if (!lid) continue;
       if (!map[lid]) map[lid] = { emails: 0, sms: 0 };
       map[lid].emails++;
     }
