@@ -61,6 +61,7 @@ interface SalesLead {
   sms_sent_at: string | null;
   sms_follow_up_count: number;
   last_sms_at: string | null;
+  hot_sequence_step: number;
   created_at: string;
   updated_at: string;
 }
@@ -349,20 +350,32 @@ interface SmsSend {
   sent_at: string;
 }
 
+interface SequenceSend {
+  id: string;
+  step_number: number;
+  channel: string;
+  status: string;
+  scheduled_for: string;
+  sent_at: string | null;
+}
+
 function OutreachModal({ lead, onClose }: { lead: SalesLead; onClose: () => void }) {
   const [emails, setEmails] = useState<(EmailSend & { source?: string })[]>([]);
   const [sms, setSms] = useState<SmsSend[]>([]);
+  const [sequenceSteps, setSequenceSteps] = useState<SequenceSend[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     (async () => {
       try {
-        // Fetch direct emails + SMS from Supabase
-        const [{ data: directEmails }, { data: smsData }, { data: enrollments }] = await Promise.all([
+        const [{ data: directEmails }, { data: smsData }, { data: enrollments }, { data: seqSteps }] = await Promise.all([
           supabase.from("email_sends").select("*").eq("lead_id", lead.id).order("sent_at", { ascending: false }),
           supabase.from("sms_sends").select("*").eq("lead_id", lead.id).order("sent_at", { ascending: false }),
           supabase.from("campaign_enrollments").select("id, campaign_id").eq("lead_id", lead.id),
+          supabase.from("hot_sequence_sends").select("*").eq("lead_id", lead.id).order("step_number"),
         ]);
+
+        if (seqSteps) setSequenceSteps(seqSteps);
 
         // Fetch campaign sends for this lead
         let campaignEmails: (EmailSend & { source: string })[] = [];
@@ -408,6 +421,13 @@ function OutreachModal({ lead, onClose }: { lead: SalesLead; onClose: () => void
     ...sms.map((s) => ({ type: "sms" as const, date: s.sent_at, ...s })),
   ].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
+  const seqStatusColor: Record<string, { bg: string; color: string }> = {
+    sent: { bg: "#22c55e", color: "#fff" },
+    scheduled: { bg: "#f59e0b", color: "#000" },
+    failed: { bg: "#ef4444", color: "#fff" },
+    cancelled: { bg: "#64748b", color: "#fff" },
+  };
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: "rgba(0,0,0,0.7)", backdropFilter: "blur(8px)" }} onClick={onClose}>
       <div className="w-full max-w-lg max-h-[80vh] overflow-y-auto rounded-3xl p-6" style={{ background: "#0a0f1e", border: "1px solid rgba(255,255,255,0.06)" }} onClick={(e) => e.stopPropagation()}>
@@ -420,6 +440,37 @@ function OutreachModal({ lead, onClose }: { lead: SalesLead; onClose: () => void
           </div>
           <button onClick={onClose} className="cursor-pointer bg-transparent border-none" style={{ color: "var(--text-secondary)" }}><X size={20} /></button>
         </div>
+
+        {/* Sequence timeline */}
+        {sequenceSteps.length > 0 && (
+          <div className="mb-4 p-4 rounded-2xl" style={{ background: "rgba(239,68,68,0.04)", border: "1px solid rgba(239,68,68,0.1)" }}>
+            <div className="flex items-center gap-2 mb-3">
+              <Flame size={13} style={{ color: "#ef4444" }} />
+              <span className="text-[10px] font-bold uppercase tracking-wider" style={{ color: "#ef4444" }}>Hot Sequence</span>
+            </div>
+            <div className="flex items-center gap-1">
+              {sequenceSteps.map((step, i) => {
+                const sc = seqStatusColor[step.status] || seqStatusColor.cancelled;
+                return (
+                  <div key={step.id} className="flex items-center gap-1">
+                    <div title={`Step ${step.step_number} (${step.channel}) — ${step.status}${step.status === "scheduled" ? ` for ${new Date(step.scheduled_for).toLocaleDateString("en-US", { month: "short", day: "numeric" })}` : ""}`} className="flex items-center justify-center rounded-full text-[9px] font-bold cursor-default" style={{ width: 24, height: 24, background: sc.bg, color: sc.color }}>
+                      {step.channel === "email" ? "E" : "S"}{step.step_number}
+                    </div>
+                    {i < sequenceSteps.length - 1 && <div style={{ width: 12, height: 1, background: "rgba(255,255,255,0.1)" }} />}
+                  </div>
+                );
+              })}
+            </div>
+            <div className="flex items-center gap-3 mt-2">
+              {[{ label: "Sent", color: "#22c55e" }, { label: "Scheduled", color: "#f59e0b" }, { label: "Failed", color: "#ef4444" }, { label: "Cancelled", color: "#64748b" }].map((l) => (
+                <span key={l.label} className="flex items-center gap-1 text-[9px]" style={{ color: "var(--text-tertiary)" }}>
+                  <span style={{ width: 6, height: 6, borderRadius: "50%", background: l.color, display: "inline-block" }} />
+                  {l.label}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Reply section */}
         {lead.responded && lead.reply_text && (
@@ -671,6 +722,174 @@ function AllSmsModal({ leads, onClose }: { leads: SalesLead[]; onClose: () => vo
 }
 
 /* ══════════════════════════════════════════════
+   HOT SEQUENCE SETTINGS MODAL
+   ══════════════════════════════════════════════ */
+interface SequenceTemplate {
+  id: string;
+  step_number: number;
+  channel: "email" | "sms";
+  delay_days: number;
+  subject: string | null;
+  body_text: string;
+  body_html: string | null;
+}
+
+function HotSequenceModal({ onClose }: { onClose: () => void }) {
+  const [templates, setTemplates] = useState<SequenceTemplate[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
+
+  useEffect(() => {
+    (async () => {
+      const token = (await supabase.auth.getSession()).data.session?.access_token;
+      const res = await fetch("https://api.ozioconsulting.com/api/hot-sequence/templates", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+      if (data.templates) setTemplates(data.templates);
+      setLoading(false);
+    })();
+  }, []);
+
+  function updateTemplate(stepNumber: number, field: string, value: string | number) {
+    setTemplates((prev) =>
+      prev.map((t) => (t.step_number === stepNumber ? { ...t, [field]: value } : t))
+    );
+    setSaved(false);
+  }
+
+  async function handleSave() {
+    setSaving(true);
+    const token = (await supabase.auth.getSession()).data.session?.access_token;
+    // Auto-generate body_html from body_text for email steps
+    const payload = templates.map((t) => ({
+      ...t,
+      body_html: t.channel === "email"
+        ? t.body_text.split("\n").map((line: string) => line.trim() === "" ? "" : `<p>${line}</p>`).join("\n")
+        : null,
+    }));
+    const res = await fetch("https://api.ozioconsulting.com/api/hot-sequence/templates", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+      body: JSON.stringify({ templates: payload }),
+    });
+    const data = await res.json();
+    setSaving(false);
+    if (data.success) setSaved(true);
+  }
+
+  function insertMergeField(stepNumber: number, field: string) {
+    setTemplates((prev) =>
+      prev.map((t) => (t.step_number === stepNumber ? { ...t, body_text: t.body_text + field } : t))
+    );
+  }
+
+  const channelLabels: Record<string, { icon: string; label: string; color: string }> = {
+    email: { icon: "mail", label: "Email", color: "#f59e0b" },
+    sms: { icon: "sms", label: "SMS", color: "#22c55e" },
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: "rgba(0,0,0,0.7)", backdropFilter: "blur(8px)" }} onClick={onClose}>
+      <div className="w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-3xl p-6" style={{ background: "#0a0f1e", border: "1px solid rgba(255,255,255,0.06)" }} onClick={(e) => e.stopPropagation()}>
+        <div className="flex items-center justify-between mb-5">
+          <div>
+            <h2 className="text-lg font-bold" style={{ fontFamily: "Cormorant Garamond, serif", color: "var(--text-primary)" }}>
+              <Flame size={18} className="inline mr-2" style={{ color: "#ef4444" }} />Hot Lead Sequence
+            </h2>
+            <p className="text-xs mt-1" style={{ color: "var(--text-tertiary)" }}>3 emails + 2 texts — sent automatically when a lead is marked hot</p>
+          </div>
+          <button onClick={onClose} className="cursor-pointer bg-transparent border-none" style={{ color: "var(--text-secondary)" }}><X size={20} /></button>
+        </div>
+
+        {loading ? (
+          <div className="flex items-center justify-center py-10">
+            <Loader2 size={20} className="animate-spin" style={{ color: "var(--accent)" }} />
+          </div>
+        ) : (
+          <div className="flex flex-col gap-4">
+            {templates.map((tmpl) => {
+              const ch = channelLabels[tmpl.channel];
+              return (
+                <div key={tmpl.step_number} className="p-4 rounded-2xl" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}>
+                  <div className="flex items-center gap-2 mb-3">
+                    <span className="flex items-center justify-center w-6 h-6 rounded-full text-[10px] font-bold" style={{ background: "rgba(245,158,11,0.15)", color: "#f59e0b" }}>{tmpl.step_number}</span>
+                    {tmpl.channel === "email" ? <Mail size={14} style={{ color: ch.color }} /> : <MessageSquare size={14} style={{ color: ch.color }} />}
+                    <span className="text-xs font-bold" style={{ color: ch.color }}>{ch.label}</span>
+                    <div className="ml-auto flex items-center gap-2">
+                      <span className="text-[10px]" style={{ color: "var(--text-tertiary)" }}>Delay:</span>
+                      <input
+                        type="number"
+                        min={0}
+                        value={tmpl.delay_days}
+                        onChange={(e) => updateTemplate(tmpl.step_number, "delay_days", parseInt(e.target.value) || 0)}
+                        className="w-14 px-2 py-1 rounded-lg text-xs text-center outline-none"
+                        style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.08)", color: "var(--text-primary)" }}
+                      />
+                      <span className="text-[10px]" style={{ color: "var(--text-tertiary)" }}>days</span>
+                    </div>
+                  </div>
+
+                  {tmpl.channel === "email" && (
+                    <input
+                      type="text"
+                      value={tmpl.subject || ""}
+                      onChange={(e) => updateTemplate(tmpl.step_number, "subject", e.target.value)}
+                      placeholder="Subject line..."
+                      className="w-full px-3 py-2 rounded-lg text-xs outline-none mb-2"
+                      style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.06)", color: "var(--text-primary)", fontFamily: "Inter, sans-serif" }}
+                    />
+                  )}
+
+                  <textarea
+                    value={tmpl.body_text}
+                    onChange={(e) => updateTemplate(tmpl.step_number, "body_text", e.target.value)}
+                    rows={tmpl.channel === "sms" ? 3 : 5}
+                    className="w-full px-3 py-2 rounded-lg text-xs outline-none resize-vertical"
+                    style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.06)", color: "var(--text-primary)", fontFamily: "Inter, sans-serif" }}
+                  />
+
+                  <div className="flex items-center gap-2 mt-2">
+                    <span className="text-[10px]" style={{ color: "var(--text-tertiary)" }}>Insert:</span>
+                    {["{{company_name}}", "{{industry}}"].map((field) => (
+                      <button
+                        key={field}
+                        onClick={() => insertMergeField(tmpl.step_number, field)}
+                        className="px-2 py-0.5 rounded text-[10px] font-mono cursor-pointer border-none"
+                        style={{ background: "rgba(245,158,11,0.1)", color: "#f59e0b" }}
+                      >
+                        {field}
+                      </button>
+                    ))}
+                    {tmpl.channel === "sms" && (
+                      <span className="ml-auto text-[10px]" style={{ color: "var(--text-tertiary)" }}>{tmpl.body_text.length}/160 chars</span>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+
+            <button
+              onClick={handleSave}
+              disabled={saving}
+              className="w-full py-3 rounded-xl text-sm font-bold cursor-pointer border-none transition-all"
+              style={{
+                background: saved ? "rgba(34,197,94,0.15)" : "linear-gradient(135deg, #f59e0b, #ea580c)",
+                color: saved ? "#22c55e" : "#000",
+                opacity: saving ? 0.6 : 1,
+              }}
+            >
+              {saving ? "Saving..." : saved ? "Saved" : "Save Sequence Templates"}
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/* ══════════════════════════════════════════════
    LEAD ROW — Full width, checkbox-driven
    ══════════════════════════════════════════════ */
 function LeadRow({
@@ -679,6 +898,7 @@ function LeadRow({
   onDelete,
   onSmsClick,
   onHotOutreach,
+  onMarkResponded,
   hotSending,
   failedSends,
 }: {
@@ -687,6 +907,7 @@ function LeadRow({
   onDelete: (id: string) => void;
   onSmsClick: (lead: SalesLead) => void;
   onHotOutreach: (lead: SalesLead) => void;
+  onMarkResponded: (lead: SalesLead) => void;
   hotSending: string | null;
   failedSends?: FailedSends;
 }) {
@@ -903,7 +1124,7 @@ function LeadRow({
               </button>
             ) : (
               <button
-                onClick={() => handleAction("responded", () => onUpdate(lead.id, { responded: true }))}
+                onClick={() => handleAction("responded", () => onMarkResponded(lead))}
                 disabled={!!actionLoading}
                 className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-bold cursor-pointer border-none transition-all"
                 style={{ background: "rgba(255,255,255,0.04)", color: "var(--text-tertiary)", opacity: actionLoading === "responded" ? 0.5 : 1 }}
@@ -915,11 +1136,14 @@ function LeadRow({
             )
           )}
 
-          {/* Follow-up indicator */}
-          {hot && lead.hot_email_sent_at && !lead.responded && (
-            <span className="flex items-center gap-1 px-2 py-1.5 rounded-lg text-[10px] font-semibold" style={{ background: "rgba(245,158,11,0.08)", color: "var(--accent)" }}>
+          {/* Sequence progress indicator */}
+          {hot && lead.hot_email_sent_at && (
+            <span className="flex items-center gap-1 px-2 py-1.5 rounded-lg text-[10px] font-semibold" style={{
+              background: lead.responded ? "rgba(34,197,94,0.08)" : "rgba(245,158,11,0.08)",
+              color: lead.responded ? "#22c55e" : "var(--accent)",
+            }}>
               <Send size={10} />
-              {lead.follow_up_count + 1}/5 emails
+              {lead.responded ? "Replied" : `${lead.hot_sequence_step || 0}/5 sent`}
             </span>
           )}
 
@@ -1182,6 +1406,7 @@ function LeadsContent() {
   const [showAllEmails, setShowAllEmails] = useState(false);
   const [showAllSms, setShowAllSms] = useState(false);
   const [failedByLead, setFailedByLead] = useState<Record<string, FailedSends>>({});
+  const [showSequenceEditor, setShowSequenceEditor] = useState(false);
 
   const fetchLeads = useCallback(async () => {
     const { data } = await supabase.from("sales_leads").select("*").order("created_at", { ascending: true });
@@ -1275,6 +1500,19 @@ function LeadsContent() {
       setToast("Failed to send outreach");
     }
     setHotSending(null);
+  }
+
+  async function markResponded(lead: SalesLead) {
+    try {
+      const token = (await supabase.auth.getSession()).data.session?.access_token;
+      await fetch(`https://api.ozioconsulting.com/api/leads/${lead.id}/mark-responded`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+      });
+      setToast(`${lead.company_name} marked as responded — follow-ups cancelled`);
+    } catch {
+      setToast("Failed to mark as responded");
+    }
   }
 
   function openSmsModal(lead: SalesLead) {
@@ -1398,6 +1636,7 @@ function LeadsContent() {
       {showAdd && <AddLeadModal onClose={() => setShowAdd(false)} onAdd={addLead} />}
       {showAllEmails && <AllEmailsModal leads={leads} onClose={() => setShowAllEmails(false)} />}
       {showAllSms && <AllSmsModal leads={leads} onClose={() => setShowAllSms(false)} />}
+      {showSequenceEditor && <HotSequenceModal onClose={() => setShowSequenceEditor(false)} />}
 
       {/* Header */}
       <header className="px-4 pt-5 pb-4 sm:px-6 md:px-8" style={{ background: "var(--bg-surface)", borderBottom: "1px solid rgba(255,255,255,0.04)" }}>
@@ -1421,6 +1660,9 @@ function LeadsContent() {
               </button>
               <button onClick={() => setShowAllSms(true)} className="flex items-center gap-1.5 px-3 sm:px-4 py-2 rounded-xl text-xs font-semibold cursor-pointer" style={{ background: "rgba(34,197,94,0.08)", border: "1px solid rgba(34,197,94,0.15)", color: "#22c55e" }} title="View all SMS sent">
                 <MessageSquare size={13} /><span className="hidden sm:inline">SMS</span>
+              </button>
+              <button onClick={() => setShowSequenceEditor(true)} className="flex items-center gap-1.5 px-3 sm:px-4 py-2 rounded-xl text-xs font-semibold cursor-pointer" style={{ background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.15)", color: "#ef4444" }} title="Edit hot lead follow-up sequence">
+                <Flame size={13} /><span className="hidden sm:inline">Sequence</span>
               </button>
               <button onClick={() => supabase.auth.signOut()} className="p-2 rounded-xl cursor-pointer bg-transparent border-none" style={{ color: "var(--text-tertiary)" }} title="Sign out">
                 <LogOut size={16} />
@@ -1481,7 +1723,7 @@ function LeadsContent() {
         ) : (
           <div className="flex flex-col gap-2">
             {filtered.map((lead) => (
-              <LeadRow key={lead.id} lead={lead} onUpdate={updateLead} onDelete={deleteLead} onSmsClick={(l) => openSmsModal(l)} onHotOutreach={(l) => hotOutreach(l)} hotSending={hotSending} failedSends={failedByLead[lead.id]} />
+              <LeadRow key={lead.id} lead={lead} onUpdate={updateLead} onDelete={deleteLead} onSmsClick={(l) => openSmsModal(l)} onHotOutreach={(l) => hotOutreach(l)} onMarkResponded={(l) => markResponded(l)} hotSending={hotSending} failedSends={failedByLead[lead.id]} />
             ))}
             <p className="text-center text-[11px] mt-4 pb-4" style={{ color: "var(--text-tertiary)" }}>Showing {filtered.length} of {leads.length} leads</p>
           </div>
