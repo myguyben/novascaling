@@ -1537,6 +1537,11 @@ function LeadsContent() {
           if (data.sms_sent) parts.push("SMS");
           setToast(`${lead.company_name} marked hot — ${parts.join(" + ")} sent`);
         }
+        localUpdateLead(lead.id, {
+          hot: true,
+          hot_email_sent_at: data.email_sent ? new Date().toISOString() : lead.hot_email_sent_at,
+          hot_sequence_step: data.email_sent ? 1 : data.sms_sent ? 2 : lead.hot_sequence_step,
+        });
       } else {
         setToast(`Error: ${data.error}`);
       }
