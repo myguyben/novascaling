@@ -36,6 +36,7 @@ import {
 interface SalesLead {
   id: string;
   company_name: string;
+  contact_name: string | null;
   phone: string | null;
   address: string | null;
   area: string;
@@ -122,6 +123,7 @@ function CSVUploadModal({ onClose, onUpload }: { onClose: () => void; onUpload: 
 
   const TARGET_FIELDS = [
     { key: "company_name", label: "Company Name", required: true },
+    { key: "contact_name", label: "Contact Name" },
     { key: "client_email", label: "Email" },
     { key: "phone", label: "Phone" },
     { key: "address", label: "Address" },
@@ -221,12 +223,13 @@ function CSVUploadModal({ onClose, onUpload }: { onClose: () => void; onUpload: 
    ADD LEAD MODAL
    ══════════════════════════════════════════════ */
 function AddLeadModal({ onClose, onAdd }: { onClose: () => void; onAdd: (lead: Partial<SalesLead>) => void }) {
-  const [form, setForm] = useState({ company_name: "", phone: "", address: "", area: "other", area_label: "", rating: "", review_count: "", industry: "", notes: "", client_email: "" });
+  const [form, setForm] = useState({ company_name: "", contact_name: "", phone: "", address: "", area: "other", area_label: "", rating: "", review_count: "", industry: "", notes: "", client_email: "" });
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     onAdd({
       company_name: form.company_name,
+      contact_name: form.contact_name || null,
       phone: form.phone || null,
       address: form.address || null,
       area: form.area,
@@ -251,6 +254,7 @@ function AddLeadModal({ onClose, onAdd }: { onClose: () => void; onAdd: (lead: P
         </div>
         <form onSubmit={handleSubmit} className="flex flex-col gap-3">
           <input required placeholder="Company Name *" value={form.company_name} onChange={(e) => setForm((f) => ({ ...f, company_name: e.target.value }))} className="px-4 py-3 rounded-xl text-sm outline-none" style={inputStyle} />
+          <input placeholder="Contact Name (e.g. Dave Smith)" value={form.contact_name} onChange={(e) => setForm((f) => ({ ...f, contact_name: e.target.value }))} className="px-4 py-3 rounded-xl text-sm outline-none" style={inputStyle} />
           <input placeholder="Phone" value={form.phone} onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))} className="px-4 py-3 rounded-xl text-sm outline-none" style={inputStyle} />
           <input placeholder="Address" value={form.address} onChange={(e) => setForm((f) => ({ ...f, address: e.target.value }))} className="px-4 py-3 rounded-xl text-sm outline-none" style={inputStyle} />
           <div className="flex gap-3">
@@ -853,7 +857,7 @@ function HotSequenceModal({ onClose }: { onClose: () => void }) {
 
                   <div className="flex items-center gap-2 mt-2">
                     <span className="text-[10px]" style={{ color: "var(--text-tertiary)" }}>Insert:</span>
-                    {["{{company_name}}", "{{industry}}"].map((field) => (
+                    {["{{company_name}}", "{{contact_name}}", "{{industry}}"].map((field) => (
                       <button
                         key={field}
                         onClick={() => insertMergeField(tmpl.step_number, field)}
@@ -914,6 +918,7 @@ function LeadRow({
 }) {
   const [notes, setNotes] = useState(lead.notes || "");
   const [email, setEmail] = useState(lead.client_email || "");
+  const [contactName, setContactName] = useState(lead.contact_name || "");
   const [showReply, setShowReply] = useState(false);
   const [showOutreach, setShowOutreach] = useState(false);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
@@ -925,6 +930,7 @@ function LeadRow({
   }
   const notesTimeout = useRef<ReturnType<typeof setTimeout>>(undefined);
   const emailTimeout = useRef<ReturnType<typeof setTimeout>>(undefined);
+  const contactNameTimeout = useRef<ReturnType<typeof setTimeout>>(undefined);
   const areaColor = AREA_COLORS[lead.area] || AREA_COLORS.other;
 
   function handleNotesChange(value: string) {
@@ -939,8 +945,15 @@ function LeadRow({
     emailTimeout.current = setTimeout(() => onUpdate(lead.id, { client_email: value || null }), 800);
   }
 
+  function handleContactNameChange(value: string) {
+    setContactName(value);
+    if (contactNameTimeout.current) clearTimeout(contactNameTimeout.current);
+    contactNameTimeout.current = setTimeout(() => onUpdate(lead.id, { contact_name: value || null }), 800);
+  }
+
   useEffect(() => { setNotes(lead.notes || ""); }, [lead.notes]);
   useEffect(() => { setEmail(lead.client_email || ""); }, [lead.client_email]);
+  useEffect(() => { setContactName(lead.contact_name || ""); }, [lead.contact_name]);
 
   const contacted = lead.contacted;
   const hot = lead.hot;
@@ -1023,6 +1036,12 @@ function LeadRow({
             )}
           </div>
 
+          {lead.contact_name && (
+            <div className="text-xs mt-0.5" style={{ color: "var(--text-secondary)", fontStyle: "italic" }}>
+              {lead.contact_name}
+            </div>
+          )}
+
           {/* Phone + address + rating — single line on desktop */}
           <div className="flex items-center gap-3 mt-1.5 flex-wrap">
             {lead.phone ? (
@@ -1063,6 +1082,14 @@ function LeadRow({
               style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.04)", color: email ? "var(--accent)" : "var(--text-secondary)", fontFamily: "Inter, sans-serif" }}
             />
           </div>
+          <input
+            type="text"
+            value={contactName}
+            onChange={(e) => handleContactNameChange(e.target.value)}
+            placeholder="Contact name..."
+            className="w-full px-3 py-1.5 rounded-lg text-xs outline-none"
+            style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.04)", color: "var(--text-secondary)", fontFamily: "Inter, sans-serif" }}
+          />
           <input
             type="text"
             value={notes}
@@ -1579,7 +1606,7 @@ function LeadsContent() {
       (filter === "has_notes" && l.notes && l.notes.trim() !== "") ||
       filter === l.area;
     const q = search.toLowerCase();
-    const matchesSearch = !q || l.company_name.toLowerCase().includes(q) || (l.phone || "").includes(q) || (l.address || "").toLowerCase().includes(q) || (l.notes || "").toLowerCase().includes(q);
+    const matchesSearch = !q || l.company_name.toLowerCase().includes(q) || (l.contact_name || "").toLowerCase().includes(q) || (l.phone || "").includes(q) || (l.address || "").toLowerCase().includes(q) || (l.notes || "").toLowerCase().includes(q);
     return matchesFilter && matchesSearch;
   });
 
@@ -1699,7 +1726,7 @@ function LeadsContent() {
       <div className="px-4 py-3 sm:px-6 md:px-8" style={{ background: "rgba(10,15,30,0.8)", borderBottom: "1px solid rgba(255,255,255,0.03)" }}>
         <div className="relative">
           <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: "var(--text-tertiary)" }} />
-          <input type="text" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search name, phone, address, notes..." className="w-full pl-9 pr-4 py-2.5 rounded-xl text-sm outline-none" style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.06)", color: "var(--text-primary)", fontFamily: "Inter, sans-serif" }} />
+          <input type="text" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search company, contact, phone, address, notes..." className="w-full pl-9 pr-4 py-2.5 rounded-xl text-sm outline-none" style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.06)", color: "var(--text-primary)", fontFamily: "Inter, sans-serif" }} />
         </div>
       </div>
 
