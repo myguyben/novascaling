@@ -745,8 +745,9 @@ function HotSequenceModal({ onClose }: { onClose: () => void }) {
       const token = (await supabase.auth.getSession()).data.session?.access_token;
       const res = await fetch("https://api.ozioconsulting.com/api/hot-sequence/templates", {
         headers: { Authorization: `Bearer ${token}` },
+        cache: "no-store",
       });
-      const data = await res.json();
+      const data = await res.json().catch(() => ({}));
       if (data.templates) setTemplates(data.templates);
       setLoading(false);
     })();
