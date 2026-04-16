@@ -903,6 +903,7 @@ function LeadRow({
   onLocalUpdate,
   onDelete,
   onSmsClick,
+  onEmailClick,
   onHotOutreach,
   onMarkResponded,
   hotSending,
@@ -913,6 +914,7 @@ function LeadRow({
   onLocalUpdate: (id: string, data: Partial<SalesLead>) => void;
   onDelete: (id: string) => void;
   onSmsClick: (lead: SalesLead) => void;
+  onEmailClick: (lead: SalesLead) => void;
   onHotOutreach: (lead: SalesLead) => void;
   onMarkResponded: (lead: SalesLead) => void;
   hotSending: string | null;
@@ -1186,6 +1188,19 @@ function LeadRow({
             </span>
           )}
 
+          {/* Email button */}
+          {lead.client_email && (
+            <button
+              onClick={() => onEmailClick(lead)}
+              className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-bold cursor-pointer border-none transition-all"
+              style={{ background: "rgba(245,158,11,0.08)", color: "#f59e0b" }}
+              title="Send custom email"
+            >
+              <Mail size={14} />
+              <span className="hidden sm:inline">Email</span>
+            </button>
+          )}
+
           {/* SMS button */}
           {lead.phone && (
             <button
@@ -1442,6 +1457,12 @@ function LeadsContent() {
   const [smsLead, setSmsLead] = useState<SalesLead | null>(null);
   const [smsMessage, setSmsMessage] = useState("");
   const [smsSending, setSmsSending] = useState(false);
+  const [showEmail, setShowEmail] = useState(false);
+  const [emailLead, setEmailLead] = useState<SalesLead | null>(null);
+  const [emailFrom, setEmailFrom] = useState<"ben@ozioconsulting.com" | "joel@ozioconsulting.com">("ben@ozioconsulting.com");
+  const [emailSubject, setEmailSubject] = useState("");
+  const [emailBody, setEmailBody] = useState("");
+  const [emailSending, setEmailSending] = useState(false);
   const [showAllEmails, setShowAllEmails] = useState(false);
   const [showAllSms, setShowAllSms] = useState(false);
   const [failedByLead, setFailedByLead] = useState<Record<string, FailedSends>>({});
@@ -1599,6 +1620,49 @@ function LeadsContent() {
     }
     setSmsSending(false);
   }
+
+  function openEmailModal(lead: SalesLead) {
+    setEmailLead(lead);
+    setEmailSubject("");
+    setEmailBody(`Hi ${lead.contact_name || "there"},\n\n\n\nThanks,\n`);
+    setShowEmail(true);
+  }
+
+  async function sendEmail() {
+    if (!emailLead || !emailSubject.trim() || !emailBody.trim()) return;
+    setEmailSending(true);
+    try {
+      const fromName = emailFrom === "ben@ozioconsulting.com" ? "Ben @ Ozio Consulting" : "Joel @ Ozio Consulting";
+      const html = emailBody
+        .split("\n")
+        .map((line) => (line.trim() === "" ? "" : `<p>${line.replace(/</g, "&lt;")}</p>`))
+        .join("\n");
+      const token = (await supabase.auth.getSession()).data.session?.access_token;
+      const res = await fetch("https://api.ozioconsulting.com/api/admin/send-email", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify({
+          from_email: emailFrom,
+          from_name: fromName,
+          to: emailLead.client_email,
+          subject: emailSubject,
+          text: emailBody,
+          html,
+          lead_id: emailLead.id,
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setToast(`Email sent to ${emailLead.company_name}`);
+        setShowEmail(false);
+      } else {
+        setToast(`Failed: ${data.error}`);
+      }
+    } catch {
+      setToast("Failed to send email");
+    }
+    setEmailSending(false);
+  }
   async function addLead(lead: Partial<SalesLead>) {
     await supabase.from("sales_leads").insert(lead);
     setShowAdd(false);
@@ -1679,6 +1743,54 @@ function LeadsContent() {
               style={{ width: "100%", padding: "0.75rem", borderRadius: 10, border: "none", background: "linear-gradient(135deg, #f59e0b, #ea580c)", color: "#000", fontWeight: 700, fontSize: "0.85rem", cursor: smsSending ? "wait" : "pointer", opacity: smsSending ? 0.6 : 1, display: "flex", alignItems: "center", justifyContent: "center", gap: "0.5rem" }}
             >
               {smsSending ? <><Loader2 size={14} className="spin" /> Sending...</> : <><MessageSquare size={14} /> Send SMS</>}
+            </button>
+          </div>
+        </div>
+      )}
+      {/* Email Modal */}
+      {showEmail && emailLead && (
+        <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.6)", backdropFilter: "blur(4px)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 100, padding: "2rem" }} onClick={() => setShowEmail(false)}>
+          <div onClick={(e) => e.stopPropagation()} style={{ width: "100%", maxWidth: 560, maxHeight: "90vh", overflowY: "auto", background: "var(--bg-surface)", border: "1px solid rgba(255,255,255,0.06)", borderRadius: 20, padding: "2rem" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem" }}>
+              <h2 style={{ fontFamily: "Cormorant Garamond, serif", fontSize: "1.2rem", fontWeight: 700 }}>Send Email</h2>
+              <button onClick={() => setShowEmail(false)} style={{ background: "none", border: "none", color: "var(--text-secondary)", cursor: "pointer" }}><X size={20} /></button>
+            </div>
+            <div style={{ marginBottom: "1rem", padding: "0.6rem 0.8rem", borderRadius: 10, background: "rgba(245,158,11,0.06)", border: "1px solid rgba(245,158,11,0.12)", fontSize: "0.8rem" }}>
+              <span style={{ color: "var(--text-primary)", fontWeight: 500 }}>{emailLead.company_name}</span>
+              <span style={{ color: "#f59e0b", marginLeft: "0.75rem" }}>{emailLead.client_email}</span>
+              {emailLead.contact_name && <span style={{ color: "var(--text-tertiary)", marginLeft: "0.75rem", fontStyle: "italic" }}>{emailLead.contact_name}</span>}
+            </div>
+            <label style={{ display: "block", fontSize: "0.7rem", color: "var(--text-tertiary)", marginBottom: "0.3rem", textTransform: "uppercase", letterSpacing: "0.05em" }}>From</label>
+            <select
+              value={emailFrom}
+              onChange={(e) => setEmailFrom(e.target.value as typeof emailFrom)}
+              style={{ width: "100%", padding: "0.6rem 0.75rem", borderRadius: 10, border: "1px solid rgba(255,255,255,0.08)", background: "rgba(255,255,255,0.04)", color: "var(--text-primary)", fontSize: "0.85rem", fontFamily: "Inter, sans-serif", outline: "none", marginBottom: "0.75rem", cursor: "pointer" }}
+            >
+              <option value="ben@ozioconsulting.com">Ben @ Ozio Consulting &lt;ben@ozioconsulting.com&gt;</option>
+              <option value="joel@ozioconsulting.com">Joel @ Ozio Consulting &lt;joel@ozioconsulting.com&gt;</option>
+            </select>
+            <label style={{ display: "block", fontSize: "0.7rem", color: "var(--text-tertiary)", marginBottom: "0.3rem", textTransform: "uppercase", letterSpacing: "0.05em" }}>Subject</label>
+            <input
+              type="text"
+              value={emailSubject}
+              onChange={(e) => setEmailSubject(e.target.value)}
+              placeholder="Subject line..."
+              style={{ width: "100%", padding: "0.6rem 0.75rem", borderRadius: 10, border: "1px solid rgba(255,255,255,0.08)", background: "rgba(255,255,255,0.04)", color: "var(--text-primary)", fontSize: "0.85rem", fontFamily: "Inter, sans-serif", outline: "none", marginBottom: "0.75rem" }}
+            />
+            <label style={{ display: "block", fontSize: "0.7rem", color: "var(--text-tertiary)", marginBottom: "0.3rem", textTransform: "uppercase", letterSpacing: "0.05em" }}>Body</label>
+            <textarea
+              value={emailBody}
+              onChange={(e) => setEmailBody(e.target.value)}
+              rows={12}
+              style={{ width: "100%", padding: "0.75rem", borderRadius: 10, border: "1px solid rgba(255,255,255,0.08)", background: "rgba(255,255,255,0.04)", color: "var(--text-primary)", fontSize: "0.85rem", fontFamily: "Inter, sans-serif", outline: "none", marginBottom: "0.75rem", resize: "vertical" }}
+            />
+            <p style={{ fontSize: "0.65rem", color: "var(--text-tertiary)", marginBottom: "1rem" }}>Each line break becomes a paragraph in the rendered HTML.</p>
+            <button
+              onClick={sendEmail}
+              disabled={emailSending || !emailSubject.trim() || !emailBody.trim()}
+              style={{ width: "100%", padding: "0.75rem", borderRadius: 10, border: "none", background: "linear-gradient(135deg, #f59e0b, #ea580c)", color: "#000", fontWeight: 700, fontSize: "0.85rem", cursor: emailSending ? "wait" : "pointer", opacity: (emailSending || !emailSubject.trim() || !emailBody.trim()) ? 0.5 : 1, display: "flex", alignItems: "center", justifyContent: "center", gap: "0.5rem" }}
+            >
+              {emailSending ? <><Loader2 size={14} className="spin" /> Sending...</> : <><Mail size={14} /> Send Email</>}
             </button>
           </div>
         </div>
@@ -1774,7 +1886,7 @@ function LeadsContent() {
         ) : (
           <div className="flex flex-col gap-2">
             {filtered.map((lead) => (
-              <LeadRow key={lead.id} lead={lead} onUpdate={updateLead} onLocalUpdate={localUpdateLead} onDelete={deleteLead} onSmsClick={(l) => openSmsModal(l)} onHotOutreach={(l) => hotOutreach(l)} onMarkResponded={(l) => markResponded(l)} hotSending={hotSending} failedSends={failedByLead[lead.id]} />
+              <LeadRow key={lead.id} lead={lead} onUpdate={updateLead} onLocalUpdate={localUpdateLead} onDelete={deleteLead} onSmsClick={(l) => openSmsModal(l)} onEmailClick={(l) => openEmailModal(l)} onHotOutreach={(l) => hotOutreach(l)} onMarkResponded={(l) => markResponded(l)} hotSending={hotSending} failedSends={failedByLead[lead.id]} />
             ))}
             <p className="text-center text-[11px] mt-4 pb-4" style={{ color: "var(--text-tertiary)" }}>Showing {filtered.length} of {leads.length} leads</p>
           </div>
