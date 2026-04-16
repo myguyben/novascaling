@@ -1501,13 +1501,14 @@ function LeadsContent() {
     return () => { supabase.removeChannel(channel); };
   }, [fetchFailedSends]);
 
-  async function updateLead(id: string, data: Partial<SalesLead>) {
-    await supabase.from("sales_leads").update({ ...data, updated_at: new Date().toISOString() }).eq("id", id);
-  }
   // Update local state only — for when the backend has already written to DB
   // and realtime may lag or drop the event (e.g. after backend /unhot).
   function localUpdateLead(id: string, data: Partial<SalesLead>) {
     setLeads((prev) => prev.map((l) => (l.id === id ? { ...l, ...data } : l)));
+  }
+  async function updateLead(id: string, data: Partial<SalesLead>) {
+    const { error } = await supabase.from("sales_leads").update({ ...data, updated_at: new Date().toISOString() }).eq("id", id);
+    if (!error) localUpdateLead(id, data);
   }
   async function deleteLead(id: string) {
     await supabase.from("sales_leads").delete().eq("id", id);
