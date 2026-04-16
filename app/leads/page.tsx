@@ -900,6 +900,7 @@ function HotSequenceModal({ onClose }: { onClose: () => void }) {
 function LeadRow({
   lead,
   onUpdate,
+  onLocalUpdate,
   onDelete,
   onSmsClick,
   onHotOutreach,
@@ -909,6 +910,7 @@ function LeadRow({
 }: {
   lead: SalesLead;
   onUpdate: (id: string, data: Partial<SalesLead>) => void;
+  onLocalUpdate: (id: string, data: Partial<SalesLead>) => void;
   onDelete: (id: string) => void;
   onSmsClick: (lead: SalesLead) => void;
   onHotOutreach: (lead: SalesLead) => void;
@@ -1110,10 +1112,13 @@ function LeadRow({
                 if (window.confirm("Un-hot this lead? This cancels any scheduled follow-ups. Re-hotting will restart the sequence.")) {
                   handleAction("hot", async () => {
                     const token = (await supabase.auth.getSession()).data.session?.access_token;
-                    await fetch(`https://api.ozioconsulting.com/api/leads/${lead.id}/unhot`, {
+                    const res = await fetch(`https://api.ozioconsulting.com/api/leads/${lead.id}/unhot`, {
                       method: "POST",
                       headers: { Authorization: `Bearer ${token}` },
                     });
+                    if (res.ok) {
+                      onLocalUpdate(lead.id, { hot: false, hot_email_sent_at: null, hot_sequence_step: 0 });
+                    }
                   });
                 }
               } else {
@@ -1499,6 +1504,11 @@ function LeadsContent() {
   async function updateLead(id: string, data: Partial<SalesLead>) {
     await supabase.from("sales_leads").update({ ...data, updated_at: new Date().toISOString() }).eq("id", id);
   }
+  // Update local state only — for when the backend has already written to DB
+  // and realtime may lag or drop the event (e.g. after backend /unhot).
+  function localUpdateLead(id: string, data: Partial<SalesLead>) {
+    setLeads((prev) => prev.map((l) => (l.id === id ? { ...l, ...data } : l)));
+  }
   async function deleteLead(id: string) {
     await supabase.from("sales_leads").delete().eq("id", id);
   }
@@ -1539,10 +1549,11 @@ function LeadsContent() {
   async function markResponded(lead: SalesLead) {
     try {
       const token = (await supabase.auth.getSession()).data.session?.access_token;
-      await fetch(`https://api.ozioconsulting.com/api/leads/${lead.id}/mark-responded`, {
+      const res = await fetch(`https://api.ozioconsulting.com/api/leads/${lead.id}/mark-responded`, {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
       });
+      if (res.ok) localUpdateLead(lead.id, { responded: true });
       setToast(`${lead.company_name} marked as responded — follow-ups cancelled`);
     } catch {
       setToast("Failed to mark as responded");
@@ -1757,7 +1768,7 @@ function LeadsContent() {
         ) : (
           <div className="flex flex-col gap-2">
             {filtered.map((lead) => (
-              <LeadRow key={lead.id} lead={lead} onUpdate={updateLead} onDelete={deleteLead} onSmsClick={(l) => openSmsModal(l)} onHotOutreach={(l) => hotOutreach(l)} onMarkResponded={(l) => markResponded(l)} hotSending={hotSending} failedSends={failedByLead[lead.id]} />
+              <LeadRow key={lead.id} lead={lead} onUpdate={updateLead} onLocalUpdate={localUpdateLead} onDelete={deleteLead} onSmsClick={(l) => openSmsModal(l)} onHotOutreach={(l) => hotOutreach(l)} onMarkResponded={(l) => markResponded(l)} hotSending={hotSending} failedSends={failedByLead[lead.id]} />
             ))}
             <p className="text-center text-[11px] mt-4 pb-4" style={{ color: "var(--text-tertiary)" }}>Showing {filtered.length} of {leads.length} leads</p>
           </div>
