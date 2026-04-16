@@ -1635,7 +1635,12 @@ function LeadsContent() {
       const fromName = emailFrom === "ben@ozioconsulting.com" ? "Ben @ Ozio Consulting" : "Joel @ Ozio Consulting";
       const html = emailBody
         .split("\n")
-        .map((line) => (line.trim() === "" ? "" : `<p>${line.replace(/</g, "&lt;")}</p>`))
+        .map((line) => {
+          if (line.trim() === "") return "";
+          const escaped = line.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+          const linked = escaped.replace(/(https?:\/\/[^\s<]+)/g, (url) => `<a href="${url}" style="color:#f59e0b;text-decoration:underline;">${url}</a>`);
+          return `<p>${linked}</p>`;
+        })
         .join("\n");
       const token = (await supabase.auth.getSession()).data.session?.access_token;
       const res = await fetch("https://api.ozioconsulting.com/api/admin/send-email", {
