@@ -63,8 +63,30 @@ interface SalesLead {
   sms_follow_up_count: number;
   last_sms_at: string | null;
   hot_sequence_step: number;
+  follow_up_at: string | null;
+  follow_up_reminded_at: string | null;
   created_at: string;
   updated_at: string;
+}
+
+/* Converts a YYYY-MM-DD (from <input type="date">) to an ISO timestamp
+   representing 8:00 AM on that date in the user's local time zone.
+   Ben's browser is in Vancouver, so this lands on 8am Vancouver. */
+function dateInputToFollowUpISO(dateStr: string): string | null {
+  if (!dateStr) return null;
+  const [y, m, d] = dateStr.split("-").map(Number);
+  if (!y || !m || !d) return null;
+  return new Date(y, m - 1, d, 8, 0, 0).toISOString();
+}
+
+/* Converts a stored ISO timestamp back to YYYY-MM-DD for the date input. */
+function followUpISOToDateInput(iso: string | null): string {
+  if (!iso) return "";
+  const d = new Date(iso);
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
 }
 
 const STATUS_COLORS: Record<string, { bg: string; text: string }> = {
@@ -895,6 +917,78 @@ function HotSequenceModal({ onClose }: { onClose: () => void }) {
 }
 
 /* ══════════════════════════════════════════════
+   FOLLOW-UP DATE CONTROL
+   ══════════════════════════════════════════════ */
+function FollowUpControl({
+  lead,
+  onUpdate,
+}: {
+  lead: SalesLead;
+  onUpdate: (id: string, data: Partial<SalesLead>) => void;
+}) {
+  const dateValue = followUpISOToDateInput(lead.follow_up_at);
+  const isReminded = !!lead.follow_up_reminded_at;
+  const isOverdue =
+    !!lead.follow_up_at &&
+    !isReminded &&
+    new Date(lead.follow_up_at).getTime() <= Date.now();
+
+  const badge = (() => {
+    if (!lead.follow_up_at) return null;
+    if (isReminded) return { label: "Reminded ✓", bg: "rgba(34,197,94,0.12)", color: "#22c55e" };
+    if (isOverdue) return { label: "Overdue", bg: "rgba(239,68,68,0.15)", color: "#ef4444" };
+    return { label: "Scheduled", bg: "rgba(245,158,11,0.12)", color: "#f59e0b" };
+  })();
+
+  function handleDateChange(value: string) {
+    // Re-setting the date also clears reminded_at so a rescheduled date fires again
+    onUpdate(lead.id, {
+      follow_up_at: dateInputToFollowUpISO(value),
+      follow_up_reminded_at: null,
+    });
+  }
+
+  return (
+    <div className="flex items-center gap-2">
+      <span className="text-[10px] uppercase tracking-widest shrink-0" style={{ color: "var(--text-tertiary)" }}>
+        Follow-up
+      </span>
+      <input
+        type="date"
+        value={dateValue}
+        onChange={(e) => handleDateChange(e.target.value)}
+        className="px-2 py-1.5 rounded-lg text-xs outline-none"
+        style={{
+          background: "rgba(255,255,255,0.03)",
+          border: "1px solid rgba(255,255,255,0.04)",
+          color: dateValue ? "var(--text-primary)" : "var(--text-secondary)",
+          fontFamily: "Inter, sans-serif",
+          colorScheme: "dark",
+        }}
+      />
+      {dateValue && (
+        <button
+          onClick={() => handleDateChange("")}
+          title="Clear follow-up"
+          className="flex items-center justify-center w-5 h-5 rounded-md cursor-pointer border-none"
+          style={{ background: "rgba(255,255,255,0.04)", color: "var(--text-tertiary)" }}
+        >
+          <X size={12} />
+        </button>
+      )}
+      {badge && (
+        <span
+          className="px-2 py-0.5 rounded-md text-[10px] font-semibold"
+          style={{ background: badge.bg, color: badge.color }}
+        >
+          {badge.label}
+        </span>
+      )}
+    </div>
+  );
+}
+
+/* ══════════════════════════════════════════════
    LEAD ROW — Full width, checkbox-driven
    ══════════════════════════════════════════════ */
 function LeadRow({
@@ -1102,6 +1196,7 @@ function LeadRow({
             className="w-full px-3 py-1.5 rounded-lg text-xs outline-none"
             style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.04)", color: "var(--text-secondary)", fontFamily: "Inter, sans-serif" }}
           />
+          <FollowUpControl lead={lead} onUpdate={onUpdate} />
         </div>
 
         {/* Action buttons + follow-up status */}
@@ -1690,18 +1785,21 @@ function LeadsContent() {
       (filter === "new" && !l.contacted && !l.hot) ||
       (filter === "client" && l.status === "client") ||
       (filter === "has_notes" && l.notes && l.notes.trim() !== "") ||
+      (filter === "follow_up_due" && l.follow_up_at && !l.follow_up_reminded_at) ||
       filter === l.area;
     const q = search.toLowerCase();
     const matchesSearch = !q || l.company_name.toLowerCase().includes(q) || (l.contact_name || "").toLowerCase().includes(q) || (l.phone || "").includes(q) || (l.address || "").toLowerCase().includes(q) || (l.notes || "").toLowerCase().includes(q);
     return matchesFilter && matchesSearch;
   });
 
+  const nowMs = Date.now();
   const stats = {
     total: leads.length,
     contacted: leads.filter((l) => l.contacted).length,
     hot: leads.filter((l) => l.hot).length,
     client: leads.filter((l) => l.status === "client").length,
     notes: leads.filter((l) => l.notes && l.notes.trim() !== "").length,
+    followUpDue: leads.filter((l) => l.follow_up_at && new Date(l.follow_up_at).getTime() <= nowMs && !l.follow_up_reminded_at).length,
   };
 
   const FILTER_PILLS = [
@@ -1711,6 +1809,7 @@ function LeadsContent() {
     { key: "hot", label: `Hot ${stats.hot}` },
     { key: "client", label: `Won ${stats.client}` },
     { key: "has_notes", label: `Has Notes ${stats.notes}` },
+    { key: "follow_up_due", label: `Follow-up Due ${stats.followUpDue}` },
     { key: "nv", label: "North Van" },
     { key: "van", label: "Vancouver" },
     { key: "sa", label: "Service Area" },
