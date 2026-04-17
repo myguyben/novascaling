@@ -1,6 +1,5 @@
 export const NAV_LINKS = [
   { label: "Services", href: "/services" },
-  { label: "Pricing", href: "/pricing" },
   // { label: "Case Studies", href: "/case-studies" },
   { label: "Schedule", href: "/schedule" },
 ];
@@ -184,66 +183,6 @@ export const SERVICES = [
     ],
     example: "A painting contractor spent 6 hours every Friday preparing crew timesheets, generating invoices, and sending weekly reports to clients. We automated all three: timesheets pull from the scheduling system, invoices generate and send automatically on job completion, and client reports compile and email themselves every Monday morning. The owner got his Fridays back.",
     roi: "$15,000–$40,000/year in saved labor from eliminating repetitive manual work",
-  },
-];
-
-export const PRICING_TIERS = [
-  {
-    name: "Starter",
-    price: 497,
-    period: "/mo",
-    target: "For solo operators, $100k–$300k revenue",
-    features: [
-      "Free custom website included",
-      "2 workflow automations",
-      "Lead capture & instant response",
-      "Estimate follow-up engine",
-      "Monthly performance report",
-      "Email & text support",
-    ],
-    cta: "Tell Us Your Problems",
-    featured: false,
-    websiteBadge: true,
-  },
-  {
-    name: "Growth",
-    price: 1497,
-    period: "/mo",
-    target: "For growing teams, $300k–$1M revenue",
-    features: [
-      "Free custom website included",
-      "5 workflow automations",
-      "Everything in Starter",
-      "Smart scheduling & dispatch",
-      "Review & reputation autopilot",
-      "CRM & pipeline setup",
-      "Bi-weekly strategy calls",
-      "40-hour guarantee",
-    ],
-    cta: "Tell Us Your Problems",
-    featured: true,
-    badge: "Most Popular",
-    websiteBadge: true,
-  },
-  {
-    name: "Partner",
-    price: 2997,
-    period: "+/mo",
-    target: "For businesses scaling to $1M–$5M+",
-    features: [
-      "Free custom website included",
-      "Unlimited automations",
-      "Everything in Growth",
-      "Full operational takeover",
-      "Multi-location support",
-      "Custom integrations",
-      "Weekly strategy calls",
-      "Dedicated Slack channel",
-      "SLA guarantees",
-    ],
-    cta: "Tell Us Your Problems",
-    featured: false,
-    websiteBadge: true,
   },
 ];
 

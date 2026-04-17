@@ -43,9 +43,8 @@ import { GlassCard } from "@/components/ui/GlassCard";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import { CTABanner } from "@/components/ui/CTABanner";
-import { PricingCard } from "@/components/ui/PricingCard";
 import { LogoMarquee } from "@/components/ui/LogoMarquee";
-import { PRICING_TIERS, INTEGRATIONS } from "@/lib/constants";
+import { INTEGRATIONS } from "@/lib/constants";
 
 const ICON_MAP: Record<string, React.ReactNode> = {
   Search: <Search size={28} />,
@@ -395,36 +394,6 @@ export default function Home() {
               </AnimatedSection>
             ))}
           </div>
-        </div>
-      </section>
-
-      {/* ── Pricing ── */}
-      <section id="pricing" className="section">
-        <div className="section-container">
-          <AnimatedSection>
-            <SectionHeader
-              label="Pricing"
-              title="Less than a part-time hire."
-              titleHighlight="10x the output."
-              subtitle="Starts at $497/mo. No setup fees. No long-term contracts. If we don't save you 40+ hours, the next month is free."
-            />
-          </AnimatedSection>
-
-          <div className="pricing-grid">
-            {PRICING_TIERS.map((tier, i) => (
-              <AnimatedSection key={i} delay={i * 0.1}>
-                <PricingCard {...tier} />
-              </AnimatedSection>
-            ))}
-          </div>
-
-          <AnimatedSection delay={0.3}>
-            <div style={{ textAlign: "center", marginTop: "2rem" }}>
-              <Button variant="ghost" size="lg" href="/pricing">
-                See full pricing details <ArrowRight size={16} />
-              </Button>
-            </div>
-          </AnimatedSection>
         </div>
       </section>
 

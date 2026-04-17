@@ -37,12 +37,6 @@ export default function Footer() {
             >
               Services
             </Link>
-            <Link
-              href="/pricing"
-              className="text-sm text-[var(--text-secondary)] transition-colors duration-200 hover:text-[var(--text-primary)]"
-            >
-              Pricing
-            </Link>
             {/* <Link
               href="/case-studies"
               className="text-sm text-[var(--text-secondary)] transition-colors duration-200 hover:text-[var(--text-primary)]"
